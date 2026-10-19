@@ -74,7 +74,7 @@
     $('[data-catalog-state]').textContent=hits.length ? hits.length.toLocaleString('tr-TR')+' ürün bulundu'
       : published()&&products.length ? 'Aramanızla eşleşen ürün bulunamadı.' : failure();
     $('[data-pagination]').hidden=pages<=1;
-    $('[data-page]').textContent=state.pageNo+' / '+pages;
+    $('[data-page-number]').textContent=state.pageNo+' / '+pages;
     $('[data-prev]').disabled=state.pageNo<=1;$('[data-next]').disabled=state.pageNo>=pages;
     const url=new URL(location.href);
     for (const [key,value] of [['q',input.value.trim()],['category',selected]]) value?url.searchParams.set(key,value):url.searchParams.delete(key);
