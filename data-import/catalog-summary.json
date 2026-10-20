@@ -1,0 +1,294 @@
+{
+  "generated_at": "2026-10-19T12:14:33+00:00",
+  "source": {
+    "site": "https://www.teknikelkombiyedekparca.com.tr",
+    "method": "public_category_and_product_pages",
+    "admin_export_available_in_this_session": false,
+    "robots_crawl_delay_seconds": 30,
+    "request_delay_seconds_used": 1.2,
+    "note": "Tek seferlik katalog audit'i; tekrar çekim yerine IdeaSoft panel çıktısı kullanılmalı.",
+    "idea_output_recommendation": "Entegrasyonlar > ideaOutput > 26 — Standart Katalog Çıktısı v3 (EXCEL)"
+  },
+  "scope": {
+    "categories": 24,
+    "categorized_products": 850,
+    "sitemap_only_products": 151,
+    "sitemap_total_products": 1001,
+    "sample_products": 30
+  },
+  "fetched_at_ranges": {
+    "sample_30": [
+      "2026-10-19T11:39:18+00:00",
+      "2026-10-19T11:41:45+00:00"
+    ],
+    "sitemap_only_151": [
+      "2026-10-19T11:41:43+00:00",
+      "2026-10-19T11:53:59+00:00"
+    ]
+  },
+  "categories": {
+    "official_total": 850,
+    "listed_total": 850,
+    "all_counts_match": true,
+    "largest": [
+      {
+        "category": "Sirkülasyon Pompa",
+        "product_count": 72
+      },
+      {
+        "category": "Plaka Eşanjör",
+        "product_count": 60
+      },
+      {
+        "category": "Tamir Takımı",
+        "product_count": 57
+      },
+      {
+        "category": "3 Yollu Hidroblok",
+        "product_count": 55
+      },
+      {
+        "category": "Akış Türbini",
+        "product_count": 49
+      }
+    ]
+  },
+  "brands": {
+    "raw_distinct_including_blank": 90,
+    "normalized_distinct": 86,
+    "placeholder_count": 261,
+    "missing_count": 165,
+    "valid_count": 575,
+    "placeholder_values": [
+      "DİĞER",
+      "Diğer",
+      "TÜRKİYE"
+    ],
+    "documented_merges": {
+      "WİLO": "Wilo",
+      "RESİDEO": "Resideo"
+    }
+  },
+  "products": {
+    "categorized_with_sku": 850,
+    "categorized_with_image": 850,
+    "categorized_with_price": 850,
+    "categorized_missing_brand": 17,
+    "categorized_missing_product_id": 154,
+    "categorized_known_product_ids": 696,
+    "known_product_ids": 847,
+    "missing_product_ids": 154,
+    "sitemap_only_missing_image": 144,
+    "sitemap_only_missing_brand": 148,
+    "sitemap_only_missing_description": 145,
+    "distinct_stock_codes": 1001,
+    "duplicate_stock_codes": 0,
+    "distinct_product_ids": 847,
+    "duplicate_product_ids": 0
+  },
+  "stock_codes": {
+    "standard_11_digit": 994,
+    "nonstandard_count": 7,
+    "nonstandard": [
+      {
+        "stock_code": "778900026006",
+        "name": "1/2 DIŞ DİŞLİ EMNİYET VENTİLİ PAKKENS",
+        "scope": "categorized",
+        "url": "https://www.teknikelkombiyedekparca.com.tr/urun/1-2-dis-disli-emniyet-ventil"
+      },
+      {
+        "stock_code": "7789006050",
+        "name": "TERMODİNAMİK ŞOFBEN AKIŞ TÜRBİNİ",
+        "scope": "categorized",
+        "url": "https://www.teknikelkombiyedekparca.com.tr/urun/termodinamik-sofben-akis-turbini"
+      },
+      {
+        "stock_code": "7789008144",
+        "name": "VİESMAN 050W ANA EŞAJÖR ÇIKIŞ HORTUMU ORJİNAL",
+        "scope": "categorized",
+        "url": "https://www.teknikelkombiyedekparca.com.tr/urun/viesman-050w-ana-esajor-cikis-hortumu-orjinal"
+      },
+      {
+        "stock_code": "7789008154",
+        "name": "ECA PROTEUS PREMİX YOĞUŞMA SİFON",
+        "scope": "categorized",
+        "url": "https://www.teknikelkombiyedekparca.com.tr/urun/eca-proteus-premix-yogusma-sifon"
+      },
+      {
+        "stock_code": "7789008155",
+        "name": "ECA PROTEUS PREMİX ÖN TAŞ AMYANT",
+        "scope": "categorized",
+        "url": "https://www.teknikelkombiyedekparca.com.tr/urun/eca-proteus-premix-on-tas-amyant"
+      },
+      {
+        "stock_code": "111111",
+        "name": "MAXİ CONDENS BASINÇ SONDASI",
+        "scope": "sitemap_only",
+        "url": "https://www.teknikelkombiyedekparca.com.tr/urun/maxi-condens-basinc-sondasi"
+      },
+      {
+        "stock_code": "23004021",
+        "name": "REKORLU ŞOFBEN AKIŞ ŞALTERİPLASTİK",
+        "scope": "sitemap_only",
+        "url": "https://www.teknikelkombiyedekparca.com.tr/urun/rekorlu-sofben-akis-salteri-plastik"
+      }
+    ],
+    "placeholder_like": [
+      "111111"
+    ]
+  },
+  "duplicate_product_names": [
+    {
+      "name": "ARİSTON CARES MANOMETRE",
+      "records": [
+        {
+          "stock_code": "53250100211",
+          "product_id": "314",
+          "scope": "categorized",
+          "brand": "BDR",
+          "price": 526.32,
+          "category": "Gösterge Manometre",
+          "url": "https://www.teknikelkombiyedekparca.com.tr/urun/ariston-cares-manometre-1"
+        },
+        {
+          "stock_code": "53250100238",
+          "product_id": "",
+          "scope": "categorized",
+          "brand": "DİĞER",
+          "price": 263.16,
+          "category": "Gösterge Manometre",
+          "url": "https://www.teknikelkombiyedekparca.com.tr/urun/ariston-cares-manometre"
+        }
+      ]
+    },
+    {
+      "name": "ARİSTON CLAS ONE ANAKART",
+      "records": [
+        {
+          "stock_code": "53250101222",
+          "product_id": "6210",
+          "scope": "sitemap_only",
+          "brand": "",
+          "price": 139374.83,
+          "category": "",
+          "url": "https://www.teknikelkombiyedekparca.com.tr/urun/ariston-clas-one-anakart"
+        },
+        {
+          "stock_code": "53251101101",
+          "product_id": "6211",
+          "scope": "sitemap_only",
+          "brand": "",
+          "price": 139374.83,
+          "category": "",
+          "url": "https://www.teknikelkombiyedekparca.com.tr/urun/ariston-clas-one-anakart-1"
+        }
+      ]
+    }
+  ],
+  "prices": {
+    "categorized_try": {
+      "count": 850,
+      "min": 15.79,
+      "q1": 290.79,
+      "median": 789.47,
+      "q3": 1947.37,
+      "max": 13684.21,
+      "iqr": 1656.58,
+      "lower_fence": -2194.09,
+      "upper_fence": 4432.24,
+      "outlier_count_iqr": 57
+    },
+    "sitemap_only_try": {
+      "count": 151,
+      "min": 188.23,
+      "q1": 20717.96,
+      "median": 56503.36,
+      "q3": 99822.48,
+      "max": 188344.29,
+      "iqr": 79104.52,
+      "lower_fence": -97938.81,
+      "upper_fence": 218479.25,
+      "outlier_count_iqr": 0,
+      "above_categorized_upper_fence": 132
+    },
+    "sample_try": {
+      "count": 30,
+      "min": 42.11,
+      "q1": 368.42,
+      "median": 894.74,
+      "q3": 2052.63,
+      "max": 56503.36,
+      "iqr": 1684.21,
+      "lower_fence": -2157.89,
+      "upper_fence": 4578.94,
+      "outlier_count_iqr": 3
+    }
+  },
+  "sample": {
+    "record_count": 30,
+    "selection": {
+      "one_per_category": 24,
+      "extra_large_category": 4,
+      "uncategorized": 2
+    },
+    "availability": {
+      "InStock": 24,
+      "OutOfStock": 6
+    },
+    "brand_status": {
+      "ok": 19,
+      "placeholder": 8,
+      "missing": 3
+    },
+    "description_present": 13,
+    "description_missing": 17,
+    "description_short": 8,
+    "description_generic_boilerplate": 2,
+    "compatible_models_present": 1,
+    "image_count_distribution": {
+      "0": 2,
+      "1": 3,
+      "2": 25
+    },
+    "image_urls_total": 53,
+    "image_head_checks": 53,
+    "image_head_failures": 0,
+    "listing_comparisons": 28,
+    "listing_mismatches": 0,
+    "out_of_stock_observed": 6,
+    "price_outliers_global": 3,
+    "missing_category": 2,
+    "data_quality_flags": {
+      "missing_compatible_models": 29,
+      "missing_description": 17,
+      "short_description": 8,
+      "placeholder_brand": 8,
+      "out_of_stock_observed": 6,
+      "price_outlier_global": 3,
+      "single_image": 3,
+      "missing_brand": 3,
+      "description_generic_boilerplate": 2,
+      "missing_category": 2,
+      "missing_image": 2,
+      "uncategorized": 2
+    }
+  },
+  "uncategorized": {
+    "record_count": 151,
+    "fetch_errors": 0,
+    "with_image": 7,
+    "without_image": 144,
+    "with_brand": 3,
+    "without_brand": 148,
+    "with_description": 6,
+    "without_description": 145,
+    "availability": {
+      "OutOfStock": 79,
+      "InStock": 72
+    },
+    "above_categorized_price_upper_fence": 132,
+    "manual_review_possible_valid": 7,
+    "exclude_until_review": 144,
+    "duplicate_stock_codes_vs_all_1001": 0
+  }
+}

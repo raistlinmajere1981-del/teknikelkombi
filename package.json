@@ -1,0 +1,12 @@
+{
+  "name": "teknikel-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node tests/check.mjs",
+    "test": "node --test tests/commerce.test.mjs && node tests/smoke.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.1"
+  }
+}

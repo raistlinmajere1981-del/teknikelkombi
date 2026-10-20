@@ -1,0 +1,327 @@
+{
+  "generated_at": "2026-10-19T12:14:33+00:00",
+  "source": "https://www.teknikelkombiyedekparca.com.tr",
+  "category_count": 24,
+  "total_official_product_count": 850,
+  "total_listed_product_count": 850,
+  "all_counts_match": true,
+  "sitemap_only_product_count": 151,
+  "categories": [
+    {
+      "source_category_id": "30",
+      "category": "Sirkülasyon Pompa",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/sirkulasyon-pompa",
+      "official_product_count": 72,
+      "listed_product_count": 72,
+      "counts_match": true,
+      "share_percent": 8.5,
+      "sample_count": 2,
+      "sample_skus": [
+        "77890054055",
+        "77890054087"
+      ]
+    },
+    {
+      "source_category_id": "29",
+      "category": "Plaka Eşanjör",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/plaka-esanjor",
+      "official_product_count": 60,
+      "listed_product_count": 60,
+      "counts_match": true,
+      "share_percent": 7.1,
+      "sample_count": 2,
+      "sample_skus": [
+        "53250100468",
+        "53250100955"
+      ]
+    },
+    {
+      "source_category_id": "32",
+      "category": "Tamir Takımı",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/tamir-takimi",
+      "official_product_count": 57,
+      "listed_product_count": 57,
+      "counts_match": true,
+      "share_percent": 6.7,
+      "sample_count": 2,
+      "sample_skus": [
+        "77890064039",
+        "77890064045"
+      ]
+    },
+    {
+      "source_category_id": "9",
+      "category": "3 Yollu Hidroblok",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/3-yollu-hidroblok",
+      "official_product_count": 55,
+      "listed_product_count": 55,
+      "counts_match": true,
+      "share_percent": 6.5,
+      "sample_count": 2,
+      "sample_skus": [
+        "53250100296",
+        "77890040022"
+      ]
+    },
+    {
+      "source_category_id": "48",
+      "category": "Akış Türbini",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/akis-turbini",
+      "official_product_count": 49,
+      "listed_product_count": 49,
+      "counts_match": true,
+      "share_percent": 5.8,
+      "sample_count": 1,
+      "sample_skus": [
+        "77890006026"
+      ]
+    },
+    {
+      "source_category_id": "28",
+      "category": "Ntc Sensör",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/ntc-sensor",
+      "official_product_count": 47,
+      "listed_product_count": 47,
+      "counts_match": true,
+      "share_percent": 5.5,
+      "sample_count": 1,
+      "sample_skus": [
+        "53250100559"
+      ]
+    },
+    {
+      "source_category_id": "19",
+      "category": "Doldurma Musluğu",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/doldurma-muslugu",
+      "official_product_count": 46,
+      "listed_product_count": 46,
+      "counts_match": true,
+      "share_percent": 5.4,
+      "sample_count": 1,
+      "sample_skus": [
+        "77890022002"
+      ]
+    },
+    {
+      "source_category_id": "21",
+      "category": "Elektronik Kartlar",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/elektronik-kartlar",
+      "official_product_count": 45,
+      "listed_product_count": 45,
+      "counts_match": true,
+      "share_percent": 5.3,
+      "sample_count": 1,
+      "sample_skus": [
+        "53250100372"
+      ]
+    },
+    {
+      "source_category_id": "24",
+      "category": "Genleşme Tankı",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/genlesme-tanki",
+      "official_product_count": 42,
+      "listed_product_count": 42,
+      "counts_match": true,
+      "share_percent": 4.9,
+      "sample_count": 1,
+      "sample_skus": [
+        "53251101144"
+      ]
+    },
+    {
+      "source_category_id": "14",
+      "category": "Ateşleme Trafo",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/atesleme-trafo",
+      "official_product_count": 36,
+      "listed_product_count": 36,
+      "counts_match": true,
+      "share_percent": 4.2,
+      "sample_count": 1,
+      "sample_skus": [
+        "53250100440"
+      ]
+    },
+    {
+      "source_category_id": "11",
+      "category": "Ana Eşanjör",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/ana-esanjor",
+      "official_product_count": 35,
+      "listed_product_count": 35,
+      "counts_match": true,
+      "share_percent": 4.1,
+      "sample_count": 1,
+      "sample_skus": [
+        "77890008012"
+      ]
+    },
+    {
+      "source_category_id": "17",
+      "category": "Çevirme Düğmesi",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/cevirme-dugmesi",
+      "official_product_count": 34,
+      "listed_product_count": 34,
+      "counts_match": true,
+      "share_percent": 4.0,
+      "sample_count": 1,
+      "sample_skus": [
+        "77890024006"
+      ]
+    },
+    {
+      "source_category_id": "27",
+      "category": "Nalburiye Hırdavat",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/nalburiye-hirdavat",
+      "official_product_count": 32,
+      "listed_product_count": 32,
+      "counts_match": true,
+      "share_percent": 3.8,
+      "sample_count": 1,
+      "sample_skus": [
+        "53251101174"
+      ]
+    },
+    {
+      "source_category_id": "23",
+      "category": "Gaz Valfi",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/gaz-valfi",
+      "official_product_count": 31,
+      "listed_product_count": 31,
+      "counts_match": true,
+      "share_percent": 3.6,
+      "sample_count": 1,
+      "sample_skus": [
+        "77890030013"
+      ]
+    },
+    {
+      "source_category_id": "20",
+      "category": "Emniyet Ventili",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/emniyet-ventili",
+      "official_product_count": 29,
+      "listed_product_count": 29,
+      "counts_match": true,
+      "share_percent": 3.4,
+      "sample_count": 1,
+      "sample_skus": [
+        "53250100262"
+      ]
+    },
+    {
+      "source_category_id": "22",
+      "category": "Fan Motoru",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/fan-motoru",
+      "official_product_count": 28,
+      "listed_product_count": 28,
+      "counts_match": true,
+      "share_percent": 3.3,
+      "sample_count": 1,
+      "sample_skus": [
+        "77890028022"
+      ]
+    },
+    {
+      "source_category_id": "31",
+      "category": "Step Motor",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/step-motor",
+      "official_product_count": 28,
+      "listed_product_count": 28,
+      "counts_match": true,
+      "share_percent": 3.3,
+      "sample_count": 1,
+      "sample_skus": [
+        "53250100364"
+      ]
+    },
+    {
+      "source_category_id": "18",
+      "category": "Contalar",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/contalar",
+      "official_product_count": 24,
+      "listed_product_count": 24,
+      "counts_match": true,
+      "share_percent": 2.8,
+      "sample_count": 1,
+      "sample_skus": [
+        "53250100135"
+      ]
+    },
+    {
+      "source_category_id": "25",
+      "category": "Gösterge Manometre",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/gosterge-manometre",
+      "official_product_count": 24,
+      "listed_product_count": 24,
+      "counts_match": true,
+      "share_percent": 2.8,
+      "sample_count": 1,
+      "sample_skus": [
+        "77890034012"
+      ]
+    },
+    {
+      "source_category_id": "15",
+      "category": "Baca Yanma Odası",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/baca-yanma-odasi",
+      "official_product_count": 21,
+      "listed_product_count": 21,
+      "counts_match": true,
+      "share_percent": 2.5,
+      "sample_count": 1,
+      "sample_skus": [
+        "53250100444"
+      ]
+    },
+    {
+      "source_category_id": "16",
+      "category": "Basınç Sondası",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/basinc-sodasi",
+      "official_product_count": 15,
+      "listed_product_count": 15,
+      "counts_match": true,
+      "share_percent": 1.8,
+      "sample_count": 1,
+      "sample_skus": [
+        "77890058028"
+      ]
+    },
+    {
+      "source_category_id": "33",
+      "category": "Türbin Okuyucu",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/turbin-okuyucu",
+      "official_product_count": 14,
+      "listed_product_count": 14,
+      "counts_match": true,
+      "share_percent": 1.6,
+      "sample_count": 1,
+      "sample_skus": [
+        "77890006036"
+      ]
+    },
+    {
+      "source_category_id": "10",
+      "category": "Akış Şalteri",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/akis-salteri",
+      "official_product_count": 13,
+      "listed_product_count": 13,
+      "counts_match": true,
+      "share_percent": 1.5,
+      "sample_count": 1,
+      "sample_skus": [
+        "53250100856"
+      ]
+    },
+    {
+      "source_category_id": "26",
+      "category": "Hava prosestatı",
+      "category_url": "https://www.teknikelkombiyedekparca.com.tr/kategori/hava-prosestati",
+      "official_product_count": 13,
+      "listed_product_count": 13,
+      "counts_match": true,
+      "share_percent": 1.5,
+      "sample_count": 1,
+      "sample_skus": [
+        "77890036018"
+      ]
+    }
+  ]
+}

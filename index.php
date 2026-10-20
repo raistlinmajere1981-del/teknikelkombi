@@ -32,5 +32,5 @@
 <div class="product-grid" data-featured-grid></div>
 </div></section>
 <section class="brand-section"><div class="container"><span class="eyebrow">KATALOĞUMUZDA ARANAN MARKALAR</span><div class="brands"><span>BOSCH</span><span>BAYMAK</span><span>VAILLANT</span><span>E.C.A.</span><span>ARISTON</span><span>DEMİRDÖKÜM</span></div></div></section>
-<section class="dealer-callout"><div class="container callout-inner"><div><div class="eyebrow">PROFESYONELLERE ÖZEL</div><h2>Teknik servisiniz için <span>daha hızlı sipariş.</span></h2><p>Bayi hesabınızla size özel fiyatlara ve siparişlerinize erişebileceğiniz yeni çalışma alanı hazırlanıyor.</p></div><a href="/bayi/" class="btn btn-red">Bayi alanını incele <span>↗</span></a></div></section>
+<section class="dealer-callout"><div class="container callout-inner"><div><div class="eyebrow">PROFESYONELLERE ÖZEL</div><h2>Teknik servisiniz için <span>daha hızlı sipariş.</span></h2><p>Bayi davetinizle giriş yapın; size özel kataloğa, fiyatlara ve sipariş geçmişinize ulaşın.</p></div><a href="/bayi/" class="btn btn-red">Bayi alanını incele <span>↗</span></a></div></section>
 <?php te_footer(); ?>
