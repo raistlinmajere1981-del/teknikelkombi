@@ -2,6 +2,21 @@
 
 Mevcut lacivert/kırmızı/beyaz PHP tasarımını kullanan e-ticaret pilotu. Veri ve fiyat otoritesi Yardımcı Asistan Desktop'tır; site yalnız aynı origin üzerindeki `/yardimci-asistan/api/` yayınlarını ve sipariş uç noktalarını tüketir. Ödeme alınmaz; talepler işletmenin onayını bekler.
 
+## Ana sayfa kampanya alanı
+
+Ana sayfadaki yeni kampanya bölümü doğrudan mevcut `/yardimci-asistan/api/marketing.php` API'sinden yayınları okur. Yalnız `website / homepage_feature` yerleşimindeki yayınlanmış içerikler gösterilir; ilk altı yayın kullanılabilir. Medya URL'leri aynı origin altındaki canonical marketing media yoluyla sınırlıdır. Site sipariş/fiyat/kampanya verisi kaydetmez ve kendi yayın API'sini oluşturmaz.
+
+Şu anda yayın bulunmuyorsa **ÖRNEK YERLEŞİM** etiketli üç tanıtım kutusu gösterilir. Bunlar gerçek fiyat, stok veya kampanya beyanı değildir. Pazarlama yayını geldiğinde statik kutular kalkar; API hatasında örnekler gerçek yayın gibi sunulmaz. Canlı yayına geçmeden önce ürün ve kampanya görselleri Desktop'tan yayımlanmalıdır.
+
+Planlanan örnek yayın konuları (indirim veya stok vaadi olmadan):
+- Servislerde sık kullanılan yedek parçalar — kategori seçkisi
+- Pompa ve eşanjör çeşitleri — fotoğraflı ürün tanıtımı
+- Bayi sipariş ekranı — davetli bayi iş akışı
+
+## Katalog hazırlık kararı
+
+Pilot inceleme arşivi: `/home/raistlin/teknikel_catalog_prep`. 179 kayıt/68 dosya, ancak sadece **28 kategorili örnek kayıt** ilk ürün seçkisi için güvenli adaydır. 151 "Diğer" kaydının 144'ünde görsel bulunmuyor; birçoğunda alışılmadık fiyatlar var. Bu kayıtlar topluca satışa açılmamalıdır. Kaynak uygulamada KDV, stok takibi, birim ve bayi fiyatı doğrulanmadan ürünler aktarımdan sonra taslak kalmalıdır. Yayın mekanizması Desktop'ın canonical ürün/kategori/medya sahibidir; canlı siteye hardcoded ürün eklenmez.
+
 ## Çalışan akışlar
 
 - `/`, `/katalog/`, `/urun/?id=...`: public ürünler, kategori/stok kodu/metin araması, ürün detayı, fotoğraf ve sepete ekleme.

@@ -1,0 +1,21 @@
+.campaign-section{background:#f7f9fb;padding-top:68px;padding-bottom:72px}
+.campaign-section .heading{margin-bottom:14px}
+.campaign-intro{font-size:13px;color:var(--muted);max-width:690px;line-height:1.7;margin:0 0 16px}
+.campaign-feedback{font-size:12px;color:var(--muted);min-height:18px;margin:0 0 16px}
+.campaign-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.campaign-card{min-width:0;min-height:242px;padding:28px;border-radius:12px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.campaign-card--primary{background:#162e44;color:white}
+.campaign-card--red{background:#fbe9eb;color:#5c2330}
+.campaign-card--neutral{background:white;color:var(--navy);border:1px solid #dce4eb}
+.campaign-tag{font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;opacity:.82}
+.campaign-card h3{font:800 clamp(19px,2vw,25px)/1.25 'Manrope',sans-serif;letter-spacing:-.025em;margin:24px 0 10px}
+.campaign-card p{font-size:13px;line-height:1.65;max-width:38ch;white-space:pre-line;overflow-wrap:anywhere}
+.campaign-foot{font-size:11px;opacity:.75;margin-top:auto}
+.campaign-grid--live .campaign-card{background:white;color:var(--ink);border:1px solid var(--line);padding:0}
+.campaign-grid--single{grid-template-columns:minmax(0,600px)}
+.campaign-image{width:100%;aspect-ratio:1.65;object-fit:cover}
+.campaign-content{padding:22px 24px;display:flex;flex-direction:column;flex:1}
+.campaign-content h3{margin:15px 0 10px}
+.campaign-content p{max-width:none;margin:0;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+@media(max-width:850px){.campaign-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.campaign-card:first-child{grid-column:1/-1}}
+@media(max-width:540px){.campaign-section{padding-top:50px;padding-bottom:50px}.campaign-grid{grid-template-columns:1fr}.campaign-card:first-child{grid-column:auto}.campaign-card{min-height:200px;padding:22px}.campaign-card h3{margin-top:16px}.campaign-content{padding:18px 20px}}

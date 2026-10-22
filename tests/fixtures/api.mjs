@@ -12,7 +12,7 @@ const api = (status,json) => ({status,json,headers:{'Cache-Control':'no-store'}}
 export class FixtureApi {
   enabled = true; businessFailure = false; catalogFailure = false; dealerCatalogFailure = false; ordersFailure = false; logoutFailure = false;
   deliveryMethods = ['pickup','shipping'];
-  public = clone(publicProducts); requests = []; created = []; receipts = new Map(); sessions = new Map(); consumed = new Set(); revisions = {[A]:1,[B]:1};
+  public = clone(publicProducts); campaigns = []; requests = []; created = []; receipts = new Map(); sessions = new Map(); consumed = new Set(); revisions = {[A]:1,[B]:1};
   failNext = ''; lossNext = ''; malformedNext = ''; rejectNext = ''; nextSession = 0; deferred = null;
   catalog(owner) {
     return {access_id:owner,access_revision:this.revisions[owner],catalog_revision:'a'.repeat(64),delivery_methods:this.deliveryMethods,products:[
@@ -45,6 +45,7 @@ export class FixtureApi {
       let result;
       if (path === 'business') result = this.businessFailure ? api(503,{ok:false,message:'TEST işletme yayınına ulaşılamadı.'}) : api(200,{ok:true,business:{display_name:'TEST Teknikel',public_surfaces:this.enabled ? ['store'] : []}});
       else if (path === 'catalog') result = this.catalogFailure ? api(503,{ok:false,message:'TEST katalog bağlantısı yok.'}) : api(200,{ok:true,version:1,enabled:this.enabled,delivery_methods:this.enabled ? this.deliveryMethods : [],products:this.enabled ? this.public : [],categories:this.enabled ? [{id:'c1',name:'Pompalar'},{id:'c2',name:'Elektronik Kartlar'}] : [],server_revision:1,source_revision:1});
+      else if (path === 'marketing') result = api(200,{ok:true,publications:this.campaigns});
       else if (path === 'dealer/claim') {
         const token = payload.invite_token; const owner = token === tokens.b ? B : [tokens.a,tokens.renewed].includes(token) ? A : null;
         if (!owner || this.consumed.has(token)) result = api(400,{ok:false,message:'Bağlantı geçersiz veya süresi dolmuş.'});

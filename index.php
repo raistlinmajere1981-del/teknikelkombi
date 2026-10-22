@@ -15,6 +15,16 @@
 </div>
 </div></section>
 <section class="quick-strip"><div class="container quick-inner"><span><b>Ürünü bulun</b><small>İsim, stok kodu veya model</small></span><i>→</i><span><b>Detayları inceleyin</b><small>Teknik bilgiler ve görseller</small></span><i>→</i><span><b>Sipariş sürecine geçin</b><small>Perakende veya bayi hesabıyla</small></span></div></section>
+<section class="section campaign-section" aria-labelledby="campaign-heading"><div class="container">
+<div class="heading"><div><div class="eyebrow">TEKNİKEL / KAMPANYALAR</div><h2 id="campaign-heading">Öne çıkan <span>ürünler ve duyurular.</span></h2></div><a class="text-link" href="/katalog/">Tüm ürünleri incele <span>↗</span></a></div>
+<p class="campaign-intro">Bu alan Yardımcı Asistan'dan yayınlanan kampanyaları gösterir. Henüz yayın yoksa aşağıdaki örnek yerleşimler görünür.</p>
+<p class="campaign-feedback" data-campaign-feedback role="status" aria-live="polite"></p>
+<div class="campaign-grid" data-campaign-grid>
+<article class="campaign-card campaign-card--primary"><span class="campaign-tag">ÖRNEK YERLEŞİM</span><h3>Servislere özel parça seçimleri</h3><p>Teknikel'in seçtiği ürün grupları burada tanıtılabilir.</p><span class="campaign-foot">Uygulamadan kampanya yayını bekleniyor</span></article>
+<article class="campaign-card campaign-card--red"><span class="campaign-tag">ÖRNEK YERLEŞİM</span><h3>Yeni gelen ürünler</h3><p>Yeni ürün duyuruları ve görselleri bu alanda gösterilir.</p><span class="campaign-foot">Fiyat ve indirim bilgisi temsilidir, yayın değildir</span></article>
+<article class="campaign-card campaign-card--neutral"><span class="campaign-tag">ÖRNEK YERLEŞİM</span><h3>Haftanın ürünleri</h3><p>Yardımcı Asistan'dan oluşturulan kampanyalar otomatik yerleşir.</p><span class="campaign-foot">Gerçek kampanyalar yayınlandığında değişir</span></article>
+</div></div></section>
+<script src="/assets/marketing.js" type="module"></script>
 <section class="section categories"><div class="container">
 <div class="heading"><div><div class="eyebrow">ÜRÜN GRUPLARI</div><h2>Aradığınız parçaya <span>doğrudan ulaşın.</span></h2></div><a href="/katalog/" class="text-link">Tüm kategoriler <span>↗</span></a></div>
 <div class="category-grid" data-category-grid>

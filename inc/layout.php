@@ -13,6 +13,7 @@ function te_header(string $page, string $title): void { ?>
 <title><?= te($title) ?> | Teknikel</title>
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/site.css">
+<?php if ($page === 'home'): ?><link rel="stylesheet" href="/assets/marketing.css"><?php endif; ?>
 <script src="/assets/site.js" type="module"></script>
 </head><body data-page="<?= te($page) ?>">
 <a class="skip" href="#main">İçeriğe geç</a>
