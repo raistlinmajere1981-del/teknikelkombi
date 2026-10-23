@@ -45,17 +45,17 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     backend.business = {display_name:'TEST Yayın Adı',phone:'+90 (555) 000 00 00',email:'test@example.com',address:'TEST Yayın Adresi',website:'https://example.com/contact',social_links:[{platform:'instagram',url:'https://instagram.com/test-fixture'}]};
     for (const path of ['/','/bayi/','/katalog/','/urun/?id=p1','/sepet/','/restoran/','/qr-menu/']) {
       const start = backend.requests.length; await visit(page,path);
-      await expect(page.locator('[data-business-name]')).toHaveText('TEST Yayın Adı');
+      await expect(page.locator('footer [data-business-name]')).toHaveText('TEST Yayın Adı');
       await expect(page.locator('.top-contact [data-business-phone]')).toHaveAttribute('href','tel:+905550000000');
       await expect(contact(page).locator('[data-business-email]')).toHaveAttribute('href','mailto:test@example.com');
       await expect(contact(page).locator('[data-business-address]')).toHaveText('TEST Yayın Adresi');
       await expect(contact(page).locator('[data-business-website]')).toHaveAttribute('href','https://example.com/contact');
       await expect(contact(page).getByRole('link',{name:'instagram',exact:true})).toHaveAttribute('href','https://instagram.com/test-fixture');
-      const requests = backend.requests.slice(start); assert.equal(requests.filter(call => call.path === 'business').length,1,path); assert.equal(requests.filter(call => call.path === 'catalog').length,1,path);
+      const requests = backend.requests.slice(start); assert.ok([1,2].includes(requests.filter(call => call.path === 'business').length),path + ' business shared store + widget'); assert.equal(requests.filter(call => call.path === 'catalog').length,1,path);
       await fits(page,390);
     }
     backend.business = {display_name:'TEST Güncel Ad',phone:'',email:'new@example.com',address:'TEST Yeni Adres',website:'',social_links:[]};
-    await visit(page,'/bayi/'); await expect(page.locator('[data-business-name]')).toHaveText('TEST Güncel Ad');
+    await visit(page,'/bayi/'); await expect(page.locator('footer [data-business-name]')).toHaveText('TEST Güncel Ad');
     await expect(page.locator('[data-business-phone]:visible')).toHaveCount(0);
     await expect(contact(page).locator('[data-business-email]')).toHaveAttribute('href','mailto:new@example.com');
     await expect(contact(page).locator('[data-business-address]')).toHaveText('TEST Yeni Adres');
@@ -65,18 +65,18 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     backend.business = {}; await page.reload(); await page.waitForLoadState('networkidle');
     await expect(contact(page)).toBeHidden(); await expect(page.locator('[data-contact-link]:visible')).toHaveCount(0);
     backend.businessFailure = true; await page.reload(); await page.waitForLoadState('networkidle');
-    await expect(contact(page)).toBeHidden(); await expect(page.locator('[data-business-name]')).toBeHidden();
+    await expect(contact(page)).toBeHidden(); await expect(page.locator('footer [data-business-name]')).toBeHidden();
     await expect(page.locator('.header-search')).toBeHidden(); await expect(page.locator('[data-shop-message]')).toBeHidden();
     await expect(page.locator('body')).not.toContainText('0216 462 40 98');
     await expect(page.getByRole('link',{name:/Bayi Girişi/})).toBeVisible();
   });
   await scenario('kategori kimlikleri API yayınıyla değişir; kapalı, boş ve hatalı katalog temiz kalır',390,async ({page,backend}) => {
     await visit(page); await expect(page.locator('[data-category-grid] a')).toHaveCount(2);
-    await expect(page.locator('[data-category-nav] a').first()).toHaveAttribute('href','/katalog/?category=c1');
+    await expect(page.locator('[data-category-nav] a').first()).toHaveAttribute('href','/magaza/?category=c1');
     backend.categories = [{id:'new/category & id',name:'TEST Yeni Kategori'}];
     await page.reload(); await expect(page.locator('[data-category-grid] a')).toHaveCount(1);
     await expect(page.locator('[data-category-grid]')).toContainText('TEST Yeni Kategori');
-    await expect(page.locator('[data-category-nav] a')).toHaveAttribute('href','/katalog/?category=new%2Fcategory%20%26%20id');
+    await expect(page.locator('[data-category-nav] a')).toHaveAttribute('href','/magaza/?category=new%2Fcategory%20%26%20id');
     await page.locator('[data-category-nav] a').click();
     assert.equal(new URL(page.url()).searchParams.get('category'),'new/category & id');
     backend.categories = []; await visit(page); await expect(page.locator('[data-category-section]')).toBeHidden(); await expect(page.locator('[data-category-nav] a')).toHaveCount(0);
@@ -84,7 +84,7 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     await expect(page.locator('[data-category-grid]')).toBeEmpty(); await expect(page.locator('.header-search')).toBeHidden();
     backend.catalogFailure = false; backend.enabled = false; backend.publicSurfaces = ['store'];
     await page.reload(); await page.waitForLoadState('networkidle');
-    await expect(nav(page).getByRole('link',{name:'Tüm Ürünler',exact:true})).toBeHidden(); await expect(page.getByRole('link',{name:'Perakende sepeti',exact:true})).toBeHidden();
+    await expect(nav(page).getByRole('link',{name:'Mağaza',exact:true})).toBeHidden(); await expect(page.getByRole('link',{name:'Perakende sepeti',exact:true})).toBeHidden();
     backend.enabled = true; backend.publicSurfaces = ['food_service','menu']; const before = backend.requests.length;
     await page.reload(); await page.waitForLoadState('networkidle');
     await expect(page.locator('[data-category-grid]')).toBeEmpty(); assert.equal(backend.requests.slice(before).some(call => call.path === 'catalog'),false);
@@ -139,9 +139,9 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     backend.tables = [{id:'test',name:attack,description:attack,capacity:null,image_url:'javascript:alert(1)'}];
     backend.menu = {categories:[{id:'test',name:attack}],items:[{id:'test',category_id:'test',name:attack,description:attack,price:null,currency:'TRY',image_url:'data:image/svg+xml,test'}]};
     for (const path of ['/','/restoran/','/qr-menu/']) {
-      await visit(page,path); await expect(page.locator('[data-business-name]')).toHaveText(attack);
+      await visit(page,path); await expect(page.locator('footer [data-business-name]')).toHaveText(attack);
       await expect(page.locator('[data-business-phone]:visible,[data-business-email]:visible,[data-business-website]:visible')).toHaveCount(0);
-      await expect(page.locator('img[src="x"],script:not([src]),a[href^="javascript:"],img[src^="data:"]')).toHaveCount(0);
+      await expect(page.locator('img[src="x"],script:not([src]):not([type="application/json"]),a[href^="javascript:"],img[src^="data:"]')).toHaveCount(0);
       assert.equal(await page.evaluate(() => window.apiInjection),undefined); await fits(page,320);
     }
     await expect(page.locator('[data-menu-list] .price')).toHaveCount(0);
@@ -229,6 +229,55 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     await visit(page,'/yorumlar/');
     await expect(page.locator('[data-public-content]')).toBeHidden();
     await fits(page,320);
+  });
+
+
+  await scenario('TR EN dil seçimi kalıcıdır; yayın metinleri İngilizceyse kullanılır',390,async ({page,backend}) => {
+    const metadata = translations => ({version:1,source_language:'tr',target_languages:['en'],translations});
+    backend.business = {id:'',display_name:'TEST İşletme',about_text:'Türkçe işletme açıklaması',email:'test@example.com',address:'İstanbul Üsküdar',phone:''};
+    backend.businessLocalization = metadata({business:{'published-business':{en:{about_text:'English business details'}}}});
+    backend.catalogLocalization = metadata({catalog_category:{c1:{en:{name:'Pumps'}}},catalog_product:{p1:{en:{name:'Test translated pump'}}}});
+    backend.menuLocalization = metadata({menu_category:{food:{en:{name:'Foods'}}},menu_product:{meal:{en:{name:'Soup'}}}});
+    backend.publicSurfaces = ['store','qr_menu'];backend.menuEnabled = true;
+    await visit(page,'/magaza/?lang=en&category=c1');
+    assert.equal(await page.locator('html').getAttribute('lang'),'en');
+    await expect(page.getByRole('heading',{level:1})).toHaveText('Store');
+    await expect(page.locator('header .language-chooser [data-language="en"]')).toHaveAttribute('aria-current','true');
+    await expect(page.getByRole('heading',{name:'Test translated pump',exact:true})).toBeVisible();
+    await expect(page.locator('[data-category-nav]')).toContainText('Pumps');
+    assert.equal(new URL(page.url()).searchParams.get('category'),'c1');
+    await visit(page,'/bayi/');
+    assert.equal(await page.locator('html').getAttribute('lang'),'en','cookie persistence');
+    await expect(page.locator('header nav a[href="/magaza/"]')).toHaveText('Store');
+    await visit(page,'/hakkimizda/');
+    await expect(page.locator('[data-public-content]')).toContainText('English business details');
+    await visit(page,'/qr-menu/');
+    await expect(page.locator('[data-menu-list]')).toContainText('Soup');
+    await expect(page.locator('header .language-chooser [data-language="tr"]')).toBeVisible();
+    await page.locator('header .language-chooser [data-language="tr"]').click();
+    assert.equal(await page.locator('html').getAttribute('lang'),'tr');
+    await expect(page.locator('[data-menu-list]')).toContainText('TEST Çorba');
+    await fits(page,390);
+  });
+  await scenario('eski katalog adresi Mağazaya yönlenir; filtre korunur; widget ve harita kullanılabilir',390,async ({page,backend}) => {
+    backend.business = {display_name:'TEST Yayın',phone:'',email:'test@example.com',address:'Test İstanbul',
+      latitude:41.091796,longitude:28.90748,whatsapp_enabled:true,whatsapp:'5556667788',
+      social_links:[{platform:'facebook',url:'https://facebook.com/test'},{platform:'instagram',url:'https://instagram.com/test'}]};
+    await visit(page,'/katalog/?q=POMPA&category=c1');
+    assert.equal(new URL(page.url()).pathname,'/magaza/');
+    assert.equal(new URL(page.url()).searchParams.get('q'),'POMPA');
+    assert.equal(new URL(page.url()).searchParams.get('category'),'c1');
+    await expect(page.locator('header nav a[href="/magaza/"]')).toHaveCount(1);
+    await expect(page.locator('header nav.nav')).not.toContainText('Tüm Ürünler');
+    await visit(page,'/iletisim/');
+    await expect(page.locator('main [data-business-socials] a[aria-label="instagram"] svg')).toBeVisible();
+    await expect(page.locator('main [data-business-socials] a[aria-label="facebook"] svg')).toBeVisible();
+    await expect(page.locator('main [data-business-map] iframe')).toHaveAttribute('src',/openstreetmap.org\/export\/embed.html/);
+    await page.waitForFunction(() => typeof window.YardimciAsistanWidget?.open === 'function');
+    assert.equal(await page.locator('script[src="/assets/assistant/widget.js"]').count(),1);
+    await fits(page,390);
+    backend.business.latitude = null;backend.business.longitude = null;
+    await page.reload();await expect(page.locator('main [data-business-map]')).toBeHidden();
   });
 
 }

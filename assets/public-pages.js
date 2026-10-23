@@ -1,3 +1,4 @@
+import {t,locale} from './language.js';
 import {text,contactInfo,aboutText,galleryImages,reviewsFrom,httpsUrl} from './public-info.js';
 import {websiteCampaigns,renderCampaign} from './marketing.js';
 
@@ -9,25 +10,25 @@ export async function loadPublicPage(page,business,fetchPublic,root = document) 
   const note = (heading,value) => { if (text(value)) { const section = el('section'); section.append(el('h2',heading),el('p',text(value))); content.append(section); } };
   content.hidden = true;
   if (page !== 'contact') content.replaceChildren();
-  if (!business) { message('Bilgilere ulaşılamadı. Lütfen tekrar deneyin.'); return; }
+  if (!business) { message(t('Bilgilere ulaşılamadı. Lütfen tekrar deneyin.')); return; }
   const info = business.business || {};
-  function unavailable() { message('Bu sayfa şu anda yayında değil.'); }
+  function unavailable() { message(t('Bu sayfa şu anda yayında değil.')); }
   try {
     if (page === 'contact') {
       if (!contactInfo(info).available) { unavailable(); return; }
-      note('Ulaşım bilgileri',info.directions_note);
-      note('Ödeme bilgileri',info.payment_note);
-      note('İşletme koşulları',info.policy_note);
+      note(t('Ulaşım bilgileri'),info.directions_note);
+      note(t('Ödeme bilgileri'),info.payment_note);
+      note(t('İşletme koşulları'),info.policy_note);
     } else if (page === 'about') {
       const about = aboutText(info);
       if (!about) { unavailable(); return; }
       content.className = 'public-prose'; content.append(el('p',about));
       if (text(info.description) && text(info.description) !== about) content.append(el('p',text(info.description)));
-      for (const [heading,field] of [['Olanaklar','features'],['Diller','languages']]) {
+      for (const [heading,field] of [[t('Olanaklar'),'features'],[t('Diller'),'languages']]) {
         const values = (Array.isArray(info[field]) ? info[field] : []).map(value => text(value) || text(value?.label)).filter(Boolean);
         if (values.length) { const section = el('section'), list = el('ul'); list.append(...values.map(value => el('li',value))); section.append(el('h2',heading),list); content.append(section); }
       }
-      note('İşletme koşulları',info.policy_note); note('Ödeme bilgileri',info.payment_note);
+      note(t('İşletme koşulları'),info.policy_note); note(t('Ödeme bilgileri'),info.payment_note);
     } else if (page === 'gallery') {
       const photos = galleryImages(info,root.defaultView.location.origin);
       if (!photos.length) { unavailable(); return; }
@@ -46,10 +47,10 @@ export async function loadPublicPage(page,business,fetchPublic,root = document) 
       content.className = 'public-reviews';
       const summary = el('div',undefined,'review-summary');
       if (text(value.name)) summary.append(el('h2',value.name));
-      if (value.rating !== null) summary.append(el('p',value.rating.toLocaleString('tr-TR') + ' / 5','price'));
-      if (Number.isSafeInteger(value.user_rating_count) && value.user_rating_count > 0) summary.append(el('p',value.user_rating_count.toLocaleString('tr-TR') + ' Google değerlendirmesi'));
+      if (value.rating !== null) summary.append(el('p',value.rating.toLocaleString(locale) + ' / 5','price'));
+      if (Number.isSafeInteger(value.user_rating_count) && value.user_rating_count > 0) summary.append(el('p',value.user_rating_count.toLocaleString(locale) + t(' Google değerlendirmesi')));
       const url = httpsUrl(value.reviews_uri) || httpsUrl(value.google_maps_uri);
-      if (url) summary.append(link('Google yorumlarını görüntüle ↗',url));
+      if (url) summary.append(link(t('Google yorumlarını görüntüle ↗'),url));
       content.append(summary);
       const grid = el('div',undefined,'publication-grid');
       grid.append(...value.reviews.map(review => {
@@ -61,17 +62,17 @@ export async function loadPublicPage(page,business,fetchPublic,root = document) 
         if (Number.isFinite(review.rating) && review.rating >= 0 && review.rating <= 5) card.append(el('p',review.rating + ' / 5','review-rating'));
         if (text(review.relative_time)) card.append(el('p',text(review.relative_time),'product-meta'));
         card.append(el('p',review.text));
-        if (httpsUrl(review.google_maps_uri)) card.append(link('Google’da görüntüle ↗',httpsUrl(review.google_maps_uri)));
+        if (httpsUrl(review.google_maps_uri)) card.append(link(t('Google’da görüntüle ↗'),httpsUrl(review.google_maps_uri)));
         return card;
       }));
       content.append(grid); content.hidden = false;
-      message(value.reviews.length ? '' : 'Henüz gösterilebilecek yorum bulunmuyor.'); return;
+      message(value.reviews.length ? '' : t('Henüz gösterilebilecek yorum bulunmuyor.')); return;
     } else if (page === 'announcements') {
       const campaigns = websiteCampaigns(await fetchPublic('marketing'));
-      if (!campaigns.length) { message('Henüz yayınlanmış duyuru bulunmuyor.'); return; }
+      if (!campaigns.length) { message(t('Henüz yayınlanmış duyuru bulunmuyor.')); return; }
       content.className = 'campaign-grid campaign-grid--live announcements';
       content.append(...campaigns.map(renderCampaign));
     }
     content.hidden = false; message('');
-  } catch { message('Bilgilere ulaşılamadı. Lütfen tekrar deneyin.'); }
+  } catch { message(t('Bilgilere ulaşılamadı. Lütfen tekrar deneyin.')); }
 }

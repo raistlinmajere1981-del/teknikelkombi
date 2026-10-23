@@ -1,3 +1,4 @@
+import {t,locale} from './language.js';
 import {request} from './commerce.js';
 import {text as publishedText} from './public-info.js';
 /** Teknikel public website campaigns; display-only, always backed by Yardımcı Asistan publication. */
@@ -25,13 +26,13 @@ export function renderCampaign(item, index) {
   if (image) {
     const img = document.createElement('img');
     img.className = 'campaign-image'; img.loading = 'lazy'; img.decoding = 'async';
-    img.alt = String(image.altText || item.title || 'Teknikel kampanya görseli').slice(0, 300);
+    img.alt = String(image.altText || item.title || t('Teknikel kampanya görseli')).slice(0, 300);
     img.src = mediaUrl(image.url);
     card.append(img);
   }
   const content = text('div', '', 'campaign-content');
-  content.append(text('span', 'TEKNİKEL · DUYURU ' + String(index + 1).padStart(2, '0'), 'campaign-tag'));
-  content.append(text('h3', item.title || 'Güncel duyuru'));
+  content.append(text('span', t('TEKNİKEL · DUYURU ') + String(index + 1).padStart(2, '0'), 'campaign-tag'));
+  content.append(text('h3', item.title || t('Güncel duyuru')));
   if (item.text) content.append(text('p', item.text));
   card.append(content);
   return card;

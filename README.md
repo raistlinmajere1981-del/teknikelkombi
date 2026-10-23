@@ -122,3 +122,15 @@ Teknikel sabit bir sektör şablonu değildir. Herkese açık sayfaların içeri
 Ürün kategorileri yalnız herkese açık katalog yayını üzerinden gelir; bayi özel kategorileri üst menüye taşınmaz. Restoran/oda/mağaza ve QR menü sayfaları iş profilinden değil ilgili gerçek yayının etkinliğinden açılır. Hakkımızda, galeri, yorumlar, duyurular ve iletişim yalnız yayınlanmış içerik veya gerçek bağlantı varsa görünür. Yayın kapalıyken eski hardcoded bilgiler veya örnek ürünler gösterilmez.
 
 Site değişiklikleri yayına çıkmadan önce npm run check ve npm test ile doğrulanır. Gerçek HTTPS üzerinde bayi daveti/siparişi daha sonra ayrıca test edilir.
+
+## TR / EN ve canlı Teknikel arayüzü
+
+Teknikel sitesinin üstündeki TR / EN seçiminden sonra tercih, aynı sitenin teknikel_language çerezinde tutulur. Siteye ait Türkçe/İngilizce metinler assets/i18n/en.json kaynağındadır. Uygulamadan İngilizce çevirisi yayınlanan ürün, kategori, oda, restoran, galeri ve kampanya metinleri public API localization kaydından gösterilir. Çevrilmemiş alanlar özgün dilde kalır; ürün kimliği, fiyat, stok ve bayi özel sipariş alanları değişmez.
+
+Mağaza tek public katalog sayfasıdır: /magaza/. Eski /katalog/ adresi arama, kategori, marka ve dil parametrelerini koruyarak Mağaza'ya geçer. Bağımsız bayi girişi ve siparişler korunur.
+
+İletişim, uygulamanın yayınladığı telefon, e-posta, adres, koordinat ve sosyal URL'leri kullanır. Sosyal bağlantılar HTTPS ve ikonlarla sunulur; koordinatlar geçerliyse OpenStreetMap haritası gösterilir. Sabit telefon veya örnek iletişim bilgisi kullanılmaz.
+
+Site ortak Yardımcı Asistan widget dosyasını assets/assistant/widget.js içinde barındırır. Dosya Yardımcı Asistan demo widget yapısıyla aynı sürümdedir; AI, talep ve WhatsApp durumları public business API tarafından belirlenir. Widget sitenin html lang alanını kullanarak TR / EN dilini takip eder. Yeni widget yayınlarında dosya kanonik demo kaynağından yeniden eşlenmelidir.
+
+Kontrol: npm run check, npm test, gerçek HTTPS site rotaları, tarayıcı TR/EN, sosyal ikon, harita ve widget. Bu web dosyası yayını web modülü verilerini veya bayi oturumlarını sıfırlamaz.

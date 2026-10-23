@@ -32,7 +32,7 @@ export class FixtureApi {
   enabled = true; businessFailure = false; catalogFailure = false; dealerCatalogFailure = false; ordersFailure = false; logoutFailure = false;
   business = {display_name:'TEST Teknikel',phone:'',email:'',address:'',website:'',social_links:[]};
   publicSurfaces = null; categories = [{id:'c1',name:'Pompalar'},{id:'c2',name:'Elektronik Kartlar'}];
-  roomsEnabled = false; roomsStatus = 0; reviewsStatus = 0; marketingStatus = 0;
+  roomsEnabled = false; roomsStatus = 0; reviewsStatus = 0; marketingStatus = 0; businessLocalization = null; catalogLocalization = null; menuLocalization = null; roomsLocalization = null;
   rooms = clone(roomPublication); reviews = clone(reviewsPublication);
   menuEnabled = false; tablesEnabled = false; menuStatus = 0; tablesStatus = 0;
   menu = clone(menuPublication); tables = clone(tablePublication);
@@ -72,11 +72,11 @@ export class FixtureApi {
       let payload; if (req.method() === 'POST') { assert.match(headers['content-type'],/^application\/json/); payload = req.postDataJSON(); if (path.startsWith('dealer/')) assert.equal(headers['x-ya-dealer'],'1'); }
       this.requests.push({path,method:req.method(),payload:clone(payload ?? null),cookie:headers.cookie || ''});
       let result;
-      if (path === 'business') result = this.businessFailure ? api(503,{ok:false,message:'TEST işletme yayınına ulaşılamadı.'}) : api(200,{ok:true,business:{...this.business,public_surfaces:this.publicSurfaces ?? (this.enabled ? ['store'] : [])}});
-      else if (path === 'catalog') result = this.catalogFailure ? api(503,{ok:false,message:'TEST katalog bağlantısı yok.'}) : api(200,{ok:true,version:1,enabled:this.enabled,delivery_methods:this.enabled ? this.deliveryMethods : [],products:this.enabled ? this.public : [],categories:this.enabled ? this.categories : [],server_revision:1,source_revision:1});
-      else if (path === 'menu') result = this.menuStatus ? api(this.menuStatus,{ok:false}) : !this.menuEnabled ? api(404,{ok:false}) : api(200,{ok:true,...this.menu});
+      if (path === 'business') result = this.businessFailure ? api(503,{ok:false,message:'TEST işletme yayınına ulaşılamadı.'}) : api(200,{ok:true,business:{...this.business,public_surfaces:this.publicSurfaces ?? (this.enabled ? ['store'] : [])},...(this.businessLocalization ? {localization:this.businessLocalization} : {})});
+      else if (path === 'catalog') result = this.catalogFailure ? api(503,{ok:false,message:'TEST katalog bağlantısı yok.'}) : api(200,{ok:true,version:1,enabled:this.enabled,delivery_methods:this.enabled ? this.deliveryMethods : [],products:this.enabled ? this.public : [],categories:this.enabled ? this.categories : [],server_revision:1,source_revision:1,...(this.catalogLocalization ? {localization:this.catalogLocalization} : {})});
+      else if (path === 'menu') result = this.menuStatus ? api(this.menuStatus,{ok:false}) : !this.menuEnabled ? api(404,{ok:false}) : api(200,{ok:true,...this.menu,...(this.menuLocalization ? {localization:this.menuLocalization} : {})});
       else if (path === 'tables') result = this.tablesStatus ? api(this.tablesStatus,{ok:false}) : api(200,{ok:true,enabled:this.tablesEnabled,tables:this.tablesEnabled ? this.tables : []});
-      else if (path === 'rooms') result = this.roomsStatus ? api(this.roomsStatus,{ok:false}) : api(200,{ok:true,enabled:this.roomsEnabled,rooms:this.roomsEnabled ? this.rooms : []});
+      else if (path === 'rooms') result = this.roomsStatus ? api(this.roomsStatus,{ok:false}) : api(200,{ok:true,enabled:this.roomsEnabled,rooms:this.roomsEnabled ? this.rooms : [],...(this.roomsLocalization ? {localization:this.roomsLocalization} : {})});
       else if (path === 'google-reviews') result = this.reviewsStatus ? api(this.reviewsStatus,{available:false,reason:'google_unavailable'}) : api(200,this.reviews);
       else if (path === 'marketing') result = this.marketingStatus ? api(this.marketingStatus,{ok:false}) : api(200,{ok:true,publications:this.campaigns});
       else if (path === 'dealer/claim') {
