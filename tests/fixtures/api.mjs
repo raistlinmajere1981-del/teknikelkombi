@@ -4,7 +4,7 @@ export const A = '11111111-1111-4111-8111-111111111111';
 export const B = '22222222-2222-4222-8222-222222222222';
 export const tokens = {a:'a'.repeat(43),b:'b'.repeat(43),renewed:'c'.repeat(43)};
 export const publicProducts = [
-  {product_id:'p1',name:'TEST Bosch Pompa',sku:'TEST-POM-101',description:'Yalnız test verisi: pompa açıklaması.',category_id:'c1',price:100,currency:'TRY',unit:'piece',tax_rate:20,availability:'available',sort_order:0,image_url:'https://images.example.com/pump.jpg'},
+  {product_id:'p1',name:'TEST Bosch Pompa',sku:'TEST-POM-101',description:'Yalnız test verisi: pompa açıklaması.',category_id:'c1',price:100,currency:'TRY',unit:'piece',tax_rate:20,availability:'available',sort_order:0,image_url:'https://images.example.com/pump.jpg',image_urls:['https://images.example.com/pump.jpg','https://images.example.com/pump-back.jpg','https://images.example.com/pump-connector.jpg']},
   {product_id:'p2',name:'TEST Kontrol Kartı',sku:'TEST-KRT-202',description:'Yalnız test verisi: kart açıklaması.',category_id:'c2',price:225.1,currency:'TRY',unit:'piece',tax_rate:20,availability:'available',sort_order:1,image_url:'https://images.example.com/board.jpg'}
 ];
 const clone = value => JSON.parse(JSON.stringify(value));
@@ -18,7 +18,7 @@ export class FixtureApi {
     return {access_id:owner,access_revision:this.revisions[owner],catalog_revision:'a'.repeat(64),delivery_methods:this.deliveryMethods,products:[
       {...clone(publicProducts[0]),brand:'TEST Marka',category_name:'Pompalar',price:owner === A ? 80 : 60},
       {...clone(publicProducts[1]),brand:'Diğer Marka',category_name:'Elektronik Kartlar',price:owner === A ? 180 : 150},
-      {...clone(publicProducts[0]),product_id:'p3',name:'TEST Yalnız Bayi Ürünü',sku:'TEST-BAY-303',brand:'TEST Marka',price:owner === A ? 39.95 : 29.95,category_name:'Pompalar'}]};
+      {...clone(publicProducts[0]),product_id:'p3',name:'TEST Yalnız Bayi Ürünü',sku:'TEST-BAY-303',brand:'TEST Marka',price:owner === A ? 39.95 : 29.95,category_name:'Pompalar',image_url:'https://images.example.com/dealer-only.jpg',image_urls:['https://images.example.com/dealer-only.jpg','https://images.example.com/dealer-only-detail.jpg']}]};
   }
   session(headers) {
     const token = /(?:^|;\s*)ya_dealer_session=([^;]+)/.exec(headers.cookie || '')?.[1]; const session = this.sessions.get(token);
@@ -35,7 +35,10 @@ export class FixtureApi {
     await context.route('**/*',async route => {
       const req = route.request(),url = new URL(req.url());
       if (url.origin !== base) {
-        if (url.origin === 'https://images.example.com') return route.fulfill({contentType:'image/svg+xml',body:'<svg xmlns="http://www.w3.org/2000/svg" width="800" height="200"><rect width="800" height="200" fill="#edf1f5"/><circle cx="400" cy="100" r="70" fill="#12283d"/></svg>'});
+        if (url.origin === 'https://images.example.com') {
+          const [width,height] = url.pathname.includes('back') ? [320,1200] : [1800,1000];
+          return route.fulfill({contentType:'image/svg+xml',body:`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="100%" height="100%" fill="#edf1f5"/><circle cx="50%" cy="50%" r="70" fill="#12283d"/></svg>`});
+        }
         return route.fulfill({contentType:'text/css',body:''});
       }
       if (!url.pathname.startsWith('/yardimci-asistan/api/')) return route.continue();

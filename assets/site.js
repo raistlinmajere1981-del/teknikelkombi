@@ -1,4 +1,4 @@
-import {ApiError,request,checkReceipt,catalogFrom,money,unit,filterProducts,cartSummary,CartDraft,isDefinitiveRejection,orderStatus} from './commerce.js';
+import {ApiError,request,checkReceipt,catalogFrom,money,unit,filterProducts,cartSummary,CartDraft,isDefinitiveRejection,orderStatus,photoUrl,productImageUrls} from './commerce.js';
 
 const $ = (selector,root = document) => root.querySelector(selector);
 const all = (selector,root = document) => [...root.querySelectorAll(selector)];
@@ -36,14 +36,89 @@ function failure() {
 }
 function photo(url,name) {
   const box = el('div',undefined,'product-media'); const blank = el('span','Ürün görseli yok','missing-photo'); box.append(blank);
-  if (!url || typeof url !== 'string') return box;
-  try {
-    const parsed = new URL(url,location.origin);
-    if (parsed.username || parsed.password || (parsed.protocol !== 'https:' && !(parsed.origin === location.origin && parsed.protocol === 'http:'))) return box;
-    const img = el('img'); img.alt = name; img.loading = 'lazy'; img.decoding = 'async'; img.referrerPolicy = 'no-referrer'; img.src = parsed.href;
+  const safeUrl = photoUrl(url,location.origin);
+  if (safeUrl) {
+    const img = el('img'); img.alt = name; img.loading = 'lazy'; img.decoding = 'async'; img.referrerPolicy = 'no-referrer';
     img.addEventListener('load',() => blank.hidden = true); img.addEventListener('error',() => { img.remove(); blank.hidden = false; }); box.append(img);
-  } catch { /* The product remains usable with its placeholder. */ }
+    img.src = safeUrl;
+  }
   return box;
+}
+function productGallery(product) {
+  const urls = productImageUrls(product,location.origin);
+  const gallery = el('section',undefined,'product-gallery'); gallery.setAttribute('aria-label',product.name + ' görselleri');
+  const hero = el('div',undefined,'gallery-hero'); gallery.append(hero);
+  if (!urls.length) { hero.append(photo(null,product.name)); return gallery; }
+
+  let selected = 0;
+  let scrollBeforeInspection = 0;
+  const label = index => product.name + ' — görsel ' + (index + 1) + '/' + urls.length + (index === 0 ? ' (kapak)' : '');
+  const tools = el('div',undefined,'gallery-tools');
+  const status = el('p',undefined,'gallery-status'); status.setAttribute('role','status'); status.setAttribute('aria-live','polite'); status.setAttribute('aria-atomic','true');
+  const dialog = el('dialog',undefined,'gallery-dialog'); dialog.setAttribute('aria-label',product.name + ' büyük görsel');
+  const dialogHead = el('div',undefined,'gallery-dialog-head');
+  const title = el('h2'); const close = action('Kapat',() => dialog.close(),'gallery-button'); close.autofocus = true;
+  dialogHead.append(title,close);
+  const viewer = el('div',undefined,'gallery-viewer'); viewer.tabIndex = 0; viewer.setAttribute('role','region'); viewer.setAttribute('aria-label','Ürün görseli; yakınlaştırıldığında kaydırılabilir');
+  const zoom = action('Yakınlaştır',() => {
+    const zoomed = viewer.classList.toggle('is-zoomed'); zoom.setAttribute('aria-pressed',String(zoomed));
+    zoom.textContent = zoomed ? 'Görseli sığdır' : 'Yakınlaştır'; viewer.scrollTo(0,0);
+  },'gallery-button'); zoom.setAttribute('aria-pressed','false');
+  dialog.append(dialogHead,viewer,zoom);
+  // Keep dialog keyboard navigation inside the image inspector on browsers
+  // whose native <dialog> focus cycle does not wrap at the last control.
+  dialog.addEventListener('keydown',event => {
+    if (event.key !== 'Tab') return;
+    const last = zoom.disabled ? viewer : zoom;
+    if (event.shiftKey && document.activeElement === close) {
+      event.preventDefault(); last.focus({preventScroll:true});
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault(); close.focus({preventScroll:true});
+    }
+  });
+  dialog.addEventListener('close',() => {
+    viewer.replaceChildren(); viewer.classList.remove('is-zoomed'); zoom.setAttribute('aria-pressed','false'); zoom.textContent = 'Yakınlaştır';
+    enlarge.focus({preventScroll:true});
+    window.scrollTo({top:scrollBeforeInspection,behavior:'instant'});
+  });
+  const enlarge = action('Büyük görüntüle',() => {
+    title.textContent = label(selected); const media = photo(urls[selected],label(selected)); const img = $('img',media);
+    viewer.replaceChildren(media); zoom.disabled = true;
+    if (img) {
+      img.loading = 'eager';
+      img.addEventListener('load',() => { if (viewer.firstElementChild === media) zoom.disabled = false; });
+      img.addEventListener('error',() => { if (viewer.firstElementChild === media) zoom.disabled = true; });
+    }
+    scrollBeforeInspection = window.scrollY; dialog.showModal(); viewer.scrollTo(0,0);
+  },'gallery-button');
+  tools.append(status,enlarge);
+  const thumbs = el('div',undefined,'gallery-thumbnails'); thumbs.setAttribute('role','group'); thumbs.setAttribute('aria-label','Ürün görseli seçimi (ok tuşları, Home ve End)');
+  const buttons = urls.map((url,index) => {
+    const button = action('',() => select(index),'gallery-thumb'); button.setAttribute('aria-label',product.name + ', ' + (index + 1) + '. görseli göster');
+    button.append(photo(url,''));
+    button.addEventListener('keydown',event => {
+      let next;
+      if (event.key === 'ArrowRight') next = (index + 1) % urls.length;
+      else if (event.key === 'ArrowLeft') next = (index + urls.length - 1) % urls.length;
+      else if (event.key === 'Home') next = 0;
+      else if (event.key === 'End') next = urls.length - 1;
+      else return;
+      event.preventDefault(); select(next); buttons[next].focus({preventScroll:true});
+    });
+    return button;
+  });
+  function select(index) {
+    selected = index; status.textContent = 'Görsel ' + (index + 1) + ' / ' + urls.length;
+    buttons.forEach((button,i) => { button.setAttribute('aria-pressed',String(i === index)); button.tabIndex = i === index ? 0 : -1; });
+    const media = photo(urls[index],label(index)); const img = $('img',media); hero.replaceChildren(media); enlarge.disabled = true;
+    if (img) {
+      img.loading = 'eager';
+      img.addEventListener('load',() => { if (hero.firstElementChild === media) enlarge.disabled = false; });
+      img.addEventListener('error',() => { if (hero.firstElementChild === media) status.textContent = 'Görsel ' + (index + 1) + ' / ' + urls.length + ' yüklenemedi.'; });
+    }
+  }
+  thumbs.append(...buttons); thumbs.hidden = urls.length < 2; gallery.append(thumbs,tools,dialog); select(0);
+  return gallery;
 }
 function add(product,quantity = 1) {
   if (!canOrder()) throw new Error('Bu katalogda şu anda yeni sipariş alınamıyor.');
@@ -75,7 +150,7 @@ function productDetail(root,product) {
     info.append(favorite);
   }
   info.append(el('p',dealerMode ? 'Bayi fiyatınız sunucunun size özel kataloğundan alınır. Sipariş tutarı masaüstünde güncel fiyatlarla kesinleşir.' : 'Ödeme alınmaz. Siparişiniz işletmenin onayını bekler.','aside-info'));
-  view.append(photo(product.image_url,product.name),info); root.append(view);
+  view.append(productGallery(product),info); root.append(view);
 }
 function filterSelects(form,catalog) {
   const category = form.elements.category; category.replaceChildren(new Option('Tüm kategoriler',''));

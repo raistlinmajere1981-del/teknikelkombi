@@ -26,6 +26,23 @@ export function checkReceipt(value) {
   if ('quoted_total' in value && (!Number.isFinite(value.quoted_total) || value.quoted_total < 0 || !/^[A-Z]{3}$/.test(value.currency))) throw new ApiError('Sipariş tutarı doğrulanamadı. Aynı siparişi tekrar deneyin.', 502);
   return value;
 }
+export function photoUrl(url,origin) {
+  if (typeof url !== 'string' || !url.trim()) return '';
+  try {
+    const context = new URL(origin),parsed = new URL(url,context.origin);
+    const localDev = parsed.origin === context.origin && ['localhost','127.0.0.1','[::1]'].includes(context.hostname);
+    if (parsed.username || parsed.password || (parsed.protocol !== 'https:' && !(localDev && parsed.protocol === 'http:'))) return '';
+    return parsed.href;
+  } catch { return ''; }
+}
+export function productImageUrls(product,origin) {
+  const urls = new Set();
+  for (const url of [product.image_url,...(Array.isArray(product.image_urls) ? product.image_urls : [])]) {
+    const safe = photoUrl(url,origin); if (safe) urls.add(safe);
+    if (urls.size === 12) break;
+  }
+  return [...urls];
+}
 export function catalogFrom(value, dealer = false) {
   const raw = dealer ? value?.catalog : value;
   if (!raw || !Array.isArray(raw.products) || !Array.isArray(raw.delivery_methods)) throw new ApiError('Katalog bilgileri okunamadı.', 502);

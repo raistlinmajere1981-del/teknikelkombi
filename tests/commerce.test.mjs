@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ApiError,CartDraft,cartSummary,catalogFrom,filterProducts,checkReceipt,isDefinitiveRejection,orderStatus,request} from '../assets/commerce.js';
+import {ApiError,CartDraft,cartSummary,catalogFrom,filterProducts,checkReceipt,isDefinitiveRejection,orderStatus,request,photoUrl,productImageUrls} from '../assets/commerce.js';
 const products = [{product_id:'p1',name:'TEST Pompa',price:80,currency:'TRY',sku:'TEST-1',brand:'TEST Marka',category_id:'c1'},{product_id:'p2',name:'TEST Kart',price:12.35,currency:'TRY',sku:'TEST-2',brand:'Diğer',category_id:'c2'}];
 const catalog = {ok:true,enabled:true,products,delivery_methods:['pickup','shipping'],categories:[]};
 class MemoryStorage {
@@ -35,6 +35,31 @@ test('public projection does not invent a missing brand',() => {
 test('dealer catalog retains its actual category and brand metadata',() => {
   const result = catalogFrom({ok:true,catalog:{...catalog,access_id:'dealer-a',catalog_revision:'a'.repeat(64),products:[{...products[0],category_name:'TEST Kategori'}]}},true);
   assert.deepEqual(result.categories,[{id:'c1',name:'TEST Kategori'}]); assert.equal(result.products[0].price,80);
+});
+test('product photos reject unsafe protocols, credentials and remote HTTP; HTTP is limited to same-origin loopback development',() => {
+  const origin = 'https://store.example';
+  for (const url of [null,42,{},'', '   ','https://[invalid','javascript:alert(1)','data:image/png;base64,AAAA','file:///private','blob:https://store.example/id','ftp://store.example/a',
+    'https://user:secret@images.example.com/a.jpg','https://user@images.example.com/a.jpg','http://images.example.com/a.jpg','http://10.0.0.1/a.jpg','http://192.168.1.1/a.jpg','http://127.0.0.1/a.jpg']) assert.equal(photoUrl(url,origin),'',String(url));
+  assert.equal(photoUrl('/photo.jpg',origin),origin + '/photo.jpg');
+  assert.equal(photoUrl('https://images.example.com/a.jpg',origin),'https://images.example.com/a.jpg');
+  for (const dev of ['http://127.0.0.1:8093','http://localhost:8093','http://[::1]:8093']) {
+    assert.equal(photoUrl('/photo.jpg',dev),dev + '/photo.jpg');
+    assert.equal(photoUrl('http://10.0.0.1/photo.jpg',dev),'');
+    assert.equal(photoUrl('http://127.0.0.1:8094/photo.jpg',dev),'');
+  }
+  for (const nonDev of ['http://store.example','http://192.168.1.10:8093']) assert.equal(photoUrl('/photo.jpg',nonDev),'');
+});
+test('product image list keeps the normalized cover first, deduplicates and caps safe entries at twelve without mutating the catalog',() => {
+  const origin = 'https://store.example';
+  const list = Array.from({length:15},(_,i) => '/photo-' + i + '.jpg');
+  const product = {image_url:'/cover.jpg',image_urls:['javascript:alert(1)',null,origin + '/cover.jpg',' /cover.jpg ',list[0],list[0],...list]};
+  const before = structuredClone(product);
+  assert.deepEqual(productImageUrls(product,origin),[origin + '/cover.jpg',...list.slice(0,11).map(url => origin + url)]);
+  assert.deepEqual(product,before);
+  for (const image_urls of [undefined,null,{},'/extra.jpg',[]]) assert.deepEqual(productImageUrls({image_url:'/cover.jpg',image_urls},origin),[origin + '/cover.jpg']);
+  assert.deepEqual(productImageUrls({},origin),[]);
+  assert.deepEqual(productImageUrls({image_url:'data:image/png;base64,AAAA',image_urls:['http://10.0.0.1/a.jpg','/valid.jpg']},origin),[origin + '/valid.jpg']);
+  assert.deepEqual(productImageUrls({image_url:'javascript:alert(1)',image_urls:['data:image/png;base64,AAAA']},origin),[]);
 });
 test('Turkish search, category, brand and favorites filter published products',() => {
   assert.equal(filterProducts(products,{q:'test-1'})[0].product_id,'p1'); assert.equal(filterProducts(products,{q:'MARKA',brand:'TEST Marka'}).length,1);

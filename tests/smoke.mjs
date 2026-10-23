@@ -5,6 +5,7 @@ import {createServer} from 'node:http';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {chromium,expect} from '@playwright/test';
 import {FixtureApi,A,B,tokens} from './fixtures/api.mjs';
+import {galleryScenarios} from './gallery.mjs';
 
 const port = await new Promise(resolve => { const probe = createServer(); probe.listen(0,'127.0.0.1',() => { const port = probe.address().port; probe.close(() => resolve(port)); }); });
 const base = `http://127.0.0.1:${port}`;
@@ -47,6 +48,7 @@ async function scenario(name,width,run) {
 try {
   for (let i = 0; i < 100; i++) { try { if ((await fetch(base)).ok) break; } catch {} await new Promise(resolve => setTimeout(resolve,40)); }
   browser = await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || '/usr/bin/brave',args:['--no-sandbox','--disable-gpu']});
+  await galleryScenarios({scenario,base,login,dealerTab,fits,noPersonalStorage});
   for (const campaignWidth of [390,1440]) await scenario('kampanya alanı: yayın yokken örnek, yayınlandığında gerçek içerik',campaignWidth,async ({page,backend}) => {
     await page.goto(base + '/');
     await expect(page.locator('[data-campaign-grid] .campaign-card')).toHaveCount(3);
@@ -69,7 +71,7 @@ try {
       await page.getByRole('searchbox',{name:'Ürün veya stok kodu ara',exact:true}).fill('TEST-KRT-202'); await page.getByRole('button',{name:'Ara',exact:true}).click();
       await expect(page.getByRole('heading',{name:'TEST Kontrol Kartı',exact:true})).toBeVisible(); await expect(page.locator('[data-product-grid] .product-card')).toHaveCount(1); await expect(page.getByLabel('Marka',{exact:true})).toBeHidden();
       await page.getByLabel('Ürün arama',{exact:true}).fill('Bosch'); await page.getByLabel('Kategori',{exact:true}).selectOption('c1'); await page.getByRole('link',{name:publicName + ' ürününü incele',exact:true}).click();
-      await expect(page.getByRole('heading',{name:publicName,exact:true})).toBeVisible(); await expect(page.locator('.product-media img')).toHaveCSS('object-fit','contain'); await fits(page,width);
+      await expect(page.getByRole('heading',{name:publicName,exact:true})).toBeVisible(); await expect(page.locator('.gallery-hero img')).toHaveCSS('object-fit','contain'); await expect(page.locator('.gallery-thumb')).toHaveCount(3); await fits(page,width);
       await page.getByLabel('Miktar',{exact:true}).fill('2'); await page.getByRole('button',{name:'Sepete ekle',exact:true}).click();
       await page.goto(base + '/katalog/'); await page.getByRole('button',{name:'TEST Kontrol Kartı sepete ekle',exact:true}).click(); await page.getByRole('link',{name:'Perakende sepeti',exact:true}).click();
       await page.getByLabel(publicName + ' miktarı',{exact:true}).fill('3'); await page.getByLabel('Ad soyad',{exact:true}).click(); await expect(page.locator('.cart-total')).toContainText('525,10');
