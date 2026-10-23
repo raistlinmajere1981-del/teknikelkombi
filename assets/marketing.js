@@ -1,7 +1,9 @@
+import {request} from './commerce.js';
+import {text as publishedText} from './public-info.js';
 /** Teknikel public website campaigns; display-only, always backed by Yardımcı Asistan publication. */
-const root = document.querySelector('[data-campaign-grid]');
-const feedback = document.querySelector('[data-campaign-feedback]');
-const intro = document.querySelector('.campaign-intro');
+const root = globalThis.document?.querySelector('[data-campaign-grid]');
+const feedback = globalThis.document?.querySelector('[data-campaign-feedback]');
+const intro = globalThis.document?.querySelector('.campaign-intro');
 const text = (tag, value, className) => {
   const node = document.createElement(tag);
   node.textContent = String(value ?? '');
@@ -17,9 +19,9 @@ function mediaUrl(raw) {
     return url.href;
   } catch { return ''; }
 }
-function renderCampaign(item, index) {
+export function renderCampaign(item, index) {
   const card = text('article', '', 'campaign-card campaign-card--published');
-  const image = item.images?.find(asset => mediaUrl(asset?.url));
+  const image = (Array.isArray(item.images) ? item.images : []).find(asset => mediaUrl(asset?.url));
   if (image) {
     const img = document.createElement('img');
     img.className = 'campaign-image'; img.loading = 'lazy'; img.decoding = 'async';
@@ -34,29 +36,23 @@ function renderCampaign(item, index) {
   card.append(content);
   return card;
 }
-async function loadCampaigns() {
+export const websiteCampaigns = value => (Array.isArray(value?.publications) ? value.publications : []).filter(item => item?.published === true && item?.channel === 'website' && item?.placement === 'homepage_feature' && publishedText(item.title));
+export async function loadCampaigns(fetchPublic = request) {
   if (!root || !feedback) return;
-  const abort = new AbortController();
-  const timeout = setTimeout(() => abort.abort(), 9000);
+  const section = root.closest('.campaign-section');
+  section.hidden = true;
+  root.replaceChildren();
+  feedback.hidden = true;
   try {
-    const response = await fetch('/yardimci-asistan/api/marketing.php', {
-      headers: { Accept: 'application/json' }, cache: 'no-store', signal: abort.signal
-    });
-    if (!response.ok) throw new Error('Kampanya yayınına erişilemiyor.');
-    const value = await response.json();
-    if (value?.ok !== true || !Array.isArray(value.publications)) throw new Error('Kampanya yanıtı geçersiz.');
-    const published = value.publications.filter(item => item?.published === true && item?.channel === 'website' && item?.placement === 'homepage_feature');
-    if (published.length) {
-      root.replaceChildren(...published.slice(0, 6).map(renderCampaign));
-      root.classList.add('campaign-grid--live');
-      root.classList.toggle('campaign-grid--single', published.length === 1);
-      if (intro) intro.hidden = true;
-      feedback.textContent = '';
-    } else {
-      feedback.textContent = 'Şu anda yayınlanmış kampanya yok. Aşağıdakiler yalnızca tasarım örneğidir.';
-    }
+    const published = websiteCampaigns(await fetchPublic('marketing'));
+    if (!published.length) return;
+    root.replaceChildren(...published.slice(0, 6).map(renderCampaign));
+    root.classList.add('campaign-grid--live');
+    root.classList.toggle('campaign-grid--single', published.length === 1);
+    if (intro) intro.hidden = true;
+    section.hidden = false;
   } catch {
-    feedback.textContent = 'Kampanya yayını kontrol edilemedi. Aşağıdaki örnekler canlı kampanya değildir.';
-  } finally { clearTimeout(timeout); }
+    // Never reveal outdated marketing examples on a failed or disabled publication.
+    root.replaceChildren();
+  }
 }
-loadCampaigns();

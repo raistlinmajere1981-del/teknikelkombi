@@ -7,10 +7,35 @@ export const publicProducts = [
   {product_id:'p1',name:'TEST Bosch Pompa',sku:'TEST-POM-101',description:'Yalnız test verisi: pompa açıklaması.',category_id:'c1',price:100,currency:'TRY',unit:'piece',tax_rate:20,availability:'available',sort_order:0,image_url:'https://images.example.com/pump.jpg',image_urls:['https://images.example.com/pump.jpg','https://images.example.com/pump-back.jpg','https://images.example.com/pump-connector.jpg']},
   {product_id:'p2',name:'TEST Kontrol Kartı',sku:'TEST-KRT-202',description:'Yalnız test verisi: kart açıklaması.',category_id:'c2',price:225.1,currency:'TRY',unit:'piece',tax_rate:20,availability:'available',sort_order:1,image_url:'https://images.example.com/board.jpg'}
 ];
+export const menuPublication = {
+  categories:[{id:'food',name:'TEST Yemekler',description:'TEST günlük menü'},{id:'drinks',name:'TEST İçecekler'},{id:'inactive',name:'TEST Pasif kategori',is_active:false}],
+  items:[{id:'meal',category_id:'food',name:'TEST Çorba',description:'TEST menü açıklaması',price:85.5,currency:'TRY',image_url:'/yardimci-asistan/media/fixture-meal.jpg'},
+    {id:'tea',category_id:'drinks',name:'TEST Çay',unit_price:12.25,currency:'TRY'},
+    {id:'unpriced',category_id:'drinks',name:'TEST Fiyatı yayınlanmamış',currency:'TRY'},
+    {id:'hidden',category_id:'food',name:'TEST Pasif ürün',is_active:false,price:10,currency:'TRY'},
+    {id:'hidden-category',category_id:'inactive',name:'TEST Pasif kategori ürünü',price:10,currency:'TRY'}]
+};
+export const tablePublication = [{id:'garden',name:'TEST Bahçe Masası',capacity:4,area:'TEST Bahçe',description:'TEST masa açıklaması',media:[{kind:'photo',url:'/yardimci-asistan/media/fixture-table.jpg'}]},
+  {id:'unpublished',name:'TEST Yayınlanmamış Masa',capacity:8,published:false}];
+export const roomPublication = [
+  {id:'room / & 1',name:'TEST Bahçe Odası',description:'TEST oda açıklaması',capacity:3,bed_info:'TEST Çift kişilik ve tek kişilik yatak',floor:0,media:[{kind:'cover',url:'/yardimci-asistan/media/fixture-room.jpg'},{kind:'photo',url:'https://images.example.com/room.jpg'}]},
+  {id:'plain',name:'TEST Medyasız Oda'},
+  {id:'hidden',name:'TEST Gizli Oda',published:false}
+];
+export const reviewsPublication = {available:true,stale:false,name:'TEST Teknikel Google',rating:4.2,user_rating_count:17,google_maps_uri:'https://www.google.com/maps/place/test',reviews_uri:'https://www.google.com/maps/place/test/reviews',reviews:[
+  {author:'TEST Ziyaretçi',author_uri:'https://example.com/author',author_photo_uri:'https://images.example.com/reviewer.jpg',rating:4,relative_time:'TEST bir hafta önce',text:'TEST Yayınlanmış yorum',google_maps_uri:'https://www.google.com/maps/reviews/test'}
+]};
+export const campaignPublication = {id:'test_announcement',channel:'website',placement:'homepage_feature',published:true,title:'TEST Yayınlanmış Duyuru',text:'TEST Gerçek yayın metni',images:[]};
 const clone = value => JSON.parse(JSON.stringify(value));
 const api = (status,json) => ({status,json,headers:{'Cache-Control':'no-store'}});
 export class FixtureApi {
   enabled = true; businessFailure = false; catalogFailure = false; dealerCatalogFailure = false; ordersFailure = false; logoutFailure = false;
+  business = {display_name:'TEST Teknikel',phone:'',email:'',address:'',website:'',social_links:[]};
+  publicSurfaces = null; categories = [{id:'c1',name:'Pompalar'},{id:'c2',name:'Elektronik Kartlar'}];
+  roomsEnabled = false; roomsStatus = 0; reviewsStatus = 0; marketingStatus = 0;
+  rooms = clone(roomPublication); reviews = clone(reviewsPublication);
+  menuEnabled = false; tablesEnabled = false; menuStatus = 0; tablesStatus = 0;
+  menu = clone(menuPublication); tables = clone(tablePublication);
   deliveryMethods = ['pickup','shipping'];
   public = clone(publicProducts); campaigns = []; requests = []; created = []; receipts = new Map(); sessions = new Map(); consumed = new Set(); revisions = {[A]:1,[B]:1};
   failNext = ''; lossNext = ''; malformedNext = ''; rejectNext = ''; nextSession = 0; deferred = null;
@@ -41,14 +66,19 @@ export class FixtureApi {
         }
         return route.fulfill({contentType:'text/css',body:''});
       }
+      if (/^\/yardimci-asistan\/media\/fixture-[a-z]+\.jpg$/.test(url.pathname)) return route.fulfill({contentType:'image/svg+xml',body:'<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400"><rect width="640" height="400" fill="#edf1f5"/></svg>'});
       if (!url.pathname.startsWith('/yardimci-asistan/api/')) return route.continue();
       const path = url.pathname.slice('/yardimci-asistan/api/'.length).replace(/\.php$/,''); const headers = await req.allHeaders();
       let payload; if (req.method() === 'POST') { assert.match(headers['content-type'],/^application\/json/); payload = req.postDataJSON(); if (path.startsWith('dealer/')) assert.equal(headers['x-ya-dealer'],'1'); }
       this.requests.push({path,method:req.method(),payload:clone(payload ?? null),cookie:headers.cookie || ''});
       let result;
-      if (path === 'business') result = this.businessFailure ? api(503,{ok:false,message:'TEST işletme yayınına ulaşılamadı.'}) : api(200,{ok:true,business:{display_name:'TEST Teknikel',public_surfaces:this.enabled ? ['store'] : []}});
-      else if (path === 'catalog') result = this.catalogFailure ? api(503,{ok:false,message:'TEST katalog bağlantısı yok.'}) : api(200,{ok:true,version:1,enabled:this.enabled,delivery_methods:this.enabled ? this.deliveryMethods : [],products:this.enabled ? this.public : [],categories:this.enabled ? [{id:'c1',name:'Pompalar'},{id:'c2',name:'Elektronik Kartlar'}] : [],server_revision:1,source_revision:1});
-      else if (path === 'marketing') result = api(200,{ok:true,publications:this.campaigns});
+      if (path === 'business') result = this.businessFailure ? api(503,{ok:false,message:'TEST işletme yayınına ulaşılamadı.'}) : api(200,{ok:true,business:{...this.business,public_surfaces:this.publicSurfaces ?? (this.enabled ? ['store'] : [])}});
+      else if (path === 'catalog') result = this.catalogFailure ? api(503,{ok:false,message:'TEST katalog bağlantısı yok.'}) : api(200,{ok:true,version:1,enabled:this.enabled,delivery_methods:this.enabled ? this.deliveryMethods : [],products:this.enabled ? this.public : [],categories:this.enabled ? this.categories : [],server_revision:1,source_revision:1});
+      else if (path === 'menu') result = this.menuStatus ? api(this.menuStatus,{ok:false}) : !this.menuEnabled ? api(404,{ok:false}) : api(200,{ok:true,...this.menu});
+      else if (path === 'tables') result = this.tablesStatus ? api(this.tablesStatus,{ok:false}) : api(200,{ok:true,enabled:this.tablesEnabled,tables:this.tablesEnabled ? this.tables : []});
+      else if (path === 'rooms') result = this.roomsStatus ? api(this.roomsStatus,{ok:false}) : api(200,{ok:true,enabled:this.roomsEnabled,rooms:this.roomsEnabled ? this.rooms : []});
+      else if (path === 'google-reviews') result = this.reviewsStatus ? api(this.reviewsStatus,{available:false,reason:'google_unavailable'}) : api(200,this.reviews);
+      else if (path === 'marketing') result = this.marketingStatus ? api(this.marketingStatus,{ok:false}) : api(200,{ok:true,publications:this.campaigns});
       else if (path === 'dealer/claim') {
         const token = payload.invite_token; const owner = token === tokens.b ? B : [tokens.a,tokens.renewed].includes(token) ? A : null;
         if (!owner || this.consumed.has(token)) result = api(400,{ok:false,message:'Bağlantı geçersiz veya süresi dolmuş.'});

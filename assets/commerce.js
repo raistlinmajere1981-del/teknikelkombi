@@ -4,7 +4,7 @@ export class ApiError extends Error {
   constructor(message, status = 0, code = '') { super(message); this.status = status; this.code = code; }
 }
 export async function request(endpoint, body) {
-  if (!/^(business|catalog|order|dealer\/(claim|session|catalog|order|orders|receipt|logout))$/.test(endpoint)) throw new Error('Geçersiz işlem.');
+  if (!/^(business|catalog|menu|tables|rooms|marketing|google-reviews|order|dealer\/(claim|session|catalog|order|orders|receipt|logout))$/.test(endpoint)) throw new Error('Geçersiz işlem.');
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 15000);
   try {
@@ -14,7 +14,8 @@ export async function request(endpoint, body) {
     let value;
     try { value = await response.json(); } catch { throw new ApiError('Sunucudan geçerli yanıt alınamadı. Gönderim yapılmış olabilir; aynı siparişi tekrar deneyin.', response.ok ? 502 : response.status); }
     if (!response.ok) throw new ApiError(typeof value?.message === 'string' ? value.message : 'İşlem tamamlanamadı. Lütfen tekrar deneyin.', response.status, value?.code || '');
-    if (endpoint !== 'dealer/session' && value?.ok !== true) throw new ApiError('İşlemin sonucu doğrulanamadı. Aynı siparişi tekrar deneyin.', 502);
+    if (endpoint === 'google-reviews' && typeof value?.available !== 'boolean') throw new ApiError('Yorum yayını okunamadı.', 502);
+    if (!['dealer/session','google-reviews'].includes(endpoint) && value?.ok !== true) throw new ApiError('İşlemin sonucu doğrulanamadı. Aynı siparişi tekrar deneyin.', 502);
     return value;
   } catch (error) {
     if (error instanceof ApiError) throw error;

@@ -1,9 +1,16 @@
 import {ApiError,request,checkReceipt,catalogFrom,money,unit,filterProducts,cartSummary,CartDraft,isDefinitiveRejection,orderStatus,photoUrl,productImageUrls} from './commerce.js';
+import {createStorefront,hasSurface,storeEnabled} from './storefront.js';
+import {loadPublicationPage} from './publications.js';
+import {loadRooms} from './rooms.js';
+import {loadPublicPage} from './public-pages.js';
+import {loadCampaigns} from './marketing.js';
 
 const $ = (selector,root = document) => root.querySelector(selector);
 const all = (selector,root = document) => [...root.querySelectorAll(selector)];
 const page = document.body.dataset.page;
 const dealerMode = page === 'dealer';
+const publicationPage = ['restaurant','qr-menu','rooms','room','contact','about','gallery','reviews','announcements'].includes(page);
+const storefront = createStorefront();
 const RETAIL_KEY = 'teknikel.retail.v1';
 const LOCK_KEY = 'teknikel.dealer.signed-out';
 const EVENT_KEY = 'teknikel.dealer.visibility';
@@ -26,13 +33,16 @@ function updateCounts() {
   if (state.cart && state.identity) { state.cart.read(); all('[data-dealer-count]').forEach(node => node.textContent = Object.keys(state.cart.items).length); }
 }
 function products() { return state.catalog?.products || []; }
-function publicEnabled() { return state.catalog?.enabled === true && state.business?.business?.public_surfaces?.includes('store') === true; }
+function publicEnabled() { return storeEnabled(state.business,state.catalog); }
 function canBrowse() { return dealerMode ? !!state.identity && !!state.catalog : publicEnabled(); }
 function canOrder() { return canBrowse() && state.catalog.delivery_methods.length > 0; }
 function failure() {
   if (canBrowse() && !state.catalog.delivery_methods.length) return 'Katalog görüntülenebilir; şu anda yeni sipariş alınamıyor.';
   if (dealerMode) return state.catalogError || 'Bayi kataloğu henüz hazır değil.';
-  return !state.business || !state.catalog ? 'Katalog bağlantısı kurulamadı. Yenile ile tekrar deneyin.' : !publicEnabled() ? 'Ürün kataloğu şu anda yayında değil. Yeni sipariş alınamıyor.' : 'Henüz yayınlanmış ürün bulunmuyor.';
+  const unpublished = 'Ürün kataloğu şu anda yayında değil. Yeni sipariş alınamıyor.';
+  if (state.business && !hasSurface(state.business,'store')) return unpublished;
+  if (!state.business || !state.catalog) return 'Katalog bağlantısı kurulamadı. Yenile ile tekrar deneyin.';
+  return publicEnabled() ? 'Henüz yayınlanmış ürün bulunmuyor.' : unpublished;
 }
 function photo(url,name) {
   const box = el('div',undefined,'product-media'); const blank = el('span','Ürün görseli yok','missing-photo'); box.append(blank);
@@ -172,9 +182,6 @@ function renderPublic() {
   if (state.cart?.pending && page !== 'cart') notify('Son gönderiminizin sonucu belirsiz. Sepet’ten aynı siparişi kontrol edin.');
   if ($('[data-featured-grid]')) {
     const valid = publicEnabled() ? products() : []; $('[data-featured-grid]').replaceChildren(...valid.slice(0,4).map(productCard)); $('[data-catalog-state]').textContent = valid.length ? '' : failure();
-    if (publicEnabled() && state.catalog.categories.length) $('[data-category-grid]').replaceChildren(...state.catalog.categories.slice(0,9).map((category,index) => {
-      const node = link('','/katalog/?category=' + encodeURIComponent(category.id),'cat'); node.append(el('span',String(index + 1).padStart(2,'0'),'cat-num'),el('strong',category.name),el('span','↗')); return node;
-    }));
   }
   if ($('[data-product-grid]')) renderPublicCatalog();
   if ($('[data-product-detail]')) {
@@ -192,13 +199,12 @@ function renderPublicCatalog() {
   $('[data-pagination]').hidden = pages <= 1; $('[data-page-number]').textContent = state.pageNo + ' / ' + pages; $('[data-prev]').disabled = state.pageNo <= 1; $('[data-next]').disabled = state.pageNo >= pages;
   const url = new URL(location.href); for (const [key,value] of Object.entries(state.filter)) value ? url.searchParams.set(key,value) : url.searchParams.delete(key); history.replaceState(null,'',url.pathname + url.search);
 }
-async function loadPublic() {
+async function loadPublic(refresh = false) {
   const epoch = ++state.epoch; state.catalog = null; state.business = null; all('[data-product-grid],[data-featured-grid],[data-product-detail]').forEach(node => node.replaceChildren());
-  const responses = await Promise.allSettled([request('business'),request('catalog')]); if (epoch !== state.epoch) return;
-  state.business = responses[0].status === 'fulfilled' ? responses[0].value : null;
-  if (responses[1].status === 'fulfilled') { try { state.catalog = catalogFrom(responses[1].value); } catch (error) { notify(error.message); } }
+  const snapshot = await storefront.load(refresh); if (epoch !== state.epoch) return;
+  state.business = snapshot.business; state.catalog = snapshot.catalog;
   if (!publicEnabled() && state.catalog) state.catalog = {...state.catalog,products:[],categories:[]};
-  const form = $('[data-catalog-filter]'); if (form) filterSelects(form,state.catalog); renderPublic();
+  const form = $('[data-catalog-filter]'); if (form) { filterSelects(form,state.catalog); form.hidden = !publicEnabled(); } renderPublic();
 }
 function field(parent,caption,value,{id,type = 'text',name = id,required = true,maxLength = 180,...attributes} = {}) {
   const wrap = el('div',undefined,'form-field'); const label = el('label',caption); const input = el('input');
@@ -211,7 +217,7 @@ function renderCheckout(root) {
   const lines = pending ? pending.items : state.cart.items;
   if (!Object.keys(lines).length) {
     if (state.cart.receipt) root.append(el('div','Son alınan talep: ' + state.cart.receipt.order_id + '. Ödeme alınmadı; işletmenin onayı bekleniyor.','order-notice'));
-    root.append(el('h2','Sepetiniz boş'),el('p','Katalogdan ürün ekleyerek başlayın.')); if (!dealerMode) root.append(link('Kataloğa dön →','/katalog/')); return;
+    root.append(el('h2','Sepetiniz boş'),el('p','Katalogdan ürün ekleyerek başlayın.')); if (!dealerMode && publicEnabled()) root.append(link('Kataloğa dön →','/katalog/')); return;
   }
   const grid = el('div',undefined,'checkout-grid'); const itemList = el('section',undefined,'cart-lines'); itemList.setAttribute('aria-label',dealerMode ? 'Bayi sepeti' : 'Perakende sepeti');
   const quantityInputs = [];
@@ -439,12 +445,19 @@ window.addEventListener('storage',event => {
   if (dealerMode && (event.key === EVENT_KEY || event.key === LOCK_KEY) && event.newValue) { lockDealer('Bayi oturumu başka bir sekmede kapatıldı veya sona erdi.',false); return; }
   if (event.key === RETAIL_KEY || event.key === state.cart?.key) protect(() => { updateCounts(); if (page === 'cart') renderCheckout($('[data-cart-root]')); if (dealerMode && state.identity) renderDealer(); })();
 });
+// Chrome and read-only publications also work when cart storage is unavailable.
+storefront.load().then(snapshot => {
+  if (page === 'home') { if (snapshot.business) return loadCampaigns(storefront.read); return loadCampaigns(() => Promise.reject(new Error('business_unavailable'))); }
+  if (['restaurant','qr-menu'].includes(page)) return loadPublicationPage(page,snapshot.business,document,storefront.read);
+  if (['rooms','room'].includes(page)) return loadRooms(page,snapshot.business,storefront.read);
+  if (publicationPage) return loadPublicPage(page,snapshot.business,storefront.read);
+}).catch(() => {});
 try {
   retailCart = openCart(RETAIL_KEY); updateCounts();
   if (dealerMode) initDealer();
-  else {
+  else if (!publicationPage) {
     state.cart = retailCart;
-    const form = $('[data-catalog-filter]'); if (form) { bindFilters(form,renderPublicCatalog); $('[data-prev]').addEventListener('click',() => { state.pageNo--; renderPublicCatalog(); }); $('[data-next]').addEventListener('click',() => { state.pageNo++; renderPublicCatalog(); }); $('[data-reload]').addEventListener('click',protect(loadPublic)); }
+    const form = $('[data-catalog-filter]'); if (form) { bindFilters(form,renderPublicCatalog); $('[data-prev]').addEventListener('click',() => { state.pageNo--; renderPublicCatalog(); }); $('[data-next]').addEventListener('click',() => { state.pageNo++; renderPublicCatalog(); }); $('[data-reload]').addEventListener('click',protect(() => loadPublic(true))); }
     loadPublic().catch(error => notify(error.message));
   }
 } catch (error) { notify(error.message); if (dealerMode) lockDealer(error.message,false); }

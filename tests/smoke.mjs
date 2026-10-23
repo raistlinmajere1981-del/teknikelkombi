@@ -6,6 +6,7 @@ import {mkdirSync,writeFileSync} from 'node:fs';
 import {chromium,expect} from '@playwright/test';
 import {FixtureApi,A,B,tokens} from './fixtures/api.mjs';
 import {galleryScenarios} from './gallery.mjs';
+import {storefrontScenarios} from './storefront.mjs';
 
 const port = await new Promise(resolve => { const probe = createServer(); probe.listen(0,'127.0.0.1',() => { const port = probe.address().port; probe.close(() => resolve(port)); }); });
 const base = `http://127.0.0.1:${port}`;
@@ -48,21 +49,22 @@ async function scenario(name,width,run) {
 try {
   for (let i = 0; i < 100; i++) { try { if ((await fetch(base)).ok) break; } catch {} await new Promise(resolve => setTimeout(resolve,40)); }
   browser = await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || '/usr/bin/brave',args:['--no-sandbox','--disable-gpu']});
+  await storefrontScenarios({scenario,base,login,fits});
   await galleryScenarios({scenario,base,login,dealerTab,fits,noPersonalStorage});
-  for (const campaignWidth of [390,1440]) await scenario('kampanya alanı: yayın yokken örnek, yayınlandığında gerçek içerik',campaignWidth,async ({page,backend}) => {
+  for (const campaignWidth of [390,1440]) await scenario('kampanya alanı: yayın yokken gizli, yayınlandığında gerçek içerik',campaignWidth,async ({page,backend}) => {
     await page.goto(base + '/');
-    await expect(page.locator('[data-campaign-grid] .campaign-card')).toHaveCount(3);
-    await expect(page.locator('[data-campaign-grid]')).toContainText('ÖRNEK YERLEŞİM');
-    await page.locator('.campaign-section').screenshot({path:'.test-artifacts/campaign-preview-' + campaignWidth + '.png'});
+    await expect(page.locator('.campaign-section')).toBeHidden();
+    await expect(page.locator('[data-campaign-grid] .campaign-card')).toHaveCount(0);
     backend.campaigns = [{id:'demo_campaign',channel:'website',placement:'homepage_feature',published:true,title:'TEST Gerçek Teknikel Kampanyası',text:'Yalnız yerel test yayını',images:[]}];
     await page.reload();
     await expect(page.locator('[data-campaign-grid] .campaign-card')).toHaveCount(1);
     await expect(page.locator('[data-campaign-grid]')).toContainText('TEST Gerçek Teknikel Kampanyası');
-    await expect(page.locator('[data-campaign-grid]')).not.toContainText('ÖRNEK YERLEŞİM');
+    await expect(page.locator('.campaign-section')).toBeVisible();
     await page.locator('.campaign-section').screenshot({path:'.test-artifacts/campaign-' + campaignWidth + '.png'});
     backend.campaigns = [];
     await page.reload();
-    await expect(page.locator('[data-campaign-grid] .campaign-card')).toHaveCount(3);
+    await expect(page.locator('[data-campaign-grid] .campaign-card')).toHaveCount(0);
+    await expect(page.locator('.campaign-section')).toBeHidden();
     await fits(page,campaignWidth);
   });
   for (const width of [320,390,768,1440]) {

@@ -36,6 +36,20 @@ Public katalog sözleşmesi şu anda ayrı `brand` alanı yayınlamıyor. Public
 | Bayi alışverişi | GET `dealer/catalog.php`, POST `dealer/order.php` |
 | Bayi takip/kurtarma | GET `dealer/orders.php`, POST `dealer/receipt.php` |
 
+## Dinamik vitrin yayınları
+
+Başlık ve footer bütün sayfalarda (bayi alanı dahil) tek ortak `business.php` yanıtını kullanır. Yayınlanmış işletme adı, telefon, e-posta, adres, web sitesi ve sosyal bağlantılar gösterilir; boş/geçersiz alanlar ve bağlantı hatasında iletişim alanı gizlenir. Sabit iletişim yedeği yoktur.
+
+| Yüzey | Gerekli yayın |
+| --- | --- |
+| Genel katalog, kategori menüsü, arama ve perakende sepet bağlantısı | `business.public_surfaces` içinde tam `store` ve `catalog.php.enabled === true` (Online Satış yayını) |
+| `/restoran/` | Tam `restaurant` (masa kataloğu yayını); GET `tables.php` içindeki `enabled` ve `tables` |
+| `/qr-menu/` | Tam `qr_menu` (menü yayını); GET `menu.php` içindeki aktif `categories` ve `items` |
+
+Profil adı, `food_service` veya eski `menu` yüzeyi bu izinlerin yerine geçmez. Genel kategori bağlantıları yalnız public `catalog.php.categories` kimliklerini kullanır; özel bayi kategorileri ortak menüye aktarılmaz. Boş/kapalı/erişilemeyen yayında örnek kategori, masa, menü ürünü veya fiyat oluşturulmaz. Menü salt görüntülemedir; fiyat `price` veya yayınlanmış `unit_price` ve para birimiyle, masa kapasitesi `capacity` ile gösterilir. Sayfa yenilenince (katalogda ayrıca **Yenile** ile) güncel yayın okunur.
+
+`npm run check` ve `npm test` yeni sayfaları da kapsar. `tests/storefront.mjs` sentetik API ile iletişim değişimini, izinleri, boş/hata durumlarını, özel kategori ayrımını, HTML enjeksiyonunu ve 320/390/768/1440 px görünümü kontrol eder. Yalnız yeni mobil/yayın akışlarını çalıştırmak için `TEST_FILTER='yayın vitrinleri' node tests/smoke.mjs` kullanılabilir. Gerçek veri, bayi token'ı veya canlı API isteği kullanılmaz.
+
 JSON POST'larında mevcut bayi `X-YA-Dealer: 1` başlığı ve aynı origin çerezi kullanılır. Tarayıcı fiyat, bayi kimliği veya fiyat grubu göndermez. Public siparişte `buyer`, her iki siparişte `items`, `delivery`, `note`, `idempotencyKey`; bayi siparişinde ayrıca `catalogRevision` gönderilir. Tahmini toplam katalog fiyatlarından gösterilir; sunucu kabulündeki bayi toplamı ayrıca belirtilir. Masaüstüne aktarım bekleyen talep ile canonical placed/confirmed/fulfilled/cancelled durumları ayrıdır.
 
 Perakende API'sinde geçmiş veya makbuz sorgulama endpoint'i yoktur; kabul numarası gösterilir. Bayi geçmişi ve makbuz kurtarma mevcut endpoint'leri kullanır. Backend PHP kaynakları bu projeye kopyalanmaz ve değiştirilmez.
@@ -75,7 +89,7 @@ PLAYWRIGHT_CHROMIUM_EXECUTABLE=/path/to/chromium npm test
 
 ## Nexa için yayın ve HTTPS doğrulaması
 
-Bu çalışma deploy yapmaz. Site için yalnız `index.php`, `inc/`, `katalog/`, `urun/`, `sepet/`, `bayi/`, `assets/` aktarılmalıdır. `data-import/`, `.deploy/`, anahtarlar, `tests/`, `node_modules/`, `.test-artifacts/`, yerel ekran görüntüleri ve npm dosyaları site yayınına dahil edilmez. API web modülü, sırlar ve veritabanı ayrı sahiplikte kalır; mevcut IdeaSoft sitesine dokunulmaz.
+Site güncellemeleri yalnız Teknikel web kaynaklarında yapılır; Yardımcı Asistan web modülü, veri deposu ve bayi oturumları korunur. Site için `index.php`, `inc/`, `katalog/`, `urun/`, `sepet/`, `bayi/`, `assets/` ve aşağıdaki yayına bağlı sayfa dizinleri aktarılır. `data-import/`, `.deploy/`, anahtarlar, `tests/`, `node_modules/`, `.test-artifacts/`, yerel ekran görüntüleri ve npm dosyaları site yayınına dahil edilmez. API web modülü, sırlar ve veritabanı ayrı sahiplikte kalır; mevcut IdeaSoft sitesine dokunulmaz.
 
 Yayın öncesinde uyumlu web modülünde yukarıdaki endpoint'lerin, özellikle `dealer/orders.php` ve `dealer/receipt.php` uçlarının kurulu olduğu doğrulanmalıdır. Gerçek HTTPS test sunucusunda şu kontroller kalır:
 
@@ -86,3 +100,25 @@ Yayın öncesinde uyumlu web modülünde yukarıdaki endpoint'lerin, özellikle 
 5. Gerçek telefonlarda 320/390 px kullanım, ürün fotoğrafları, yayın kapatma ve sunucu hata yanıtları.
 
 Gerçek HTTPS test sunucusu ve fiziksel cihaz doğrulaması bu yerel çalışmada yapılmadı. Dekoratif ana sayfa fotoğrafları satış kataloğu veya stok beyanı değildir.
+
+
+## Yayına bağlı web sayfaları
+
+Teknikel sabit bir sektör şablonu değildir. Herkese açık sayfaların içeriğini ve görünürlüğünü aynı sunucudaki Yardımcı Asistan yayını belirler. Toptancı/bayi oturumları kendi özel akışını kullanmaya devam eder.
+
+| Yayın kaynağı | Teknikel sayfası |
+| --- | --- |
+| business.php (telefon/e-posta/adres/sosyal bağlantılar) | Her sayfanın üstü/altı ve /iletisim/ |
+| business.php (about_text, features, policy) | /hakkimizda/ |
+| business.php (gallery, title, sort_order) | /galeri/ |
+| rooms.php (enabled, odalar, medya) | /odalar/ ve /odalar/oda/?id=... |
+| tables.php (enabled, masalar) | /restoran/ |
+| menu.php (yayınlanan QR menü) | /qr-menu/ |
+| catalog.php + business.public_surfaces store | /magaza/ (mevcut /katalog/ kataloğu), /urun/, /sepet/ |
+| marketing.php (yayınlanmış website kampanyaları) | /duyurular/ ve ana sayfa kampanyaları |
+| google-reviews.php + business.google_reviews_enabled | /yorumlar/ |
+| dealer erişimi ve davet | /bayi/ (bağımsız, özel bayi kataloğu) |
+
+Ürün kategorileri yalnız herkese açık katalog yayını üzerinden gelir; bayi özel kategorileri üst menüye taşınmaz. Restoran/oda/mağaza ve QR menü sayfaları iş profilinden değil ilgili gerçek yayının etkinliğinden açılır. Hakkımızda, galeri, yorumlar, duyurular ve iletişim yalnız yayınlanmış içerik veya gerçek bağlantı varsa görünür. Yayın kapalıyken eski hardcoded bilgiler veya örnek ürünler gösterilmez.
+
+Site değişiklikleri yayına çıkmadan önce npm run check ve npm test ile doğrulanır. Gerçek HTTPS üzerinde bayi daveti/siparişi daha sonra ayrıca test edilir.
