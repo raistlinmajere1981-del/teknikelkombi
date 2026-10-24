@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {expect} from '@playwright/test';
 
 export async function storefrontScenarios({scenario,base,login,fits}) {
-  const visit = async (page,path = '/') => { await page.goto(base + path); await page.waitForLoadState('networkidle'); };
+  const visit = async (page,path = '/') => { await page.goto(base + path); await page.waitForLoadState('domcontentloaded'); };
   const surfaces = ['store','restaurant','qr_menu'];
   const nav = page => page.getByRole('navigation',{name:'Ana menü',exact:true});
   const contact = page => page.locator('footer [data-business-contact]');
@@ -62,13 +62,13 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     await expect(contact(page).locator('[data-business-website]')).toBeHidden();
     backend.business = {website:'https://example.com/'}; await visit(page);
     await expect(contact(page)).toBeVisible(); await expect(page.locator('.top-contact [data-contact-link]')).toBeVisible();
-    backend.business = {}; await page.reload(); await page.waitForLoadState('networkidle');
+    backend.business = {}; await page.reload(); await page.waitForLoadState('domcontentloaded');
     await expect(contact(page)).toBeHidden(); await expect(page.locator('[data-contact-link]:visible')).toHaveCount(0);
-    backend.businessFailure = true; await page.reload(); await page.waitForLoadState('networkidle');
+    backend.businessFailure = true; await page.reload(); await page.waitForLoadState('domcontentloaded');
     await expect(contact(page)).toBeHidden(); await expect(page.locator('footer [data-business-name]')).toBeHidden();
     await expect(page.locator('.header-search')).toBeHidden(); await expect(page.locator('[data-shop-message]')).toBeHidden();
     await expect(page.locator('body')).not.toContainText('0216 462 40 98');
-    await expect(page.getByRole('link',{name:/Bayi Girişi/})).toBeVisible();
+    await expect(page.locator('header').getByRole('link',{name:/Hesabım/})).toBeVisible();
   });
   await scenario('kategori kimlikleri API yayınıyla değişir; kapalı, boş ve hatalı katalog temiz kalır',390,async ({page,backend}) => {
     await visit(page); await expect(page.locator('[data-category-grid] a')).toHaveCount(2);
@@ -80,13 +80,13 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     await page.locator('[data-category-nav] a').click();
     assert.equal(new URL(page.url()).searchParams.get('category'),'new/category & id');
     backend.categories = []; await visit(page); await expect(page.locator('[data-category-section]')).toBeHidden(); await expect(page.locator('[data-category-nav] a')).toHaveCount(0);
-    backend.catalogFailure = true; await page.reload(); await page.waitForLoadState('networkidle');
+    backend.catalogFailure = true; await page.reload(); await page.waitForLoadState('domcontentloaded');
     await expect(page.locator('[data-category-grid]')).toBeEmpty(); await expect(page.locator('.header-search')).toBeHidden();
     backend.catalogFailure = false; backend.enabled = false; backend.publicSurfaces = ['store'];
-    await page.reload(); await page.waitForLoadState('networkidle');
+    await page.reload(); await page.waitForLoadState('domcontentloaded');
     await expect(nav(page).getByRole('link',{name:'Mağaza',exact:true})).toBeHidden(); await expect(page.getByRole('link',{name:'Perakende sepeti',exact:true})).toBeHidden();
     backend.enabled = true; backend.publicSurfaces = ['food_service','menu']; const before = backend.requests.length;
-    await page.reload(); await page.waitForLoadState('networkidle');
+    await page.reload(); await page.waitForLoadState('domcontentloaded');
     await expect(page.locator('[data-category-grid]')).toBeEmpty(); assert.equal(backend.requests.slice(before).some(call => call.path === 'catalog'),false);
     await visit(page,'/katalog/'); backend.publicSurfaces = ['store'];
     await page.getByRole('button',{name:'Yenile ↻',exact:true}).click();
@@ -104,7 +104,7 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     backend.business.profile = 'wholesale'; backend.publicSurfaces = ['qr_menu']; backend.menuEnabled = true;
     await visit(page); await expect(nav(page).getByRole('link',{name:'QR Menü',exact:true})).toBeVisible();
     await expect(nav(page).getByRole('link',{name:'Restoran',exact:true})).toBeHidden();
-    backend.publicSurfaces = ['restaurant']; backend.tablesEnabled = true; await page.reload(); await page.waitForLoadState('networkidle');
+    backend.publicSurfaces = ['restaurant']; backend.tablesEnabled = true; await page.reload(); await page.waitForLoadState('domcontentloaded');
     await expect(nav(page).getByRole('link',{name:'Restoran',exact:true})).toBeVisible(); await expect(nav(page).getByRole('link',{name:'QR Menü',exact:true})).toBeHidden();
   });
   await scenario('doğrudan yayın sayfaları kapalı, 404, boş ve çevrimdışı durumları ayırır',390,async ({page,backend}) => {
@@ -127,7 +127,7 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     backend.catalog = owner => { const catalog = original(owner); catalog.products.forEach(product => product.category_name = 'TEST ÖZEL BAYİ KATEGORİSİ'); return catalog; };
     await login(page); await expect(page.getByLabel('Kategori',{exact:true})).toContainText('TEST ÖZEL BAYİ KATEGORİSİ');
     await expect(nav(page)).not.toContainText('TEST ÖZEL BAYİ KATEGORİSİ'); await expect(nav(page)).toContainText('Pompalar');
-    backend.enabled = false; await visit(page,'/bayi/'); await expect(page.getByLabel('Kategori',{exact:true})).toContainText('TEST ÖZEL BAYİ KATEGORİSİ');
+    backend.enabled = false; await visit(page,'/hesabim/'); await expect(page.locator('[data-dealer-workspace]')).toBeHidden(); await expect(page.getByLabel('Kategori',{exact:true})).toHaveCount(0);
     await expect(page.locator('[data-category-nav] a')).toHaveCount(0); await expect(page.locator('.header-search')).toBeHidden();
     await visit(page); await expect(page.locator('body')).not.toContainText('TEST ÖZEL BAYİ KATEGORİSİ');
   });
@@ -208,7 +208,7 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     }
     await visit(page,'/magaza/');
     await expect(page.locator('[data-product-grid]')).toBeEmpty();
-    await expect(page.getByRole('link',{name:/Bayi Girişi/})).toBeVisible();
+    await expect(page.locator('header').getByRole('link',{name:/Hesabım/})).toHaveCount(0);
   });
   await scenario('yorum ve galeri servis hataları ile kötü URL girişleri özel içerik açmaz',320,async ({page,backend}) => {
     backend.publicSurfaces = ['rooms']; backend.roomsEnabled = false; backend.enabled = false;

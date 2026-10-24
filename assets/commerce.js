@@ -4,14 +4,19 @@ export const API_ROOT = '/yardimci-asistan/api/';
 export class ApiError extends Error {
   constructor(message, status = 0, code = '') { super(message); this.status = status; this.code = code; }
 }
-export async function request(endpoint, body) {
-  if (!/^(business|catalog|menu|tables|rooms|marketing|google-reviews|order|dealer\/(claim|session|catalog|order|orders|receipt|logout))$/.test(endpoint)) throw new Error(t('Geçersiz işlem.'));
+let sessionRefresh;
+export async function request(endpoint, body, retry = true) {
+  if (!/^(business|catalog|menu|tables|rooms|marketing|google-reviews|order|dealer\/(session|catalog|order|orders|receipt|logout)|account\/(config|session|login|register|logout|logout-all|refresh|recover|verify|reset|profile|oauth|orders))$/.test(endpoint)) throw new Error(t('Geçersiz işlem.'));
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 15000);
   try {
     const headers = {Accept:'application/json'};
-    if (body !== undefined) { headers['Content-Type'] = 'application/json'; if (endpoint.startsWith('dealer/')) headers['X-YA-Dealer'] = '1'; }
+    if (body !== undefined) { headers['Content-Type'] = 'application/json'; if (endpoint.startsWith('dealer/')) headers['X-YA-Dealer'] = '1'; if (endpoint.startsWith('account/')) headers['X-YA-Account'] = '1'; }
     const response = await fetch(API_ROOT + endpoint + '.php', {method:body === undefined ? 'GET' : 'POST', headers, credentials:'same-origin', cache:'no-store', redirect:'error', signal:controller.signal, ...(body === undefined ? {} : {body:JSON.stringify(body)})});
+    if (response.status === 401 && retry && !['account/login','account/refresh','account/logout','account/config'].includes(endpoint)) {
+      sessionRefresh ||= fetch(API_ROOT + 'account/refresh.php',{method:'POST',headers:{'Content-Type':'application/json','X-YA-Account':'1'},credentials:'same-origin',cache:'no-store',redirect:'error',signal:controller.signal,body:'{}'}).finally(() => { sessionRefresh = null; });
+      if ((await sessionRefresh).ok) return request(endpoint,body,false);
+    }
     let value;
     try { value = await response.json(); } catch { throw new ApiError(t('Sunucudan geçerli yanıt alınamadı. Gönderim yapılmış olabilir; aynı siparişi tekrar deneyin.'), response.ok ? 502 : response.status); }
     if (!response.ok) throw new ApiError(typeof value?.message === 'string' && language === 'tr' ? value.message : t('İşlem tamamlanamadı. Lütfen tekrar deneyin.'), response.status, value?.code || '');
@@ -20,7 +25,7 @@ export async function request(endpoint, body) {
     return body === undefined ? localizePublic(value,endpoint) : value;
   } catch (error) {
     if (error instanceof ApiError) throw error;
-    throw new ApiError(t('Bağlantı kurulamadı. Gönderim yapılmış olabilir; aynı siparişi tekrar deneyin.'));
+    throw new ApiError(t(endpoint.startsWith('account/') ? 'Hesap hizmetine bağlanılamadı. Lütfen tekrar deneyin.' : 'Bağlantı kurulamadı. Gönderim yapılmış olabilir; aynı siparişi tekrar deneyin.'));
   } finally { clearTimeout(timeout); }
 }
 export function checkReceipt(value) {

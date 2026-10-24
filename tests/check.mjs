@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {mkdirSync,writeFileSync,readdirSync} from 'node:fs';
-const phpFiles = ['index.php','inc/layout.php','inc/language.php','katalog/index.php','urun/index.php','sepet/index.php','bayi/index.php','restoran/index.php','qr-menu/index.php','odalar/index.php','odalar/oda/index.php','magaza/index.php','iletisim/index.php','hakkimizda/index.php','galeri/index.php','yorumlar/index.php','duyurular/index.php'];
+const phpFiles = ['index.php','inc/layout.php','inc/language.php','katalog/index.php','urun/index.php','sepet/index.php','bayi/index.php','hesabim/index.php','restoran/index.php','qr-menu/index.php','odalar/index.php','odalar/oda/index.php','magaza/index.php','iletisim/index.php','hakkimizda/index.php','galeri/index.php','yorumlar/index.php','duyurular/index.php'];
 const jsFiles = [...readdirSync('assets').filter(file => file.endsWith('.js')).map(file => 'assets/' + file),'tests/fixtures/api.mjs',...readdirSync('tests').filter(file => file.endsWith('.mjs')).map(file => 'tests/' + file)];
 const results = [];
 for (const file of [...phpFiles,...jsFiles]) {

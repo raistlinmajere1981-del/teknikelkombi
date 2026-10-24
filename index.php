@@ -4,7 +4,7 @@
 <div class="overline"><span class="red-dot"></span> <?= te_t('SERVİSİN İHTİYACI OLAN HER PARÇA') ?></div>
 <h1><?= te_t('Doğru parçayı bulmak artık') ?> <em><?= te_t('çok daha kolay.') ?></em></h1>
 <p><?= te_t('Kombi yedek parça, teknik ekipman ve kart tamiri için aradığınız çözümler tek bir yerde. Ürün koduyla arayın, hızlıca inceleyin.') ?></p>
-<div class="hero-buttons"><a class="btn btn-red" href="/magaza/" data-store-only hidden><?= te_t('Ürün kataloğunu keşfet') ?> <span>→</span></a><a class="btn btn-light" href="/bayi/"><?= te_t('Bayi misiniz?') ?> <span>↗</span></a></div>
+<div class="hero-buttons"><a class="btn btn-red" href="/magaza/" data-store-only hidden><?= te_t('Ürün kataloğunu keşfet') ?> <span>→</span></a><a class="btn btn-light" href="/hesabim/" data-account-only hidden><?= te_t('Bayi misiniz?') ?> <span>↗</span></a></div>
 <div class="hero-highlights" data-store-only hidden><span><b>01</b> <?= te_t('Kolay ürün arama') ?></span><span><b>02</b> <?= te_t('Marka ve kategori filtreleri') ?></span><span><b>03</b> <?= te_t('Bayilere özel alan') ?></span></div>
 </div>
 <div class="hero-visual" aria-hidden="true"><div class="technical-rings"></div><div class="visual-tag"><?= te_t('TEKNİKEL / PARÇA KATALOĞU') ?></div>
@@ -30,5 +30,5 @@
 <div class="product-grid" data-featured-grid></div>
 </div></section>
 <section class="brand-section" data-brand-section hidden><div class="container"><span class="eyebrow"><?= te_t('KATALOĞUMUZDAKİ MARKALAR') ?></span><div class="brands" data-brand-list></div></div></section>
-<section class="dealer-callout"><div class="container callout-inner"><div><div class="eyebrow"><?= te_t('PROFESYONELLERE ÖZEL') ?></div><h2><?= te_t('Teknik servisiniz için') ?> <span><?= te_t('daha hızlı sipariş.') ?></span></h2><p><?= te_t('Bayi davetinizle giriş yapın; size özel kataloğa, fiyatlara ve sipariş geçmişinize ulaşın.') ?></p></div><a href="/bayi/" class="btn btn-red"><?= te_t('Bayi alanını incele') ?> <span>↗</span></a></div></section>
+<section class="dealer-callout" data-account-only hidden><div class="container callout-inner"><div><div class="eyebrow"><?= te_t('PROFESYONELLERE ÖZEL') ?></div><h2><?= te_t('Teknik servisiniz için') ?> <span><?= te_t('daha hızlı sipariş.') ?></span></h2><p><?= te_t('Müşteri hesabınızla giriş yapın; bayi yetkiniz varsa özel kataloğunuza, fiyatlarınıza ve siparişlerinize ulaşın.') ?></p></div><a href="/hesabim/" data-account-only hidden class="btn btn-red"><?= te_t('Bayi alanını incele') ?> <span>↗</span></a></div></section>
 <?php te_footer(); ?>

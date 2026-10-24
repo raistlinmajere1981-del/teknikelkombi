@@ -47,12 +47,12 @@ function te_header(string $page, string $title): void { ?>
 <?php foreach (['tr'=>'Türkçe', 'en'=>'English'] as $language=>$label): ?>
 <a href="<?= te(te_language_url($language)) ?>" data-language="<?= te($language) ?>" lang="<?= te($language) ?>" aria-label="<?= te($label) ?>" <?= te_language() === $language ? 'aria-current="true"' : '' ?>><?= strtoupper($language) ?></a>
 <?php endforeach; ?></nav><a class="basket-link" href="/sepet/" aria-label="<?= te_t('Perakende sepeti') ?>" data-store-only hidden><?= te_t('Sepet') ?> <span data-retail-count>0</span></a>
-<a class="account-link" href="/bayi/"><span class="account-icon">↗</span><span><?= te_t('Bayi Girişi') ?><small><?= te_t('Kurumsal müşteriler') ?></small></span></a></div>
+<a class="account-link" href="/hesabim/" data-account-only hidden><span class="account-icon">↗</span><span><?= te_t('Hesabım') ?><small><?= te_t('Müşteri hesabı') ?></small></span></a></div>
 </div>
 <nav class="nav" aria-label="<?= te_t('Ana menü') ?>"><div class="container nav-inner">
 <div class="nav-categories" data-category-nav hidden></div>
 <?php te_public_links($page); ?>
-<a class="nav-dealer" href="/bayi/"><?= te_t('Bayi Sipariş Sistemi') ?> <span>↗</span></a>
+<a class="nav-dealer" href="/hesabim/" data-account-only hidden><?= te_t('Bayi Sipariş Sistemi') ?> <span>↗</span></a>
 </div></nav></header>
 <main id="main">
 <div class="container"><p class="shop-message" data-shop-message role="status" aria-live="polite" hidden></p></div>
@@ -61,7 +61,7 @@ function te_footer(): void { ?>
 </main>
 <footer class="footer"><div class="container foot-main">
 <div><div class="footer-brand">TEKNİKEL</div><p data-business-name hidden></p><p><?= te_t('Kombi yedek parçaları ve elektronik kart tamiri için uzman çözüm ortağınız.') ?></p></div>
-<div><h3><?= te_t('Keşfedin') ?></h3><?php te_public_links(); ?><a href="/bayi/"><?= te_t('Bayi İşlemleri') ?></a></div>
+<div><h3><?= te_t('Keşfedin') ?></h3><?php te_public_links(); ?><a href="/hesabim/" data-account-only hidden><?= te_t('Hesabım') ?></a></div>
 <div id="iletisim" data-business-contact hidden><h3><?= te_t('İletişim') ?></h3><?php te_contact_fields(); ?></div>
 </div><div class="container footer-bottom">© <?= date('Y') ?> Teknikel <span><?= te_t('Yeni web sitesi — önizleme sürümü') ?></span></div></footer>
 <script src="/assets/assistant/widget.js" data-business-name="Teknikel" data-api-base-url="/yardimci-asistan" data-logo-url="/assets/logo.webp" data-primary-color="#12283d" data-accent-color="#e5263c" defer></script>

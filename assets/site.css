@@ -47,3 +47,5 @@
 .contact-map p{margin:12px 0 0;overflow-wrap:anywhere;color:#617082}
 @media(max-width:800px){.contact-layout{grid-template-columns:1fr}.contact-map iframe{height:300px}}
 @media(max-width:440px){.contact-details,.contact-map{padding:17px}.contact-map iframe{height:270px}}
+
+.account-page{padding-top:48px;padding-bottom:40px}.account-page h1{font-size:clamp(2rem,5vw,3.4rem);margin:12px 0 24px}.account-forms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;max-width:900px}.account-form{padding:24px;border:1px solid #dce1e6;border-radius:8px;display:grid;gap:14px;align-content:start}.account-form h2{margin:0 0 6px}.account-form label{display:grid;gap:8px;font-weight:600}.account-form input{width:100%;padding:12px;border:1px solid #bbc3cc;border-radius:5px;font:inherit}.account-form button{justify-self:start}.account-actions{display:flex;flex-wrap:wrap;gap:12px;margin:20px 0}.account-status{min-height:1.5em}.account-order{border-bottom:1px solid #dce1e6;padding:16px 0}@media(max-width:640px){.account-forms{grid-template-columns:1fr}.account-form{padding:18px}}

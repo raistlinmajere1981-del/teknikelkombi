@@ -1,0 +1,47 @@
+import assert from 'node:assert/strict';
+import {resolve,join} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {createRequire} from 'node:module';
+import {DatabaseSync} from 'node:sqlite';
+import {mkdirSync} from 'node:fs';
+import {chromium,expect} from '@playwright/test';
+const siteSource=process.cwd(),repo=resolve(process.env.YA_ACCOUNT_TEST_REPOSITORY || '../YardimciAsistan');
+process.chdir(repo);
+const require=createRequire(join(repo,'package.json'));
+const {accountFixture,accountPassword}=await import(pathToFileURL(join(repo,'scripts/test-helpers/customer-accounts.mjs')));
+const {launchChromiumForSmoke}=await import(pathToFileURL(join(repo,'scripts/test-helpers/playwright-browser.mjs')));
+const {WebSyncIngress}=require('./apps/desktop-app/dist-electron/web-sync-ingress.js');
+const {saveRuntimeCatalogProduct}=require('./apps/desktop-app/dist-electron/commerce-runtime.js');
+const {BUSINESS_CAPABILITIES:C}=require('./packages/shared/dist/index.js');
+const f=await accountFixture({siteSource});let browser,raw;
+try {
+  await f.publish();await f.register('teknikel@example.test','Teknikel Account');
+  await new WebSyncIngress({database:f.database},()=>'',()=>{}).pullCustomerAccountPages(f.transport);
+  const customer=f.database.listCustomers({}).items.find(x=>x.email==='teknikel@example.test');
+  browser=await launchChromiumForSmoke(chromium);const context=await browser.newContext({viewport:{width:390,height:844}}),page=await context.newPage(),errors=[];
+  page.on('pageerror',error=>errors.push(error.message));
+  // No external assistant/provider service participates in this local account test.
+  await page.route('**/assets/assistant/widget.js',route=>route.fulfill({body:'',contentType:'text/javascript'}));
+  await page.goto(f.siteUrl+'/hesabim/?lang=en');
+  const login=page.locator('form.account-form').filter({has:page.getByRole('heading',{name:'Sign in',exact:true})});
+  await expect(login).toBeVisible();await expect(page.getByRole('button',{name:'Sign in with Google'})).toHaveCount(0);
+  await login.locator('[name=email]').fill('teknikel@example.test');await login.locator('[name=password]').fill(accountPassword);await login.getByRole('button',{name:'Sign in',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'Customer profile',exact:true})).toBeVisible();await expect(page.getByText('teknikel@example.test',{exact:true})).toBeVisible();await expect(page.locator('[data-dealer-workspace]')).toBeHidden();
+  const draft=page.locator('[data-account-root] [name=fullName]');await draft.fill('Unsaved profile draft');
+  await page.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));await page.waitForTimeout(150);await expect(draft).toHaveValue('Unsaved profile draft');
+  const first=(await context.cookies()).find(x=>x.name==='ya_account_session').value;
+  f.storage('$db->exec("UPDATE customer_account_sessions SET expires_at = 1");');await page.reload();
+  await expect(page.getByRole('heading',{name:'Customer profile',exact:true})).toBeVisible();assert.notEqual((await context.cookies()).find(x=>x.name==='ya_account_session').value,first);
+  f.database.saveCustomer({...customer,commercialProfile:{companyName:'Teknikel Dealer',dealerStatus:'active',priceGroup:'dealer_a'}});
+  saveRuntimeCatalogProduct(f.database.databasePath,{name:'Account Product',sku:'ACCOUNT-TEST',brand:'',categoryId:'',salePrice:100,dealerPriceA:80,dealerPriceB:null,purchasePrice:20,currency:'TRY',unit:'piece',taxRate:20,trackInventory:false,isActive:true});await f.publish();await page.reload();
+  await expect(page.locator('[data-dealer-workspace]')).toBeVisible();await expect(page.getByRole('heading',{name:'Account Product'})).toBeVisible();
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+  mkdirSync(join(siteSource,'.test-artifacts/accounts'),{recursive:true});await page.screenshot({path:join(siteSource,'.test-artifacts/accounts/account-en-mobile.png'),fullPage:true});
+  raw=new DatabaseSync(f.database.databasePath);raw.prepare('UPDATE business_capabilities SET is_enabled=0 WHERE capability_id=?').run(C.ONLINE_SALES);await f.publish();await page.reload();
+  await expect(page.locator('[data-account-root]')).toBeEmpty();await expect(page.locator('[data-dealer-workspace]')).toBeHidden();
+  await expect(page.locator('[data-login-state]')).toContainText('Online Sales is disabled');
+  await expect(page.locator('a[data-account-only]:visible')).toHaveCount(0);
+  await page.getByRole('button',{name:'Clear local session',exact:true}).click();
+  raw.prepare('UPDATE business_capabilities SET is_enabled=1 WHERE capability_id=?').run(C.ONLINE_SALES);await f.publish();await page.reload();await expect(login).toBeVisible();
+  assert.deepEqual(errors,[]);console.log('teknikel-shared-accounts-ok: real PHP/API/SMTP, EN/mobile UI, session refresh, dealer grant and Online Sales disable/re-enable');
+} finally {await browser?.close();raw?.close();await f.cleanup();}

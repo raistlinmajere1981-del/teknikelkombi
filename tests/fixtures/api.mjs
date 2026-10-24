@@ -37,7 +37,7 @@ export class FixtureApi {
   menuEnabled = false; tablesEnabled = false; menuStatus = 0; tablesStatus = 0;
   menu = clone(menuPublication); tables = clone(tablePublication);
   deliveryMethods = ['pickup','shipping'];
-  public = clone(publicProducts); campaigns = []; requests = []; created = []; receipts = new Map(); sessions = new Map(); consumed = new Set(); revisions = {[A]:1,[B]:1};
+  public = clone(publicProducts); campaigns = []; requests = []; created = []; receipts = new Map(); sessions = new Map(); revisions = {[A]:1,[B]:1};
   failNext = ''; lossNext = ''; malformedNext = ''; rejectNext = ''; nextSession = 0; deferred = null;
   catalog(owner) {
     return {access_id:owner,access_revision:this.revisions[owner],catalog_revision:'a'.repeat(64),delivery_methods:this.deliveryMethods,products:[
@@ -46,7 +46,7 @@ export class FixtureApi {
       {...clone(publicProducts[0]),product_id:'p3',name:'TEST Yalnız Bayi Ürünü',sku:'TEST-BAY-303',brand:'TEST Marka',price:owner === A ? 39.95 : 29.95,category_name:'Pompalar',image_url:'https://images.example.com/dealer-only.jpg',image_urls:['https://images.example.com/dealer-only.jpg','https://images.example.com/dealer-only-detail.jpg']}]};
   }
   session(headers) {
-    const token = /(?:^|;\s*)ya_dealer_session=([^;]+)/.exec(headers.cookie || '')?.[1]; const session = this.sessions.get(token);
+    const token = /(?:^|;\s*)ya_account_session=([^;]+)/.exec(headers.cookie || '')?.[1]; const session = this.sessions.get(token);
     return session && !session.revoked && session.revision === this.revisions[session.owner] ? session : null;
   }
   rotateA() { this.revisions[A]++; }
@@ -79,20 +79,30 @@ export class FixtureApi {
       else if (path === 'rooms') result = this.roomsStatus ? api(this.roomsStatus,{ok:false}) : api(200,{ok:true,enabled:this.roomsEnabled,rooms:this.roomsEnabled ? this.rooms : [],...(this.roomsLocalization ? {localization:this.roomsLocalization} : {})});
       else if (path === 'google-reviews') result = this.reviewsStatus ? api(this.reviewsStatus,{available:false,reason:'google_unavailable'}) : api(200,this.reviews);
       else if (path === 'marketing') result = this.marketingStatus ? api(this.marketingStatus,{ok:false}) : api(200,{ok:true,publications:this.campaigns});
-      else if (path === 'dealer/claim') {
-        const token = payload.invite_token; const owner = token === tokens.b ? B : [tokens.a,tokens.renewed].includes(token) ? A : null;
-        if (!owner || this.consumed.has(token)) result = api(400,{ok:false,message:'Bağlantı geçersiz veya süresi dolmuş.'});
+      else if (path === 'account/config') result=api(200,{ok:true,enabled:this.enabled,passwordRegistration:this.enabled,providers:[]});
+      else if (path === 'account/login') {
+        const owner=payload.email==='b@example.test'?B:payload.email==='a@example.test'?A:null;
+        if(!this.enabled)result=api(403,{ok:false,code:'online_sales_disabled'});
+        else if(!owner || payload.password!=='Fixture-account-Password123') result=api(401,{ok:false,code:'invalid_credentials'});
         else {
-          this.consumed.add(token); const old = this.session(headers); if (old) old.revoked = true;
-          const sessionToken = String(++this.nextSession).padStart(43,'s'); this.sessions.set(sessionToken,{owner,revision:this.revisions[owner],revoked:false});
-          result = api(200,{ok:true}); result.headers['Set-Cookie'] = `ya_dealer_session=${sessionToken}; Path=/yardimci-asistan/api/dealer/; HttpOnly; SameSite=Strict`;
+          const sessionToken=String(++this.nextSession).padStart(43,'s');this.sessions.set(sessionToken,{owner,revision:this.revisions[owner],revoked:false});
+          result=api(200,{ok:true});result.headers['Set-Cookie']=`ya_account_session=${sessionToken}; Path=/yardimci-asistan/; HttpOnly; SameSite=Lax`;
         }
-      } else if (path === 'dealer/logout') {
+      } else if (['account/logout','account/logout-all','dealer/logout'].includes(path)) {
         if (this.logoutFailure) result = api(503,{ok:false});
-        else { const session = this.session(headers); if (session) session.revoked = true; result = api(200,{ok:true}); result.headers['Set-Cookie'] = 'ya_dealer_session=; Max-Age=0; Path=/yardimci-asistan/api/dealer/; HttpOnly; SameSite=Strict'; }
+        else { const session = this.session(headers); if (session) session.revoked = true; result = api(200,{ok:true}); result.headers['Set-Cookie'] = 'ya_account_session=; Max-Age=0; Path=/yardimci-asistan/; HttpOnly; SameSite=Lax'; }
+      } else if(path.startsWith('account/')) {
+        const session=this.session(headers);
+        if(!this.enabled)result=api(403,{ok:false,code:'online_sales_disabled'});
+        else if(path==='account/refresh')result=api(401,{ok:false,code:'login_required'});
+        else if(!session)result=api(401,{ok:false,code:'login_required'});
+        else if(path==='account/session')result=api(200,{ok:true,account:{id:session.owner,email:session.owner===A?'a@example.test':'b@example.test',fullName:'TEST Customer',methods:['password'],dealer:{access_id:session.owner,display_name:session.owner===A?'TEST BAYİ A':'TEST BAYİ B'}}});
+        else if(path==='account/orders')result=api(200,{ok:true,orders:this.history(session.owner)});
+        else result=api(200,{ok:true});
       } else {
         const session = this.session(headers);
-        if (path.startsWith('dealer/') && !session) result = api(401,path === 'dealer/session' ? {authenticated:false} : {ok:false,message:'Bayi erişimi gerekli.'});
+        if(path.startsWith('dealer/') && !this.enabled)result=api(403,{ok:false,code:'online_sales_disabled'});
+        else if (path.startsWith('dealer/') && !session) result = api(401,path === 'dealer/session' ? {authenticated:false} : {ok:false,message:'Bayi erişimi gerekli.'});
         else if (path === 'dealer/session') result = api(200,{authenticated:true,dealer:{access_id:session.owner,display_name:session.owner === A ? 'TEST BAYİ A' : 'TEST BAYİ B'}});
         else if (path === 'dealer/catalog') {
           const deferred = this.deferred; if (deferred) { this.deferred = null; deferred.started(); await deferred.promise; }

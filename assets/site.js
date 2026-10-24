@@ -1,3 +1,4 @@
+import {initAccount} from './account.js';
 import {t,locale,initLanguageChooser} from './language.js';
 import {ApiError,request,checkReceipt,catalogFrom,money,unit,filterProducts,cartSummary,CartDraft,isDefinitiveRejection,orderStatus,photoUrl,productImageUrls} from './commerce.js';
 import {createStorefront,hasSurface,storeEnabled} from './storefront.js';
@@ -10,7 +11,7 @@ const $ = (selector,root = document) => root.querySelector(selector);
 const all = (selector,root = document) => [...root.querySelectorAll(selector)];
 initLanguageChooser();
 const page = document.body.dataset.page;
-const dealerMode = page === 'dealer';
+const dealerMode = page === 'account';
 const publicationPage = ['restaurant','qr-menu','rooms','room','contact','about','gallery','reviews','announcements'].includes(page);
 const storefront = createStorefront();
 const RETAIL_KEY = 'teknikel.retail.v1';
@@ -23,7 +24,6 @@ const link = (text,href,cls = 'text-link') => { const node = el('a',text,cls); n
 const state = {business:null,catalog:null,cart:null,epoch:0,busy:false,identity:null,tab:'catalog',detail:null,orders:null,catalogError:'',ordersError:'',filter:{q:params.get('q') || '',category:params.get('category') || '',brand:params.get('brand') || ''},favoritesOnly:false,pageNo:1};
 let retailCart;
 const checkoutValues = {};
-let inviteToken = '';
 function notify(message,privateMessage = false) {
   const target = privateMessage ? $('[data-dealer-state]') : $('[data-shop-message]');
   if (target) { target.textContent = message; target.hidden = !message; }
@@ -325,7 +325,7 @@ function lockDealer(message = t('Bayi erişimi gerekli.'),broadcast = true) {
 }
 async function dealerRequest(name,body,epoch = state.epoch) {
   try { return await request('dealer/' + name,body); }
-  catch (error) { if (error.status === 401 && epoch === state.epoch) lockDealer(state.identity ? t('Oturumunuz sona erdi veya bayi erişiminiz kapatıldı. Firmanızdan yeni davet isteyin.') : t('Bayi davetinizle giriş yapın.')); throw error; }
+  catch (error) { if ((error.status === 401 || error.status === 403) && epoch === state.epoch) { lockDealer(t('Hesabınıza yeniden giriş yapın.')); document.dispatchEvent(new Event('account:revalidate')); } throw error; }
 }
 async function loadDealer() {
   const epoch = ++state.epoch; state.catalog = null; state.orders = null; state.catalogError = ''; state.ordersError = ''; $('[data-dealer-content]').replaceChildren(el('p',t('Hesabınız kontrol ediliyor…')));
@@ -333,7 +333,7 @@ async function loadDealer() {
     const session = await dealerRequest('session',undefined,epoch); if (epoch !== state.epoch) return;
     if (session.authenticated !== true || !session.dealer?.access_id || typeof session.dealer.display_name !== 'string') throw new ApiError(t('Bayi oturumu doğrulanamadı.'),502);
     if (!state.identity || state.identity.access_id !== session.dealer.access_id) { state.cart = openCart('teknikel.dealer.v1:' + session.dealer.access_id); state.filter = {q:'',category:'',brand:''}; state.favoritesOnly = false; state.pageNo = 1; state.tab = 'catalog'; state.detail = null; }
-    state.identity = session.dealer; $('[data-dealer-login]').hidden = true; $('[data-dealer-workspace]').hidden = false; $('[data-dealer-name]').textContent = session.dealer.display_name; $('[data-dealer-state]').textContent = t('Katalog ve siparişler yükleniyor…');
+    state.identity = session.dealer; $('[data-dealer-login]').hidden = false; $('[data-dealer-workspace]').hidden = false; $('[data-dealer-name]').textContent = session.dealer.display_name; $('[data-dealer-state]').textContent = t('Katalog ve siparişler yükleniyor…');
     const [catalog,orders] = await Promise.allSettled([dealerRequest('catalog',undefined,epoch),dealerRequest('orders',undefined,epoch)]); if (epoch !== state.epoch) return;
     if (catalog.status === 'fulfilled') {
       try { const safe = catalogFrom(catalog.value,true); if (safe.access_id !== state.identity.access_id) throw new Error(t('Bayi kataloğunun hesabı doğrulanamadı.')); state.catalog = safe; } catch (error) { state.catalogError = error.message; }
@@ -357,13 +357,7 @@ function renderDealer() {
   if (state.tab === 'orders') { renderOrders(root); return; }
   if (state.tab === 'account') {
     const panel = el('section',undefined,'account-panel'); panel.append(el('div',t('FİRMA HESABI'),'eyebrow'),el('h2',state.identity.display_name),el('p',t('Bayi fiyatlarınız ve siparişleriniz yalnız geçerli bayi oturumunuzla gösterilir. Web ve Android aynı sunucu hesabını kullanır.')),el('p',t('Favoriler ve sepet yalnız bu tarayıcıdaki bayi hesabınıza aittir. Özel fiyatlar tarayıcı depolamasına kaydedilmez.')));
-    panel.append(action(t('Oturumu kapat'),protect(async () => {
-      try { localStorage.setItem(LOCK_KEY,'1'); } catch { /* Always clear the private view, including when browser storage is unavailable. */ }
-      lockDealer(t('Oturum kapatılıyor…')); state.busy = true; const claimButton = $('[data-dealer-claim] button[type="submit"]'); claimButton.disabled = true;
-      try { await request('dealer/logout',{}); $('[data-login-state]').textContent = t('Oturumunuz kapatıldı. Yeniden giriş için yeni davet kullanın.'); }
-      catch { $('[data-login-state]').textContent = t('Özel görünüm kapatıldı; sunucudaki çıkış doğrulanamadı. Oturumu kapatmayı tekrar deneyin.'); const retry = action(t('Oturumu kapatmayı tekrar dene'),protect(async () => { await request('dealer/logout',{}); retry.remove(); $('[data-login-state]').textContent = t('Sunucudaki oturumunuz kapatıldı.'); }),'text-link'); $('[data-dealer-claim]').append(retry); }
-      finally { state.busy = false; claimButton.disabled = false; }
-    }),'btn btn-outline')); root.append(panel); return;
+    panel.append(link(t('Hesap ayarları'), '#main','btn btn-outline')); root.append(panel); return;
   }
   if (state.detail) {
     root.append(action(t('← Bayi kataloğuna dön'),() => { state.detail = null; renderDealer(); },'text-link'));
@@ -406,42 +400,13 @@ function renderOrders(root) {
     list.append(card);
   }
 }
-function parseInvite(input) {
-  const url = new URL(input,location.origin);
-  if (url.origin !== location.origin || url.username || url.password || url.search || !/^#invite=[A-Za-z0-9_-]{43}$/.test(url.hash)) throw new Error(t('Bu siteye ait geçerli bayi davet bağlantısını kullanın.'));
-  return url.hash.slice(8);
-}
-function captureInvite() {
-  if (location.hash.startsWith('#invite=')) {
-    try { inviteToken = parseInvite(location.href); $('[data-invite-state]').textContent = t('Davetiniz hazır. Giriş yapmak için “Daveti kullan” düğmesine dokunun.'); } catch (error) { $('[data-login-state]').textContent = error.message; }
-    history.replaceState(null,'',location.pathname + location.search);
-  }
-}
 function initDealer() {
-  captureInvite(); window.addEventListener('hashchange',captureInvite);
-  $('[data-dealer-claim]').addEventListener('submit',event => {
-    event.preventDefault(); if (state.busy) return;
-    protect(async () => {
-      const input = $('#dealer-invite'); const token = input.value.trim() ? parseInvite(input.value.trim()) : inviteToken;
-      if (!token) throw new Error(t('Size gönderilen bayi davet bağlantısını yapıştırın.'));
-      state.busy = true; const button = $('[data-dealer-claim] button[type="submit"]'); button.disabled = true; $('[data-login-state]').textContent = t('Davetiniz kontrol ediliyor…');
-      broadcastDealerLock();
-      try { await request('dealer/claim',{invite_token:token}); broadcastDealerLock(); inviteToken = ''; input.value = ''; localStorage.removeItem(LOCK_KEY); await loadDealer(); }
-      catch (error) { $('[data-login-state]').textContent = error.message; }
-      finally { state.busy = false; button.disabled = false; if (state.identity) renderDealer(); }
-    })();
-  });
-  $('[data-session-retry]').addEventListener('click',protect(async () => { localStorage.removeItem(LOCK_KEY); await loadDealer(); }));
   $('[data-dealer-refresh]').addEventListener('click',protect(loadDealer));
   all('[data-dealer-tab]').forEach(button => button.addEventListener('click',() => { if (state.busy) return; state.tab = button.dataset.dealerTab; state.detail = null; notify('',true); renderDealer(); }));
-  setInterval(() => { if (!document.hidden && state.identity && !state.busy) { const epoch = state.epoch; dealerRequest('session',undefined,epoch).then(value => { if (epoch === state.epoch && (value.authenticated !== true || value.dealer?.access_id !== state.identity?.access_id)) lockDealer(t('Oturumunuz sona erdi veya hesap başka bir sekmede değişti.')); }).catch(() => {}); } },30000);
+  document.addEventListener('account:ready',event => { if (event.detail?.dealer) loadDealer(); else lockDealer('',false); });
+  document.addEventListener('account:locked',() => lockDealer('',false));
   document.addEventListener('visibilitychange',() => { if (!document.hidden && state.identity && !state.busy) loadDealer(); });
-  window.addEventListener('pagehide',() => lockDealer(t('Hesap yeniden doğrulanıyor…'),false));
-  window.addEventListener('pageshow',event => { if (event.persisted && !localStorage.getItem(LOCK_KEY)) loadDealer(); });
-  if (localStorage.getItem(LOCK_KEY)) {
-    lockDealer(t('Bu tarayıcıda bayi görünümü kapalı. Yeni davet kullanabilir veya oturumu kontrol edebilirsiniz.'),false);
-    const retry = action(t('Sunucudaki çıkışı tekrar dene'),protect(async () => { await request('dealer/logout',{}); retry.remove(); $('[data-login-state]').textContent = t('Sunucudaki oturumunuz kapatıldı.'); }),'text-link'); $('[data-dealer-claim]').append(retry);
-  } else loadDealer();
+  window.addEventListener('pagehide',() => lockDealer('',false));
 }
 window.addEventListener('storage',event => {
   if (dealerMode && (event.key === EVENT_KEY || event.key === LOCK_KEY) && event.newValue) { lockDealer(t('Bayi oturumu başka bir sekmede kapatıldı veya sona erdi.'),false); return; }
@@ -463,3 +428,5 @@ try {
     loadPublic().catch(error => notify(error.message));
   }
 } catch (error) { notify(error.message); if (dealerMode) lockDealer(error.message,false); }
+
+initAccount();
