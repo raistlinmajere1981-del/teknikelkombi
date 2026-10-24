@@ -168,7 +168,7 @@ export async function galleryScenarios({scenario,base,login,dealerTab,fits,noPer
     await expect(page.locator('.product-detail .price')).toContainText('39,95');
     await page.getByRole('button',{name:'Büyük görüntüle',exact:true}).click(); await expect(page.getByRole('dialog')).toBeVisible();
     if (exit === 'logout') {
-      const second = await context.newPage(); await second.goto(base + '/bayi/'); await dealerTab(second,'Hesabım').click();
+      const second = await context.newPage(); await second.goto(base + '/bayi/'); await dealerTab(second,'Hesabım').click();await second.getByRole('link',{name:'Hesap ayarları',exact:true}).click();
       await second.getByRole('button',{name:'Oturumu kapat',exact:true}).click();
     } else if (exit === 'revoked') {
       backend.rotateA(); await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));

@@ -6,7 +6,7 @@ header('Cache-Control: private, no-store');
 header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: no-referrer');
 function te(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
-function te_public_links(string $page = '', bool $navigation = false): void {
+function te_public_links(string $page = '', bool $navigation = false, bool $footer = false): void {
     foreach ([
         ['store','Mağaza','/magaza/','store','data-store-only'],
         ['brands','Markalar','/markalar/','brands','data-section="brands"'],
@@ -18,13 +18,18 @@ function te_public_links(string $page = '', bool $navigation = false): void {
         ['reviews','Yorumlar','/yorumlar/','reviews','data-public-page="reviews"'],
         ['announcements','Kampanyalar','/duyurular/','announcements','data-public-page="announcements"'],
         ['contact','İletişim','/iletisim/','contact','data-contact-link']
-    ] as [$id,$label,$href,$current,$gate]) { if ($navigation && $id === 'store') continue; ?>
+    ] as [$id,$label,$href,$current,$gate]) { if ($navigation && $id === 'store') continue; if ($footer && !in_array($id,['store','brands','rooms','restaurant','gallery','contact'],true)) continue; ?>
 <a href="<?= te($href) ?>" <?= $gate ?> <?= ($page === $current || ($page === 'room' && $id === 'rooms')) ? 'aria-current="page"' : '' ?> hidden><?= te_t($label) ?></a>
 <?php }
 }
-function te_contact_fields(): void { ?>
-<a data-business-phone hidden aria-label="<?= te_t('İşletmeyi ara') ?>"></a><a data-business-email hidden aria-label="<?= te_t('İşletmeye e-posta gönder') ?>"></a><p data-business-address hidden></p>
-<a data-business-whatsapp hidden rel="noopener noreferrer">WhatsApp ↗</a><a data-business-directions hidden rel="noopener noreferrer"><?= te_t('Yol tarifi ↗') ?></a><a data-business-website hidden rel="noopener noreferrer"><?= te_t('Web sitesi ↗') ?></a><div data-business-socials hidden aria-label="<?= te_t('Sosyal medya') ?>"></div>
+function te_contact_fields(bool $compact = false): void { ?>
+<a data-business-phone hidden aria-label="<?= te_t('İşletmeyi ara') ?>"></a>
+<a data-business-email hidden aria-label="<?= te_t('İşletmeye e-posta gönder') ?>"></a>
+<p data-business-address hidden></p>
+<?php if (!$compact): ?><a data-business-whatsapp hidden rel="noopener noreferrer"><?= te_t('WhatsApp ile yaz') ?> ↗</a>
+<a data-business-directions hidden rel="noopener noreferrer" target="_blank"><?= te_t('Yol tarifi') ?> ↗</a>
+<a data-business-website hidden rel="noopener noreferrer" target="_blank"><?= te_t('Diğer web sitesi') ?> ↗</a><?php endif; ?>
+<div class="social-row"><span class="social-row-label"><?= te_t('Sosyal medya') ?></span><div data-business-socials hidden aria-label="<?= te_t('Sosyal medya') ?>"></div></div>
 <?php }
 function te_header(string $page, string $title): void { ?>
 <!doctype html>
@@ -43,7 +48,6 @@ function te_header(string $page, string $title): void { ?>
 <script src="/assets/site.js" type="module"></script>
 </head><body data-page="<?= te($page) ?>">
 <a class="skip" href="#main"><?= te_t('İçeriğe geç') ?></a>
-<div class="topline"><div class="container top-inner"><span data-business-name hidden></span><div class="top-contact"><a data-business-phone hidden aria-label="<?= te_t('İşletmeyi ara') ?>"></a><a href="/iletisim/" data-contact-link hidden><?= te_t('İletişim') ?></a></div></div></div>
 <header class="header"><div class="container header-main">
 <a class="brand" href="/" aria-label="<?= te_t('Teknikel Ana Sayfa') ?>"><img src="/assets/logo.webp" alt="<?= te_t('TEKNİKEL — Kombi Yedek Parça ve Kart Tamiri') ?>" width="250" height="72"></a>
 <form class="header-search" action="/magaza/" method="get" role="search" data-store-only hidden><label class="sr-only" for="global-search"><?= te_t('Ürün veya stok kodu ara') ?></label><input id="global-search" name="q" type="search" placeholder="<?= te_t('Ürün adı, stok kodu veya model ara...') ?>" maxlength="180"><button type="submit" aria-label="<?= te_t('Ara') ?>"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m16 16 5 5"/></svg></button></form>
@@ -56,8 +60,7 @@ function te_header(string $page, string $title): void { ?>
 <nav class="nav" aria-label="<?= te_t('Ana menü') ?>"><div class="container nav-inner">
 <details class="category-menu" data-category-menu hidden><summary><?= te_t('Tüm kategoriler') ?> <span aria-hidden="true">⌄</span></summary><div class="category-popover"><a class="category-all" href="/magaza/"><?= te_t('Tüm ürünler →') ?></a><div data-category-nav></div></div></details>
 <?php te_public_links($page,true); ?>
-<button class="nav-support" type="button" data-support-open data-section="support" hidden><?= te_t('Destek') ?></button>
-<a class="nav-dealer" href="/hesabim/" data-account-only hidden><?= te_t('Bayi Sipariş Sistemi') ?> <span>↗</span></a>
+
 </div></nav></header>
 <main id="main">
 <div class="container"><p class="shop-message" data-shop-message role="status" aria-live="polite" hidden></p></div>
@@ -65,10 +68,10 @@ function te_header(string $page, string $title): void { ?>
 function te_footer(): void { ?>
 </main>
 <footer class="footer"><div class="container foot-main">
-<div><a class="footer-logo" href="/"><img src="/assets/logo.webp" alt="Teknikel" width="220" height="63" loading="lazy"></a><p data-business-name hidden></p><p data-business-description hidden></p></div>
-<div><h3><?= te_t('Keşfedin') ?></h3><?php te_public_links(); ?><a href="/hesabim/" data-account-only hidden><?= te_t('Hesabım') ?></a></div>
-<div id="iletisim" data-business-contact hidden><h3><?= te_t('İletişim') ?></h3><?php te_contact_fields(); ?></div>
-</div><div class="container footer-bottom"><span>© <?= date('Y') ?> <span data-business-name hidden></span></span><a href="/hakkimizda/" data-public-page="about" hidden><?= te_t('Hakkımızda') ?></a></div></footer>
+<div class="footer-identity"><a class="footer-logo" href="/"><img src="/assets/logo.webp" alt="Teknikel" width="220" height="63" loading="lazy"></a><p data-business-description hidden></p></div>
+<div class="footer-navigation"><h3><?= te_t('Keşfedin') ?></h3><?php te_public_links('',false,true); ?></div>
+<div class="footer-contact" data-business-contact hidden><h3><?= te_t('İletişim') ?></h3><?php te_contact_fields(true); ?></div>
+</div><div class="container footer-bottom"><span>© <?= date('Y') ?> <span data-business-name hidden></span></span></div></footer>
 <script src="/assets/assistant/widget.js" data-publication-managed="true" data-api-base-url="/yardimci-asistan" data-logo-url="/assets/logo.webp" data-primary-color="#12283d" data-accent-color="#e5263c" defer></script>
 </body></html>
 <?php }
@@ -81,7 +84,9 @@ function te_public_page(string $page, string $title): void { te_header($page,$ti
 <div data-public-content hidden><?php if ($page === 'contact'): ?>
 <div class="contact-layout">
 <section class="contact-details" aria-label="<?= te_t('İletişim bilgileri') ?>">
+<div class="contact-eyebrow"><?= te_t('Bize ulaşın') ?></div>
 <h2><?= te_t('İletişim bilgileri') ?></h2>
+<p class="contact-lead"><?= te_t('Ürün, sipariş ve teknik sorularınız için bize ulaşabilirsiniz.') ?></p>
 <div class="public-contact" aria-label="<?= te_t('İşletme iletişim bilgileri') ?>"><?php te_contact_fields(); ?></div>
 </section>
 <section class="contact-map" data-business-map hidden aria-label="<?= te_t('Harita') ?>">

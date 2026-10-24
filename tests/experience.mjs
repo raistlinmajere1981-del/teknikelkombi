@@ -129,7 +129,7 @@ export async function experienceScenarios({scenario,base,login,fits,noPersonalSt
       const key = /name="idempotency_key"\r\n\r\n([^\r]+)/.exec(body)?.[1]; assert.ok(key); sends.push(key);
       return route.fulfill({status:sends.length === 1 ? 503 : 201,json:sends.length === 1 ? {ok:false,message:'TEST Retry safely'} : {ok:true,request_id:'fixture_dealer_application'}});
     });
-    await page.goto(base+'/'); await page.getByRole('button',{name:'Destek',exact:true}).click();
+    await page.goto(base+'/'); await page.locator('#yardimci-asistan-widget [data-ya-open]').click();
     const widget = page.locator('#yardimci-asistan-widget'); await widget.locator('[data-support-flow="dealer"]').click();
     const form = widget.locator('[data-dealer-application]');
     for (const [field,value] of [['company_name','TEST Dealer Shop'],['authorized_person','TEST Contact'],['customer_phone','05550000000'],['email','fixture@example.test']]) await form.locator('[name="'+field+'"]').fill(value);
@@ -151,10 +151,11 @@ export async function experienceScenarios({scenario,base,login,fits,noPersonalSt
     await expect(page.locator('header .nav-inner>[data-category-nav]')).toHaveCount(0);
     await page.locator('[data-category-menu] summary').click(); await expect(page.locator('[data-category-nav] a')).toHaveCount(2); await expect(page.locator('[data-category-nav] a').first()).toBeVisible();
     await page.locator('[data-category-menu] summary').click();
-    await page.getByRole('button',{name:'Destek',exact:true}).click(); const widget = page.locator('#yardimci-asistan-widget');
+    await page.locator('#yardimci-asistan-widget [data-ya-open]').click(); const widget = page.locator('#yardimci-asistan-widget');
     await expect(widget.locator('.publication-widget-tabs')).toBeVisible(); await expect(widget.locator('.ya-widget-nexa[data-nexa-role="welcome"]')).toHaveCount(1);
-    await expect(widget.locator('[data-support-flow="parts"]')).toBeVisible(); await expect(widget.locator('[data-support-flow="reservation"]')).toBeVisible();
-    await widget.getByRole('tab',{name:'Sohbet',exact:true}).click(); await expect(widget.locator('[data-support-flow="chat"]')).toBeVisible(); await expect(widget.locator('[data-support-flow="dealer"]')).toBeHidden();
+    await expect(widget.locator('[data-support-flow="reservation"]')).toBeVisible(); await expect(widget.locator('[data-support-flow="parts"]')).toBeHidden();
+    await widget.getByRole('tab',{name:'Sohbet',exact:true}).click(); await expect(widget.locator('[data-support-flow="chat"]')).toBeVisible();
+    await expect(widget.locator('[data-support-flow="parts"]')).toBeVisible(); await expect(widget.locator('[data-support-flow="dealer"]')).toBeHidden();
     await widget.getByRole('tab',{name:'İşlemler',exact:true}).click(); await widget.locator('[data-support-flow="dealer"]').click();
     await expect(widget.locator('fieldset.dealer-application-group')).toHaveCount(2); await expect(widget.locator('[name=company_name]')).toBeVisible(); await expect(widget.locator('[data-document-picker]')).toHaveCount(1);
     await expect(widget.locator('[data-dealer-application] [name=customer_phone]')).toHaveAttribute('type','tel');

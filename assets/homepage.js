@@ -56,7 +56,8 @@ export function renderHomepage(view,root = document) {
     if (Number.isSafeInteger(view.reviews.user_rating_count) && view.reviews.user_rating_count > 0) summary.append(el('span',view.reviews.user_rating_count.toLocaleString(locale)+t(' Google değerlendirmesi')));
     if (view.reviews.stale === true) summary.append(el('small',t('Son alınan değerlendirmeler')));
   }
-  root.querySelector('[data-home-support]').replaceChildren(...view.flows.slice(0,4).map(flow => {
+  const support = root.querySelector('[data-home-support]');
+  if (support) support.replaceChildren(...view.flows.slice(0,4).map(flow => {
     const button = el('button',t(flow.label),'btn btn-outline'); button.type = 'button'; button.dataset.supportFlow = flow.id; return button;
   }));
 }

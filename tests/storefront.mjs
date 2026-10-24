@@ -45,27 +45,36 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     backend.business = {display_name:'TEST Yayın Adı',phone:'+90 (555) 000 00 00',email:'test@example.com',address:'TEST Yayın Adresi',website:'https://example.com/contact',social_links:[{platform:'instagram',url:'https://instagram.com/test-fixture'}]};
     for (const path of ['/','/bayi/','/katalog/','/urun/?id=p1','/sepet/','/restoran/','/qr-menu/']) {
       const start = backend.requests.length; await visit(page,path);
-      await expect(page.locator('footer .foot-main [data-business-name]')).toHaveText('TEST Yayın Adı');
-      await expect(page.locator('.top-contact [data-business-phone]')).toHaveAttribute('href','tel:+905550000000');
+      await expect(page.locator('footer .footer-bottom [data-business-name]')).toHaveText('TEST Yayın Adı');
+      await expect(contact(page).locator('[data-business-phone]')).toHaveAttribute('href','tel:+905550000000');
       await expect(contact(page).locator('[data-business-email]')).toHaveAttribute('href','mailto:test@example.com');
       await expect(contact(page).locator('[data-business-address]')).toHaveText('TEST Yayın Adresi');
-      await expect(contact(page).locator('[data-business-website]')).toHaveAttribute('href','https://example.com/contact');
+      await expect(contact(page).locator('[data-business-website]')).toHaveCount(0);
+      await expect(page.locator('footer .footer-contact .social-icon-link')).toHaveCount(1);
       await expect(contact(page).getByRole('link',{name:'instagram',exact:true})).toHaveAttribute('href','https://instagram.com/test-fixture');
       const requests = backend.requests.slice(start); assert.ok([1,2].includes(requests.filter(call => call.path === 'business').length),path + ' business shared store + widget'); assert.equal(requests.filter(call => call.path === 'catalog').length,1,path);
       await fits(page,390);
     }
     backend.business = {display_name:'TEST Güncel Ad',phone:'',email:'new@example.com',address:'TEST Yeni Adres',website:'',social_links:[]};
-    await visit(page,'/bayi/'); await expect(page.locator('footer .foot-main [data-business-name]')).toHaveText('TEST Güncel Ad');
+    await visit(page,'/bayi/'); await expect(page.locator('footer .footer-bottom [data-business-name]')).toHaveText('TEST Güncel Ad');
     await expect(page.locator('[data-business-phone]:visible')).toHaveCount(0);
     await expect(contact(page).locator('[data-business-email]')).toHaveAttribute('href','mailto:new@example.com');
     await expect(contact(page).locator('[data-business-address]')).toHaveText('TEST Yeni Adres');
-    await expect(contact(page).locator('[data-business-website]')).toBeHidden();
+    await expect(contact(page).locator('[data-business-website]')).toHaveCount(0);
+    // Platform root links are valid demo publications; do not suppress them.
+    backend.business = {display_name:'TEST Sosyal',website:base, social_links:[
+      {platform:'facebook',url:'https://www.facebook.com/'},
+      {platform:'instagram',url:'https://www.instagram.com/'}
+    ]}; await visit(page,'/iletisim/');
+    await expect(page.locator('footer [data-business-socials] a')).toHaveCount(2);
+    await expect(page.locator('.contact-details [data-business-socials] a')).toHaveCount(2);
+    await expect(page.locator('[data-business-website]:visible')).toHaveCount(0);
     backend.business = {website:'https://example.com/'}; await visit(page);
-    await expect(contact(page)).toBeVisible(); await expect(page.locator('.top-contact [data-contact-link]')).toBeVisible();
+    await expect(contact(page)).toBeVisible(); await expect(nav(page).getByRole('link',{name:'İletişim',exact:true})).toBeVisible();
     backend.business = {}; await page.reload(); await page.waitForLoadState('domcontentloaded');
     await expect(contact(page)).toBeHidden(); await expect(page.locator('[data-contact-link]:visible')).toHaveCount(0);
     backend.businessFailure = true; await page.reload(); await page.waitForLoadState('domcontentloaded');
-    await expect(contact(page)).toBeHidden(); await expect(page.locator('footer .foot-main [data-business-name]')).toBeHidden();
+    await expect(contact(page)).toBeHidden(); await expect(page.locator('footer .footer-bottom [data-business-name]')).toBeHidden();
     await expect(page.locator('.header-search')).toBeHidden(); await expect(page.locator('[data-shop-message]')).toBeHidden();
     await expect(page.locator('body')).not.toContainText('0216 462 40 98');
     await expect(page.locator('header').getByRole('link',{name:/Hesabım/})).toBeVisible();
@@ -140,7 +149,7 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     backend.tables = [{id:'test',name:attack,description:attack,capacity:null,image_url:'javascript:alert(1)'}];
     backend.menu = {categories:[{id:'test',name:attack}],items:[{id:'test',category_id:'test',name:attack,description:attack,price:null,currency:'TRY',image_url:'data:image/svg+xml,test'}]};
     for (const path of ['/','/restoran/','/qr-menu/']) {
-      await visit(page,path); await expect(page.locator('footer .foot-main [data-business-name]')).toHaveText(attack);
+      await visit(page,path); await expect(page.locator('footer .footer-bottom [data-business-name]')).toHaveText(attack);
       await expect(page.locator('[data-business-phone]:visible,[data-business-email]:visible,[data-business-website]:visible')).toHaveCount(0);
       await expect(page.locator('img[src="x"],script:not([src]):not([type="application/json"]),a[href^="javascript:"],img[src^="data:"]')).toHaveCount(0);
       assert.equal(await page.evaluate(() => window.apiInjection),undefined); await fits(page,320);

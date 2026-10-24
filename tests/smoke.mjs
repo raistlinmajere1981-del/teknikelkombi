@@ -20,7 +20,7 @@ const status = (page,text) => expect(page.getByText(text,{exact:false})).toBeVis
 const dealerTab = (page,name) => page.getByRole('navigation',{name:'Bayi işlemleri'}).getByRole('button',{name});
 async function fits(page,width) { assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),true,`overflow at ${width}: ${page.url()}`); }
 async function login(page,token = tokens.a, expectCatalog = true) {
-  await page.goto(base + '/hesabim/');
+  await page.goto(base + '/bayi/');
   if(await page.getByRole('button',{name:'Oturumu kapat',exact:true}).count())await page.getByRole('button',{name:'Oturumu kapat',exact:true}).click();
   const form=page.locator('form.account-form').filter({has:page.getByRole('heading',{name:'Giriş yap',exact:true})});
   await expect(form).toBeVisible();await form.locator('[name=email]').fill(token===tokens.b?'b@example.test':'a@example.test');await form.locator('[name=password]').fill('Fixture-account-Password123');await form.getByRole('button',{name:'Giriş yap',exact:true}).click();
@@ -101,7 +101,7 @@ try {
       for (const name of ['Onaylandı','Sipariş alındı','Tamamlandı','İptal edildi','Talep alındı · Masaüstüne aktarım bekleniyor']) await expect(page.getByRole('heading',{name,exact:true})).toBeVisible();
       await fits(page,width); await page.screenshot({path:`.test-artifacts/dealer-orders-${width}.png`,fullPage:true});
       await page.getByRole('button',{name:'web_dealer_order_history_a ürünlerini yeniden sepete ekle',exact:true}).click(); await expect(page.locator('.cart-total')).toContainText('160,00');
-      await dealerTab(page,'Hesabım').click(); await page.getByRole('button',{name:'Oturumu kapat',exact:true}).click(); await expect(page.locator('[data-dealer-workspace]')).toBeHidden(); await expect(page.locator('[data-dealer-content]')).toBeEmpty();
+      await dealerTab(page,'Hesabım').click(); await page.getByRole('link',{name:'Hesap ayarları',exact:true}).click(); await page.getByRole('button',{name:'Oturumu kapat',exact:true}).click(); await expect(page.locator('[data-dealer-workspace]')).toBeHidden(); await expect(page.locator('[data-dealer-content]')).toBeEmpty();
       await page.goto(base + '/katalog/'); await expect(page.getByRole('heading',{name:'TEST Yalnız Bayi Ürünü',exact:true})).toHaveCount(0); await expect(page.locator('.product-card').filter({has:page.getByRole('heading',{name:publicName,exact:true})}).locator('.price')).toContainText('100,00'); await fits(page,width);
     });
   }
@@ -150,7 +150,7 @@ try {
   await scenario('bayi A/B ve perakende sepet/fiyat/favori izolasyonu',390,async ({page,backend}) => {
     await retailCart(page); await login(page); await page.getByRole('button',{name:publicName + ' ürününü incele',exact:true}).click(); await page.getByRole('button',{name:'Favorilerime ekle',exact:true}).click(); await page.getByRole('button',{name:'Sepete ekle',exact:true}).click();
     await dealerTab(page,'Katalog').click(); await page.getByRole('checkbox',{name:'Yalnız favorilerim',exact:true}).check(); await expect(page.locator('[data-dealer-content] .product-card')).toHaveCount(1);
-    await dealerTab(page,'Hesabım').click(); await page.getByRole('button',{name:'Oturumu kapat',exact:true}).click(); await login(page,tokens.b); await expect(page.getByRole('checkbox',{name:'Yalnız favorilerim',exact:true})).not.toBeChecked(); await dealerTab(page,/^Sepet/).click(); await expect(page.getByRole('heading',{name:'Sepetiniz boş',exact:true})).toBeVisible();
+    await dealerTab(page,'Hesabım').click(); await page.getByRole('link',{name:'Hesap ayarları',exact:true}).click(); await page.getByRole('button',{name:'Oturumu kapat',exact:true}).click(); await login(page,tokens.b); await expect(page.getByRole('checkbox',{name:'Yalnız favorilerim',exact:true})).not.toBeChecked(); await dealerTab(page,/^Sepet/).click(); await expect(page.getByRole('heading',{name:'Sepetiniz boş',exact:true})).toBeVisible();
     await dealerTab(page,'Katalog').click(); await page.getByRole('button',{name:publicName + ' ürününü incele',exact:true}).click(); await expect(page.locator('.product-detail .price')).toContainText('60,00'); await expect(page.getByRole('button',{name:'Favorilerime ekle',exact:true})).toBeVisible();
     await dealerTab(page,'Siparişler').click(); await expect(page.getByText('web_dealer_order_history_a',{exact:true})).toHaveCount(0); await expect(page.getByText('web_dealer_order_history_b',{exact:true})).toBeVisible();
     await page.goto(base + '/sepet/'); await expect(page.locator('.cart-total')).toContainText('100,00'); await expect(page.locator('[data-retail-count]')).toHaveText('1'); assert.equal(backend.created.length,0);
@@ -173,19 +173,19 @@ try {
     backend.ordersFailure = false; await page.getByRole('button',{name:'Siparişleri yenile',exact:true}).click(); await expect(page.getByRole('heading',{name:'Onaylandı',exact:true})).toBeVisible(); backend.historyStatus = 'cancelled'; await page.getByRole('button',{name:'Siparişleri yenile',exact:true}).click(); await expect(page.getByRole('heading',{name:'İptal edildi',exact:true})).toHaveCount(2);
   });
   await scenario('başarısız çıkış özel görünümü kapatır; reload sonrası çıkış yeniden denenebilir',390,async ({page,backend}) => {
-    await login(page); backend.logoutFailure = true; await dealerTab(page,'Hesabım').click(); await page.getByRole('button',{name:'Oturumu kapat',exact:true}).click(); await expect(page.locator('[data-login-state]')).toContainText('doğrulanamadı'); await expect(page.locator('[data-dealer-content]')).toBeEmpty();
+    await login(page); backend.logoutFailure = true; await dealerTab(page,'Hesabım').click(); await page.getByRole('link',{name:'Hesap ayarları',exact:true}).click(); await page.getByRole('button',{name:'Oturumu kapat',exact:true}).click(); await expect(page.locator('[data-login-state]')).toContainText('doğrulanamadı'); await expect(page.locator('[data-dealer-content]')).toBeEmpty();
     await page.reload(); await expect(page.locator('[data-dealer-workspace]')).toBeHidden(); backend.logoutFailure = false; await page.getByRole('button',{name:'Yerel oturumu temizle',exact:true}).click(); await expect(page.locator('[data-dealer-workspace]')).toBeHidden();
   });
   await scenario('başka sekmedeki çıkış ve geciken katalog yanıtı özel fiyatları geri getiremez',390,async ({page,context,backend}) => {
     await login(page); const second = await context.newPage(); await second.goto(base + '/bayi/'); await expect(second.getByRole('heading',{name:'TEST BAYİ A',exact:true})).toBeVisible(); await expect(second.getByRole('button',{name:publicName + ' sepete ekle',exact:true})).toBeEnabled();
     let release,started; const ready = new Promise(resolve => started = resolve); const promise = new Promise(resolve => release = resolve); backend.deferred = {promise,started};
-    await page.getByRole('button',{name:'Yenile ↻',exact:true}).click(); await ready; await dealerTab(second,'Hesabım').click(); await second.getByRole('button',{name:'Oturumu kapat',exact:true}).click();
+    await page.getByRole('button',{name:'Yenile ↻',exact:true}).click(); await ready; await dealerTab(second,'Hesabım').click(); await second.getByRole('link',{name:'Hesap ayarları',exact:true}).click(); await second.getByRole('button',{name:'Oturumu kapat',exact:true}).click();
     await expect(page.locator('[data-dealer-workspace]')).toBeHidden(); release(); await page.waitForTimeout(100); await expect(page.locator('[data-dealer-content]')).toBeEmpty(); await expect(page.locator('[data-dealer-workspace]')).toBeHidden();
   });
   await scenario('başka sekmede farklı müşteri hesabı eski hesabın fiyat ve geçmişini temizler',390,async ({page,context}) => {
     await login(page); await dealerTab(page,'Siparişler').click(); await expect(page.getByText('web_dealer_order_history_a',{exact:true})).toBeVisible();
     const second = await context.newPage(); await second.goto(base + '/bayi/'); await expect(second.getByRole('heading',{name:'TEST BAYİ A',exact:true})).toBeVisible();
-    await dealerTab(second,'Hesabım').click(); await second.getByRole('button',{name:'Oturumu kapat',exact:true}).click(); await expect(second.locator('[data-login-state]')).toContainText('kapatıldı');
+    await dealerTab(second,'Hesabım').click(); await second.getByRole('link',{name:'Hesap ayarları',exact:true}).click(); await second.getByRole('button',{name:'Oturumu kapat',exact:true}).click(); await expect(second.locator('[data-login-state]')).toContainText('kapatıldı');
     await login(second,tokens.b); await expect(page.getByRole('heading',{name:'TEST BAYİ B',exact:true})).toBeVisible(); await expect(page.getByText('web_dealer_order_history_a',{exact:true})).toHaveCount(0);
     await page.reload(); await expect(page.getByRole('heading',{name:'TEST BAYİ B',exact:true})).toBeVisible();
     await dealerTab(page,'Siparişler').click(); await expect(page.getByText('web_dealer_order_history_a',{exact:true})).toHaveCount(0); await expect(page.getByText('web_dealer_order_history_b',{exact:true})).toBeVisible();

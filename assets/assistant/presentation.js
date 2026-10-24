@@ -19,7 +19,8 @@ export function initAssistantPresentation(storefront,root = document) {
     const flow = view?.flows.find(flow => flow.id === id); if (!flow) return;
     const widget = window.YardimciAsistanWidget;
     if (flow.kind === 'request') widget?.openRequest(flow.requestType);
-    else if (flow.kind === 'info') widget?.open({intent:'info',context:{question:flow.id === 'technical' ? t('Ürünle ilgili teknik destek almak istiyorum.') : '',sourcePath:location.pathname}});
+    else if (flow.kind === 'widget') widget?.open({intent:flow.intent});
+    else if (flow.kind === 'info') widget?.open({intent:'info',context:{question:flow.id === 'parts' ? t('Ürünle ilgili teknik destek almak istiyorum.') : '',sourcePath:location.pathname}});
     else if (flow.href) location.assign(flow.href);
   }
   function decorate() {
@@ -38,12 +39,12 @@ export function initAssistantPresentation(storefront,root = document) {
       }
       const tabs = el('div',undefined,'publication-widget-tabs'); tabs.setAttribute('role','tablist'); tabs.setAttribute('aria-label',t('Destek seçenekleri'));
       for (const [id,label] of [['actions','İşlemler'],['chat','Sohbet'],['contact','İletişim']]) {
-        if (id === 'chat' && !view.flows.some(flow => flow.id === 'chat') || id === 'contact' && !view.sections.contact) continue;
+        if (id === 'chat' && !view.flows.some(flow => flow.id === 'chat') || id === 'contact' && !view.flows.some(flow => ['whatsapp','directions'].includes(flow.id))) continue;
         const tab = el('button',label); tab.type = 'button'; tab.setAttribute('role','tab'); tab.dataset.widgetTab = id;
         tab.addEventListener('click',() => {
           activeTab = id;
           tabs.querySelectorAll('[role=tab]').forEach(button => { button.setAttribute('aria-selected',String(button === tab)); button.tabIndex = button === tab ? 0 : -1; });
-          const allowed = id === 'chat' ? ['chat','technical'] : id === 'contact' ? ['contact'] : view.flows.filter(flow => flow.id !== 'chat').map(flow => flow.id);
+          const allowed = id === 'chat' ? ['chat','parts'] : id === 'contact' ? ['whatsapp','directions'] : view.flows.filter(flow => !['chat','parts'].includes(flow.id)).map(flow => flow.id);
           actions.querySelectorAll('[data-support-flow]').forEach(card => card.hidden = !allowed.includes(card.dataset.supportFlow));
         });
         tab.addEventListener('keydown',event => { if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return; event.preventDefault(); const buttons = [...tabs.children], at = buttons.indexOf(tab); const next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length-1 : (at+(event.key === 'ArrowRight' ? 1 : buttons.length-1))%buttons.length; buttons[next].focus(); buttons[next].click(); });

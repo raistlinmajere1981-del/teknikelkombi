@@ -10,7 +10,7 @@ test('one projection handles store, rooms, tables, menu, campaigns, reviews, con
   const view = projectPublication(snapshot());
   for (const key of ['store','featured','rooms','restaurant','qr_menu','campaigns','reviews','gallery','contact','dealer','support']) assert.equal(view.sections[key],true,key);
   assert.equal(view.rooms.length,2); assert.equal(view.tables.length,1); assert.equal(view.menu.items.length,3);
-  assert.deepEqual(view.flows.map(flow => flow.id),['chat','parts','orders','technical','dealer','reservation','table','menu','contact']);
+  assert.deepEqual(view.flows.map(flow => flow.id),['chat','parts','dealer','reservation','table']);
 });
 test('capability without data never reveals a content block, and profile names never grant a surface',() => {
   const value = snapshot(); value.catalog.products = []; value.catalog.categories = []; value.publications = {}; value.business.business.gallery = []; value.business.business.phone = '';
@@ -40,9 +40,9 @@ test('malformed optional arrays and explicitly disabled campaigns stay empty',()
   const value = snapshot(); value.publications.rooms.rooms = {}; value.publications.tables.tables = 'bad'; value.publications.marketing.enabled = false;
   const view = projectPublication(value); assert.deepEqual(view.rooms,[]); assert.deepEqual(view.tables,[]); assert.deepEqual(view.campaigns,[]);
 });
-test('technical support requires AI or real contact while catalog tools remain available',() => {
+test('widget contains only direct assistant actions, never duplicate site navigation',() => {
   const value = snapshot(); value.business.business.ai_enabled = false; value.business.business.phone = ''; value.business.business.requests_enabled = false;
-  const view = projectPublication(value); assert.equal(view.flows.some(flow => flow.id === 'technical'),false); assert.equal(view.flows.some(flow => flow.id === 'parts'),true); assert.equal(view.sections.support,true);
+  const view = projectPublication(value); assert.equal(view.flows.some(flow => flow.id === 'parts'),false); assert.equal(view.flows.some(flow => flow.kind === 'link'),false); assert.equal(view.sections.support,false);
 });
 test('catalog ignores explicitly unpublished/inactive records without altering accepted prices',() => {
   const value = catalogFrom({enabled:true,products:[publicProducts[0],{...publicProducts[1],published:false}],categories:[],delivery_methods:[]});

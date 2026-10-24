@@ -60,16 +60,16 @@ export function projectPublication({business = null,catalog = null,publications 
     campaigns:campaigns.length > 0,reviews:!!reviews?.reviews.length,gallery:gallery.length > 0,
     about:!!about,contact:contact.available,dealer,support:ai || dealer || contact.available
   };
+  // The floating assistant is a task surface, not a second site menu.
+  // Do not duplicate Mağaza / Hesabım / İletişim navigational links inside it.
   const flows = [
-    {id:'chat',label:'Genel sohbet',description:'İşletmeye sorun',kind:'info',enabled:ai},
-    {id:'parts',label:'Parça bulma',description:'Ürün adı veya stok koduyla arayın',kind:'catalog',href:'/magaza/',enabled:sections.featured},
-    {id:'orders',label:'Sipariş desteği',description:'Hesabınız ve siparişleriniz',kind:'link',href:'/hesabim/',enabled:store},
-    {id:'technical',label:'Teknik destek',description:'Ürün bilgilerini ve görsellerini inceleyin',kind:ai?'info':'link',href:'/iletisim/',enabled:sections.featured && (ai || contact.available)},
-    {id:'dealer',label:'Bayi başvurusu',description:'Firma ve iletişim bilgilerinizi iletin',kind:'request',requestType:'dealer_application',enabled:dealer},
-    {id:'reservation',label:'Rezervasyon',description:'Tarih ve kişi bilgilerinizi iletin',kind:'request',requestType:'pension_reservation',enabled:requests && sections.rooms},
-    {id:'table',label:'Masa talebi',description:'Tarih, saat ve kişi sayısını seçin',kind:'request',requestType:'restaurant_reservation',enabled:requests && sections.restaurant},
-    {id:'menu',label:'QR Menü',description:'Yayınlanan menüyü inceleyin',kind:'link',href:'/qr-menu/',enabled:sections.qr_menu},
-    {id:'contact',label:'İletişim',description:'İletişim ve konum',kind:'link',href:'/iletisim/',enabled:contact.available}
+    {id:'chat',label:'Genel sohbet',description:'Sorunuzu yazın',kind:'info',enabled:ai},
+    {id:'parts',label:'Parça hakkında sor',description:'Parça kodu ve teknik bilgi',kind:'info',enabled:ai && sections.featured},
+    {id:'dealer',label:'Bayi başvurusu',description:'Firma bilgilerinizi iletin',kind:'request',requestType:'dealer_application',enabled:dealer},
+    {id:'reservation',label:'Rezervasyon',description:'Konaklama talebinizi iletin',kind:'request',requestType:'pension_reservation',enabled:requests && sections.rooms},
+    {id:'table',label:'Masa talebi',description:'Tarih ve saat seçin',kind:'request',requestType:'restaurant_reservation',enabled:requests && sections.restaurant},
+    {id:'whatsapp',label:'WhatsApp ile iletişim',description:'Mesajınızı hazırlayın',kind:'widget',intent:'contact.whatsapp',enabled:!!contact.whatsapp},
+    {id:'directions',label:'Yol tarifi',description:'Konum bilgilerini inceleyin',kind:'widget',intent:'directions',enabled:!!contact.directions}
   ].filter(flow => flow.enabled);
   sections.support = flows.length > 0;
   // Stores showcase actual published product photos, not arbitrary gallery uploads

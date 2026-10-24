@@ -74,7 +74,12 @@ export function initAccount() {
       if (current !== generation) return;
       if (account) {
         notify(''); signal('account:ready');
-        root.append(node('p',account.email));
+        const identity = node('div',null,'account-identity'); identity.append(node('span','Hesap e-postası'),node('strong',account.email));
+        root.append(identity);
+        if (account.dealer) {
+          const shortcut = node('a','Bayi paneline geç →','btn btn-red account-dealer-link'); shortcut.href = '/bayi/';
+          root.append(shortcut);
+        }
         root.append(form('Müşteri profili',[['fullName','Ad soyad','text']],'Kaydet',async values => { await accountRequest('profile',values); notify('Profiliniz kaydedildi.'); }));
         root.querySelector('[name=fullName]').value = account.fullName;
         const actions = node('div',null,'account-actions'); root.append(actions);
@@ -95,13 +100,51 @@ export function initAccount() {
         }
         }
       } else {
-        const forms = node('div',null,'account-forms'); root.append(forms);
-        forms.append(form('Giriş yap',[['email','E-posta','email'],['password','Şifre','password']],'Giriş yap',async values => { await request('account/login',values); setLock(false); await load(); }));
-        if (config.passwordRegistration) forms.append(form('Hesap oluştur',[['fullName','Ad soyad','text'],['email','E-posta','email']],'Hesap oluştur',async values => { await request('account/register',values); notify('Doğrulama bağlantısı gönderildi. E-postanızdan açarak şifrenizi belirleyin.'); }));
-        else root.append(node('p',messages.mail_unconfigured));
-        const social = node('div',null,'account-actions'); root.append(social);
+        const auth = node('div',null,'account-auth'); root.append(auth);
+        const tabs = node('div',null,'account-auth-tabs'); tabs.setAttribute('role','tablist'); tabs.setAttribute('aria-label',t('Hesap işlemleri'));
+        auth.append(tabs);
+        const forms = node('div',null,'account-forms'); auth.append(forms);
+        const loginForm = form('Giriş yap',[['email','E-posta','email'],['password','Şifre','password']],'Giriş yap',async values => { await request('account/login',values); setLock(false); await load(); });
+        forms.append(loginForm);
+        let signupForm = null;
+        if (config.passwordRegistration) {
+          signupForm = form('Hesap oluştur',[['fullName','Ad soyad','text'],['email','E-posta','email']],'Hesap oluştur',async values => {
+            await request('account/register',values);
+            notify('Doğrulama bağlantısı gönderildi. E-postanızdan açarak şifrenizi belirleyin.');
+          });
+          forms.append(signupForm);
+        }
+        const switchTo = active => {
+          for (const tab of tabs.querySelectorAll('button')) {
+            const selected = tab.dataset.accountView === active;
+            tab.setAttribute('aria-selected',String(selected)); tab.tabIndex=selected?0:-1;
+          }
+          loginForm.hidden = active !== 'login';
+          if (signupForm) signupForm.hidden = active !== 'signup';
+        };
+        for (const [id,label] of [['login','Giriş yap'],...(signupForm ? [['signup','Hesap oluştur']] : [])]) {
+          const tab = node('button',label,'account-auth-tab'); tab.type='button'; tab.setAttribute('role','tab'); tab.dataset.accountView=id;
+          tab.addEventListener('click',() => switchTo(id));
+          tabs.append(tab);
+        }
+        switchTo('login');
+        if (!signupForm) auth.append(node('p',messages.mail_unconfigured));
+        const social = node('div',null,'account-actions account-social'); auth.append(social);
         for (const provider of config.providers || []) button(social,provider === 'google' ? 'Google ile giriş' : 'Facebook ile giriş',async () => { const result = await request('account/oauth',{provider}); setLock(false); location.assign(result.url); });
-        if (config.passwordRegistration) root.append(form('Şifremi unuttum',[['email','E-posta','email']],'Bağlantı gönder',async values => { await request('account/recover',values); notify('Hesap mevcutsa e-posta gönderildi. E-posta kutunuzu kontrol edin.'); }));
+        if (config.passwordRegistration) {
+          const recoverButton = node('button','Şifremi unuttum','account-recover-toggle'); recoverButton.type = 'button';
+          const recoverForm = form('Şifremi unuttum',[['email','E-posta','email']],'Bağlantı gönder',async values => {
+            await request('account/recover',values); notify('Hesap mevcutsa e-posta gönderildi. E-posta kutunuzu kontrol edin.');
+          });
+          recoverForm.classList.add('account-recovery'); recoverForm.hidden = true;
+          recoverButton.setAttribute('aria-expanded','false');
+          recoverButton.addEventListener('click',() => {
+            recoverForm.hidden = !recoverForm.hidden;
+            recoverButton.setAttribute('aria-expanded',String(!recoverForm.hidden));
+            if (!recoverForm.hidden) recoverForm.querySelector('input')?.focus();
+          });
+          auth.append(recoverButton,recoverForm);
+        }
       }
     } catch (error) { locked(); notify(messages[error.code] || error.message); }
   }

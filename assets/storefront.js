@@ -65,6 +65,11 @@ export function createStorefront(root = document,fetchPublic = request) {
       const href = item.hasAttribute('data-business-whatsapp') ? contact.whatsapp : item.hasAttribute('data-business-directions') ? contact.directions : website;
       item.hidden = !href; item.removeAttribute('href'); if (href) item.setAttribute('href',href);
     });
+    // An external website link is meaningful only if it points outside this site.
+    all('[data-business-website]').forEach(item => {
+      try { if (new URL(website).origin === origin) { item.hidden = true; item.removeAttribute('href'); } }
+      catch { item.hidden = true; item.removeAttribute('href'); }
+    });
     all('[data-business-socials]').forEach(item => {
       item.replaceChildren(...contact.socials.map(social => {
         const anchor = node('a'); anchor.className = 'social-icon-link';
@@ -74,6 +79,7 @@ export function createStorefront(root = document,fetchPublic = request) {
         anchor.setAttribute('rel','noopener noreferrer');
         anchor.append(socialIcon(social.label)); return anchor;
       })); item.hidden = !contact.socials.length;
+      item.closest('.social-row')?.toggleAttribute('hidden',!contact.socials.length);
     });
     all('[data-business-contact],[data-contact-link]').forEach(item => { item.hidden = !contact.available; });
     all('[data-business-map]').forEach(section => {

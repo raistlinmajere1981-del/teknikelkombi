@@ -8,3 +8,50 @@
 @media(max-width:430px){.hero-highlights span{font-size:10px}.hero-publication{gap:9px}.hero-copy h1{font-size:36px}.hero-buttons{gap:10px}.hero-buttons .btn{font-size:12px}.card-actions .product-link{flex:1}.compare-button{font-size:11px;padding-inline:8px}.callout-inner{flex-direction:column}.foot-main{grid-template-columns:1fr}.category-popover{width:285px}.nav-inner>a,.nav-support,.category-menu summary{font-size:11px}}
 .card-actions{flex-direction:row}.card-actions .product-link{flex:1 0 85px}.card-actions .compare-button{flex:1}.card-actions .btn{flex:0 0 100%}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.product-card,.cat{transition:none}}
+
+/* Compact navigation, account workspace and responsive contact/footer */
+.nav-inner{justify-content:flex-start;gap:4px 23px}
+.nav-inner a{font-weight:700}
+.footer{padding-top:48px}
+.foot-main{grid-template-columns:minmax(0,1.35fr) minmax(150px,.75fr) minmax(0,1.15fr);gap:clamp(22px,4vw,70px);padding-bottom:38px}
+.foot-main h3{font-size:14px;margin:0 0 15px;color:#fff}
+.footer-navigation a{font-size:13px;margin:0;min-height:38px;color:#c2d0dc}
+.footer-identity p{max-width:390px;font-size:13px;line-height:1.75}
+.footer-contact a:not(.social-icon-link),.footer-contact p{margin:0;min-height:36px;color:#c2d0dc;font-size:13px}
+.footer-contact .social-row{margin-top:16px}
+.social-row{display:flex;flex-direction:column;align-items:flex-start;gap:9px}
+.social-row-label{font-size:12px;font-weight:800;color:inherit;opacity:.8}
+.social-row[hidden]{display:none!important}
+.footer-contact .social-icon-link{margin:0;width:44px;height:44px;background:#f6f8fa;color:#17334a;border-color:#d8e2e9}
+.footer .public-contact{background:none;border:0;margin:0;padding:0}
+.contact-details,.contact-map{padding:clamp(22px,3vw,38px);background:#f7f9fb;border:1px solid #e0e8ed;border-radius:14px}
+.contact-layout{gap:24px;margin-top:24px}
+.contact-eyebrow{text-transform:uppercase;color:var(--red);font-size:11px;font-weight:800;letter-spacing:.14em;margin-bottom:14px}
+.contact-lead{font-size:14px;line-height:1.7;color:#607487;max-width:360px;margin:-4px 0 26px}
+.contact-details .public-contact{display:grid;gap:12px;background:transparent;max-width:none}
+.contact-details .public-contact a,.contact-details .public-contact p{margin:0;line-height:1.5;min-height:38px;font-size:14px}
+.contact-details .social-row{padding-top:8px}
+.contact-map iframe{height:370px;border-radius:10px}
+.account-page{min-height:55vh;padding-top:50px;padding-bottom:70px}
+.account-page [data-login-state]:empty{display:none}
+.account-auth{max-width:560px;border:1px solid #dfe6eb;border-radius:13px;padding:clamp(18px,3vw,32px);background:#fff;box-shadow:0 12px 32px #11283c08}
+.account-auth-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;border-bottom:1px solid #dde5ea;padding-bottom:14px;margin-bottom:22px}
+.account-auth-tab{min-height:46px;border:0;border-radius:8px;color:#53697c;font-size:14px;font-weight:800;background:#f2f5f8;cursor:pointer}
+.account-auth-tab[aria-selected="true"]{background:var(--navy);color:white}
+.account-forms{display:block;max-width:none}
+.account-form{background:transparent;border:0;padding:0;display:grid;gap:14px;max-width:none}
+.account-form[hidden],.account-recovery[hidden]{display:none!important}
+.account-form h2{font-size:21px;margin:0 0 6px}
+.account-form label{font-size:13px}
+.account-form input{min-height:46px;border-color:#cbd5de;border-radius:7px}
+.account-form button{min-height:45px}
+.account-recover-toggle{display:inline-block;background:transparent;border:0;text-decoration:underline;text-underline-offset:4px;color:var(--navy);font-size:13px;padding:12px 0;margin-top:14px;cursor:pointer}
+.account-recovery{background:#f7f9fa;border-radius:10px;border:1px solid #e5eaee;padding:20px;margin-top:9px}
+.account-identity{display:grid;gap:5px;color:#6d7f8c;margin:0 0 20px}
+.account-identity strong{font-size:17px;color:var(--navy);overflow-wrap:anywhere}
+.account-page [data-account-root]>form{max-width:640px;background:#f8fafb;border:1px solid #dfe6eb;border-radius:12px;padding:26px}
+.account-page .account-actions{max-width:640px;margin-top:18px}
+.account-dealer-link{display:inline-flex;width:fit-content;align-items:center;justify-content:center;margin:0 0 22px;text-decoration:none}
+.account-page [data-account-local]{margin-top:24px;padding:8px 12px;min-height:38px;font-size:11px;opacity:.68}
+@media(max-width:800px){.foot-main{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px}.footer-identity{grid-column:1/-1}.contact-layout{grid-template-columns:1fr}}
+@media(max-width:530px){.foot-main{grid-template-columns:1fr}.footer-identity{grid-column:auto}.account-page{padding-block:28px 50px}.contact-details,.contact-map{padding:20px}}

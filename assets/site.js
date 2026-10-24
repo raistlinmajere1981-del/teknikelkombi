@@ -18,6 +18,7 @@ document.addEventListener('pointerdown',event => {
 document.addEventListener('keydown',event => { if (event.key === 'Escape') all('[data-category-menu][open]').forEach(menu => { menu.open = false; menu.querySelector('summary')?.focus(); }); });
 const page = document.body.dataset.page;
 const dealerMode = page === 'account';
+const dealerPanel = dealerMode && new URLSearchParams(location.search).get('panel') === 'dealer';
 const publicationPage = ['restaurant','qr-menu','rooms','room','contact','about','gallery','reviews','announcements','brands'].includes(page);
 const storefront = createStorefront();
 const RETAIL_KEY = 'teknikel.retail.v1';
@@ -367,7 +368,7 @@ async function loadDealer() {
     const session = await dealerRequest('session',undefined,epoch); if (epoch !== state.epoch) return;
     if (session.authenticated !== true || !session.dealer?.access_id || typeof session.dealer.display_name !== 'string') throw new ApiError(t('Bayi oturumu doğrulanamadı.'),502);
     if (!state.identity || state.identity.access_id !== session.dealer.access_id) { state.cart = openCart('teknikel.dealer.v1:' + session.dealer.access_id); state.filter = {q:'',category:'',brand:''}; state.favoritesOnly = false; state.pageNo = 1; state.tab = 'catalog'; state.detail = null; }
-    state.identity = session.dealer; $('[data-dealer-login]').hidden = false; $('[data-dealer-workspace]').hidden = false; $('[data-dealer-name]').textContent = session.dealer.display_name; $('[data-dealer-state]').textContent = t('Katalog ve siparişler yükleniyor…');
+    state.identity = session.dealer; $('[data-dealer-login]').hidden = dealerPanel; $('[data-dealer-workspace]').hidden = !dealerPanel; $('[data-dealer-name]').textContent = session.dealer.display_name; $('[data-dealer-state]').textContent = t('Katalog ve siparişler yükleniyor…');
     const [catalog,orders] = await Promise.allSettled([dealerRequest('catalog',undefined,epoch),dealerRequest('orders',undefined,epoch)]); if (epoch !== state.epoch) return;
     if (catalog.status === 'fulfilled') {
       try { const safe = catalogFrom(catalog.value,true); if (safe.access_id !== state.identity.access_id) throw new Error(t('Bayi kataloğunun hesabı doğrulanamadı.')); state.catalog = safe; } catch (error) { state.catalogError = error.message; }
@@ -391,7 +392,7 @@ function renderDealer() {
   if (state.tab === 'orders') { renderOrders(root); return; }
   if (state.tab === 'account') {
     const panel = el('section',undefined,'account-panel'); panel.append(el('div',t('FİRMA HESABI'),'eyebrow'),el('h2',state.identity.display_name),el('p',t('Bayi fiyatlarınız ve siparişleriniz yalnız geçerli bayi oturumunuzla gösterilir. Web ve Android aynı sunucu hesabını kullanır.')),el('p',t('Favoriler ve sepet yalnız bu tarayıcıdaki bayi hesabınıza aittir. Özel fiyatlar tarayıcı depolamasına kaydedilmez.')));
-    panel.append(link(t('Hesap ayarları'), '#main','btn btn-outline')); root.append(panel); return;
+    panel.append(link(t('Hesap ayarları'), '/hesabim/','btn btn-outline')); root.append(panel); return;
   }
   if (state.detail) {
     root.append(action(t('← Bayi kataloğuna dön'),() => { state.detail = null; renderDealer(); },'text-link'));
@@ -437,9 +438,9 @@ function renderOrders(root) {
 function initDealer() {
   $('[data-dealer-refresh]').addEventListener('click',protect(loadDealer));
   all('[data-dealer-tab]').forEach(button => button.addEventListener('click',() => { if (state.busy) return; state.tab = button.dataset.dealerTab; state.detail = null; notify('',true); renderDealer(); }));
-  document.addEventListener('account:ready',event => { if (event.detail?.dealer) loadDealer(); else lockDealer('',false); });
+  document.addEventListener('account:ready',event => { if (event.detail?.dealer && dealerPanel) loadDealer(); else if (!event.detail?.dealer) lockDealer('',false); });
   document.addEventListener('account:locked',() => lockDealer('',false));
-  document.addEventListener('visibilitychange',() => { if (!document.hidden && state.identity && !state.busy) loadDealer(); });
+  document.addEventListener('visibilitychange',() => { if (!document.hidden && dealerPanel && state.identity && !state.busy) loadDealer(); });
   window.addEventListener('pagehide',() => lockDealer('',false));
 }
 window.addEventListener('storage',event => {

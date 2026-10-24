@@ -42,7 +42,8 @@ export function directionsUrl(info = {}) {
       || (host === 'goo.gl' && /^\/maps\/[A-Za-z0-9_-]+$/.test(url.pathname))
       || (['openstreetmap.org','www.openstreetmap.org'].includes(host) && (url.searchParams.has('mlat') || /^\/(node|way|relation)\/\d+$/.test(url.pathname)))) return map;
   }
-  return text(info.address) ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(text(info.address)) : '';
+  // Without published coordinates or an explicit map URL, do not invent a directions link.
+  return '';
 }
 export function mapEmbedUrl(info = {}) {
   if (info.mapDisplayMode === 'google_maps_embed') {

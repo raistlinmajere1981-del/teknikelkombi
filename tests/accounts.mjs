@@ -26,10 +26,11 @@ try {
   const login=page.locator('form.account-form').filter({has:page.getByRole('heading',{name:'Sign in',exact:true})});
   await expect(login).toBeVisible();await expect(page.getByRole('button',{name:'Sign in with Google'})).toHaveCount(0);
   const signup=page.locator('form.account-form').filter({has:page.getByRole('heading',{name:'Create account',exact:true})});
-  await expect(signup).toBeVisible();
+  await page.getByRole('tab',{name:'Create account',exact:true}).click();await expect(signup).toBeVisible();
   await expect(signup.locator('[name=fullName]')).toHaveCount(1);
   await expect(signup.locator('[name=email]')).toHaveCount(1);
   await expect(signup.locator('[name=password]')).toHaveCount(0);
+  await page.getByRole('tab',{name:'Sign in',exact:true}).click();
   await login.locator('[name=email]').fill('teknikel@example.test');await login.locator('[name=password]').fill(accountPassword);await login.getByRole('button',{name:'Sign in',exact:true}).click();
   await expect(page.getByRole('heading',{name:'Customer profile',exact:true})).toBeVisible();await expect(page.getByText('teknikel@example.test',{exact:true})).toBeVisible();await expect(page.locator('[data-dealer-workspace]')).toBeHidden();
   const draft=page.locator('[data-account-root] [name=fullName]');await draft.fill('Unsaved profile draft');
@@ -39,6 +40,9 @@ try {
   await expect(page.getByRole('heading',{name:'Customer profile',exact:true})).toBeVisible();assert.notEqual((await context.cookies()).find(x=>x.name==='ya_account_session').value,first);
   f.database.saveCustomer({...customer,commercialProfile:{companyName:'Teknikel Dealer',dealerStatus:'active',priceGroup:'dealer_a'}});
   saveRuntimeCatalogProduct(f.database.databasePath,{name:'Account Product',sku:'ACCOUNT-TEST',brand:'',categoryId:'',salePrice:100,dealerPriceA:80,dealerPriceB:null,purchasePrice:20,currency:'TRY',unit:'piece',taxRate:20,trackInventory:false,isActive:true});await f.publish();await page.reload();
+  await expect(page.locator('[data-dealer-workspace]')).toBeHidden();
+  await expect(page.getByRole('link',{name:/dealer panel/i})).toBeVisible();
+  await page.getByRole('link',{name:/dealer panel/i}).click();
   await expect(page.locator('[data-dealer-workspace]')).toBeVisible();await expect(page.getByRole('heading',{name:'Account Product'})).toBeVisible();
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   mkdirSync(join(siteSource,'.test-artifacts/accounts'),{recursive:true});await page.screenshot({path:join(siteSource,'.test-artifacts/accounts/account-en-mobile.png'),fullPage:true});
