@@ -97,7 +97,7 @@ export function initAccount() {
       } else {
         const forms = node('div',null,'account-forms'); root.append(forms);
         forms.append(form('Giriş yap',[['email','E-posta','email'],['password','Şifre','password']],'Giriş yap',async values => { await request('account/login',values); setLock(false); await load(); }));
-        if (config.passwordRegistration) forms.append(form('Hesap oluştur',[['fullName','Ad soyad','text'],['email','E-posta','email'],['password','Şifre','password']],'Hesap oluştur',async values => { await request('account/register',values); notify('E-posta kutunuzu kontrol edin. Doğrulama bağlantısı gönderildi.'); }));
+        if (config.passwordRegistration) forms.append(form('Hesap oluştur',[['fullName','Ad soyad','text'],['email','E-posta','email']],'Hesap oluştur',async values => { await request('account/register',values); notify('Doğrulama bağlantısı gönderildi. E-postanızdan açarak şifrenizi belirleyin.'); }));
         else root.append(node('p',messages.mail_unconfigured));
         const social = node('div',null,'account-actions'); root.append(social);
         for (const provider of config.providers || []) button(social,provider === 'google' ? 'Google ile giriş' : 'Facebook ile giriş',async () => { const result = await request('account/oauth',{provider}); setLock(false); location.assign(result.url); });

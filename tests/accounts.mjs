@@ -25,6 +25,11 @@ try {
   await page.goto(f.siteUrl+'/hesabim/?lang=en');
   const login=page.locator('form.account-form').filter({has:page.getByRole('heading',{name:'Sign in',exact:true})});
   await expect(login).toBeVisible();await expect(page.getByRole('button',{name:'Sign in with Google'})).toHaveCount(0);
+  const signup=page.locator('form.account-form').filter({has:page.getByRole('heading',{name:'Create account',exact:true})});
+  await expect(signup).toBeVisible();
+  await expect(signup.locator('[name=fullName]')).toHaveCount(1);
+  await expect(signup.locator('[name=email]')).toHaveCount(1);
+  await expect(signup.locator('[name=password]')).toHaveCount(0);
   await login.locator('[name=email]').fill('teknikel@example.test');await login.locator('[name=password]').fill(accountPassword);await login.getByRole('button',{name:'Sign in',exact:true}).click();
   await expect(page.getByRole('heading',{name:'Customer profile',exact:true})).toBeVisible();await expect(page.getByText('teknikel@example.test',{exact:true})).toBeVisible();await expect(page.locator('[data-dealer-workspace]')).toBeHidden();
   const draft=page.locator('[data-account-root] [name=fullName]');await draft.fill('Unsaved profile draft');
