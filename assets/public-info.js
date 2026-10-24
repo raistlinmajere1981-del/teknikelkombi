@@ -23,6 +23,7 @@ export function whatsappUrl(info) {
 }
 export function socialLinks(info) {
   return (Array.isArray(info?.social_links) ? info.social_links : []).flatMap(item => {
+    if (!item || item.published === false || item.is_active === false || item.visible === false) return [];
     const url = httpsUrl(item?.url), label = text(item?.label) || text(item?.platform);
     return url && label ? [{url,label}] : [];
   });
@@ -43,6 +44,21 @@ export function directionsUrl(info = {}) {
   }
   return text(info.address) ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(text(info.address)) : '';
 }
+export function mapEmbedUrl(info = {}) {
+  if (info.mapDisplayMode === 'google_maps_embed') {
+    const address = httpsUrl(info.googleMapsEmbedUrl);
+    if (address) {
+      const url = new URL(address);
+      if (['google.com','www.google.com'].includes(url.hostname) && !url.port && !url.hash && url.pathname === '/maps/embed' && url.searchParams.get('pb')) return address;
+    }
+    return '';
+  }
+  const {latitude:lat,longitude:lon} = info;
+  if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) return '';
+  const url = new URL('https://www.openstreetmap.org/export/embed.html');
+  url.searchParams.set('bbox',[lon-.018,lat-.010,lon+.018,lat+.010].join(','));
+  url.searchParams.set('layer','mapnik'); url.searchParams.set('marker',lat+','+lon); return url.href;
+}
 export function contactInfo(info = {}) {
   const value = {phone:phoneUrl(info.phone),email:emailUrl(info.email),whatsapp:whatsappUrl(info),address:text(info.address),website:websiteUrl(info.website),socials:socialLinks(info),directions:directionsUrl(info)};
   return {...value,available:!!(value.phone || value.email || value.whatsapp || value.address || value.website || value.socials.length || value.directions)};
@@ -50,7 +66,7 @@ export function contactInfo(info = {}) {
 export const aboutText = info => text(info?.about_text) || text(info?.description);
 export function galleryImages(info,origin) {
   return (Array.isArray(info?.gallery) ? info.gallery : []).flatMap(item => {
-    if (!item || item.published === false || item.is_active === false || (item.kind && !['cover','photo','image'].includes(item.kind))) return [];
+    if (!item || item.visible === false || item.published === false || item.is_active === false || (item.kind && !['cover','photo','image'].includes(item.kind))) return [];
     const url = photoUrl(typeof item === 'string' ? item : item.url,origin);
     return url ? [{url,title:text(item.title) || text(item.caption)}] : [];
   });
@@ -60,8 +76,8 @@ export function reviewsFrom(value) {
   const rating = Number.isFinite(value.rating) && value.rating >= 0 && value.rating <= 5 ? value.rating : null;
   return {...value,rating,reviews:value.reviews.filter(item => text(item?.text))};
 }
-export const namedPublication = item => item && item.is_active !== false && item.active !== false && item.published !== false && text(item.id) && text(item.name);
+export const namedPublication = item => item && item.visible !== false && item.is_active !== false && item.active !== false && item.published !== false && text(item.id) && text(item.name);
 export function publicationImages(item,origin) {
-  const media = (Array.isArray(item.media) ? item.media : []).filter(media => media && ['cover','photo','image'].includes(media.kind) && media.published !== false);
+  const media = (Array.isArray(item.media) ? item.media : []).filter(media => media && ['cover','photo','image'].includes(media.kind) && media.published !== false && media.is_active !== false && media.visible !== false);
   return [...new Set([item.image_url,...media.map(media => media.url)].map(url => photoUrl(url,origin)).filter(Boolean))];
 }

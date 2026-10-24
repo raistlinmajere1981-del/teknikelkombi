@@ -1,20 +1,20 @@
 import {t,locale} from './language.js';
 import {money} from './commerce.js';
-import {hasSurface} from './storefront.js';
+import {hasSurface,publicationAllowed} from './publication-model.js';
 import {text,namedPublication,publicationImages,contactInfo} from './public-info.js';
 
-export async function loadRooms(page,business,fetchPublic,root = document) {
+export async function loadRooms(page,business,fetchPublic,root = document,view) {
   const content = root.querySelector('[data-public-content]'), status = root.querySelector('[data-publication-state]');
   const el = (tag,value,cls) => { const node = root.createElement(tag); if (value !== undefined) node.textContent = value; if (cls) node.className = cls; return node; };
   const message = value => { status.textContent = value; status.hidden = !value; };
   content.replaceChildren(); content.hidden = true;
   if (!business) { message(t('Oda bilgilerine ulaşılamadı. Lütfen tekrar deneyin.')); return; }
-  if (!hasSurface(business,'rooms')) { message(t('Odalar şu anda yayında değil.')); return; }
+  if (!hasSurface(business,'rooms') || !publicationAllowed(business,'rooms')) { message(t('Odalar şu anda yayında değil.')); return; }
   try {
     const value = await fetchPublic('rooms');
     if (value.enabled !== true) { message(t('Odalar şu anda yayında değil.')); return; }
     if (!Array.isArray(value.rooms)) throw new Error('invalid_rooms');
-    const rooms = value.rooms.filter(namedPublication);
+    const rooms = view ? view.rooms : value.rooms.filter(namedPublication);
     const detail = page === 'room';
     const id = new URLSearchParams(root.defaultView.location.search).get('id');
     const shown = detail ? rooms.filter(room => room.id === id) : rooms;
@@ -29,7 +29,7 @@ export async function loadRooms(page,business,fetchPublic,root = document) {
       }
       const body = el('div',undefined,'publication-card-body');
       if (!detail) body.append(el('h2',room.name));
-      else { root.querySelector('h1').textContent = room.name; root.title = room.name + ' | Teknikel'; }
+      else { root.querySelector('h1').textContent = room.name; root.title = [room.name,business.business?.display_name].filter(Boolean).join(' | '); }
       if (Number.isInteger(room.capacity) && room.capacity > 0) body.append(el('p',room.capacity + t(' kişi'),'table-capacity'));
       for (const field of ['bed_info','description','price_note']) if (text(room[field])) body.append(el('p',text(room[field])));
       if (Number.isInteger(room.floor)) body.append(el('p',t('Kat: ') + room.floor));

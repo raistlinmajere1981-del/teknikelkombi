@@ -56,7 +56,9 @@ test('a failed business publication stays empty and an explicit refresh recovers
     assert.equal(endpoint,'business'); if (failed) throw new Error('offline');
     return {ok:true,business:{display_name:'TEST recovered',public_surfaces:[]}};
   });
-  assert.deepEqual(await storefront.load(),{business:null,catalog:null});
+  const failedSnapshot = await storefront.load();
+  assert.equal(failedSnapshot.business,null); assert.equal(failedSnapshot.catalog,null);
+  assert.equal(Object.values(failedSnapshot.view.sections).some(Boolean),false);
   failed = false; assert.equal((await storefront.load(true)).business.business.display_name,'TEST recovered');
 });
 test('a late older publication cannot replace a refreshed shared chrome',async () => {

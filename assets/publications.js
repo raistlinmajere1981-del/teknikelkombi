@@ -1,13 +1,11 @@
 import {t,locale} from './language.js';
 import {request,money} from './commerce.js';
-import {hasSurface} from './storefront.js';
+import {hasSurface,publicationAllowed,menuData} from './publication-model.js';
 
 import {text,namedPublication as named,publicationImages} from './public-info.js';
 export function menuFrom(value) {
   if (!Array.isArray(value?.categories) || !Array.isArray(value?.items)) throw new Error(t('Menü yayını okunamadı.'));
-  const categories = value.categories.filter(named);
-  const ids = new Set(categories.map(category => category.id));
-  return {categories,items:value.items.filter(item => named(item) && ids.has(item.category_id))};
+  return menuData(value);
 }
 export function menuPrice(item) {
   const price = item.price ?? item.unit_price;
@@ -16,7 +14,7 @@ export function menuPrice(item) {
 export function tableCapacity(table) {
   return Number.isInteger(table.capacity) && table.capacity > 0 ? table.capacity + t(' kişi') : '';
 }
-export async function loadPublicationPage(page,business,root = document,fetchPublic = request) {
+export async function loadPublicationPage(page,business,root = document,fetchPublic = request,view) {
   const $ = selector => root.querySelector(selector);
   const el = (tag,label,cls) => { const node = root.createElement(tag); if (label !== undefined) node.textContent = label; if (cls) node.className = cls; return node; };
   const restaurant = page === 'restaurant', surface = restaurant ? 'restaurant' : 'qr_menu';
@@ -38,13 +36,13 @@ export async function loadPublicationPage(page,business,root = document,fetchPub
     img.addEventListener('error',() => img.remove()); img.src = url; card.append(img);
   }
   if (!business) { message(subject + t(' bilgilerine ulaşılamadı. Lütfen tekrar deneyin.')); return; }
-  if (!hasSurface(business,surface)) { unavailable(); return; }
+  if (!hasSurface(business,surface) || !publicationAllowed(business,surface)) { unavailable(); return; }
   try {
     const value = await fetchPublic(restaurant ? 'tables' : 'menu');
     if (value.enabled === false) { unavailable(); return; }
     if (restaurant) {
       if (value.enabled !== true || !Array.isArray(value.tables)) throw new Error(t('Restoran yayını okunamadı.'));
-      const tables = value.tables.filter(named);
+      const tables = view ? view.tables : value.tables.filter(named);
       list.replaceChildren(...tables.map(table => {
         const card = el('article',undefined,'publication-card'); image(table,card);
         const body = el('div',undefined,'publication-card-body'); body.append(el('h2',table.name));

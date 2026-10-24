@@ -45,7 +45,7 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     backend.business = {display_name:'TEST Yayın Adı',phone:'+90 (555) 000 00 00',email:'test@example.com',address:'TEST Yayın Adresi',website:'https://example.com/contact',social_links:[{platform:'instagram',url:'https://instagram.com/test-fixture'}]};
     for (const path of ['/','/bayi/','/katalog/','/urun/?id=p1','/sepet/','/restoran/','/qr-menu/']) {
       const start = backend.requests.length; await visit(page,path);
-      await expect(page.locator('footer [data-business-name]')).toHaveText('TEST Yayın Adı');
+      await expect(page.locator('footer .foot-main [data-business-name]')).toHaveText('TEST Yayın Adı');
       await expect(page.locator('.top-contact [data-business-phone]')).toHaveAttribute('href','tel:+905550000000');
       await expect(contact(page).locator('[data-business-email]')).toHaveAttribute('href','mailto:test@example.com');
       await expect(contact(page).locator('[data-business-address]')).toHaveText('TEST Yayın Adresi');
@@ -55,7 +55,7 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
       await fits(page,390);
     }
     backend.business = {display_name:'TEST Güncel Ad',phone:'',email:'new@example.com',address:'TEST Yeni Adres',website:'',social_links:[]};
-    await visit(page,'/bayi/'); await expect(page.locator('footer [data-business-name]')).toHaveText('TEST Güncel Ad');
+    await visit(page,'/bayi/'); await expect(page.locator('footer .foot-main [data-business-name]')).toHaveText('TEST Güncel Ad');
     await expect(page.locator('[data-business-phone]:visible')).toHaveCount(0);
     await expect(contact(page).locator('[data-business-email]')).toHaveAttribute('href','mailto:new@example.com');
     await expect(contact(page).locator('[data-business-address]')).toHaveText('TEST Yeni Adres');
@@ -65,7 +65,7 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     backend.business = {}; await page.reload(); await page.waitForLoadState('domcontentloaded');
     await expect(contact(page)).toBeHidden(); await expect(page.locator('[data-contact-link]:visible')).toHaveCount(0);
     backend.businessFailure = true; await page.reload(); await page.waitForLoadState('domcontentloaded');
-    await expect(contact(page)).toBeHidden(); await expect(page.locator('footer [data-business-name]')).toBeHidden();
+    await expect(contact(page)).toBeHidden(); await expect(page.locator('footer .foot-main [data-business-name]')).toBeHidden();
     await expect(page.locator('.header-search')).toBeHidden(); await expect(page.locator('[data-shop-message]')).toBeHidden();
     await expect(page.locator('body')).not.toContainText('0216 462 40 98');
     await expect(page.locator('header').getByRole('link',{name:/Hesabım/})).toBeVisible();
@@ -77,6 +77,7 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     await page.reload(); await expect(page.locator('[data-category-grid] a')).toHaveCount(1);
     await expect(page.locator('[data-category-grid]')).toContainText('TEST Yeni Kategori');
     await expect(page.locator('[data-category-nav] a')).toHaveAttribute('href','/magaza/?category=new%2Fcategory%20%26%20id');
+    await page.locator('[data-category-menu] summary').click();
     await page.locator('[data-category-nav] a').click();
     assert.equal(new URL(page.url()).searchParams.get('category'),'new/category & id');
     backend.categories = []; await visit(page); await expect(page.locator('[data-category-section]')).toBeHidden(); await expect(page.locator('[data-category-nav] a')).toHaveCount(0);
@@ -139,7 +140,7 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     backend.tables = [{id:'test',name:attack,description:attack,capacity:null,image_url:'javascript:alert(1)'}];
     backend.menu = {categories:[{id:'test',name:attack}],items:[{id:'test',category_id:'test',name:attack,description:attack,price:null,currency:'TRY',image_url:'data:image/svg+xml,test'}]};
     for (const path of ['/','/restoran/','/qr-menu/']) {
-      await visit(page,path); await expect(page.locator('footer [data-business-name]')).toHaveText(attack);
+      await visit(page,path); await expect(page.locator('footer .foot-main [data-business-name]')).toHaveText(attack);
       await expect(page.locator('[data-business-phone]:visible,[data-business-email]:visible,[data-business-website]:visible')).toHaveCount(0);
       await expect(page.locator('img[src="x"],script:not([src]):not([type="application/json"]),a[href^="javascript:"],img[src^="data:"]')).toHaveCount(0);
       assert.equal(await page.evaluate(() => window.apiInjection),undefined); await fits(page,320);
@@ -161,7 +162,7 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     };
     backend.campaigns = [{id:'test_campaign',channel:'website',placement:'homepage_feature',published:true,title:'TEST Yayınlanmış Duyuru',text:'TEST Kampanya metni',images:[]}];
     await visit(page);
-    for (const label of ['Mağaza','Odalar','Restoran','QR Menü','Hakkımızda','Galeri','Yorumlar','Duyurular','İletişim'])
+    for (const label of ['Odalar','Restoran','QR Menü','Hakkımızda','Galeri','Yorumlar','Kampanyalar','İletişim'])
       await expect(nav(page).getByRole('link',{name:label,exact:true})).toBeVisible();
     await expect(page.locator('.campaign-section')).toBeVisible();
     await expect(page.locator('[data-category-nav] a')).toHaveCount(2);
@@ -198,7 +199,7 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     await expect(page.locator('[data-brand-section]')).toBeHidden();
     await expect(page.locator('[data-category-nav] a')).toHaveCount(0);
     await expect(page.locator('header [data-business-phone]:visible')).toHaveCount(0);
-    for (const label of ['Mağaza','Odalar','Restoran','QR Menü','Hakkımızda','Galeri','Yorumlar','Duyurular','İletişim'])
+    for (const label of ['Odalar','Restoran','QR Menü','Hakkımızda','Galeri','Yorumlar','Kampanyalar','İletişim'])
       await expect(nav(page).getByRole('link',{name:label,exact:true})).toBeHidden();
     for (const path of ['/odalar/','/odalar/oda/?id=room','/restoran/','/qr-menu/','/hakkimizda/','/galeri/','/yorumlar/','/iletisim/','/duyurular/']) {
       await visit(page,path);
@@ -220,7 +221,7 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     await visit(page);
     await expect(nav(page).getByRole('link',{name:'Yorumlar',exact:true})).toBeHidden();
     await expect(nav(page).getByRole('link',{name:'Galeri',exact:true})).toBeHidden();
-    await expect(nav(page).getByRole('link',{name:'Duyurular',exact:true})).toBeHidden();
+    await expect(nav(page).getByRole('link',{name:'Kampanyalar',exact:true})).toBeHidden();
     await visit(page,'/hakkimizda/');
     await expect(page.locator('[data-public-content]')).toContainText('<img src=x onerror');
     assert.equal(await page.evaluate(() => window.injection),undefined);
@@ -248,7 +249,7 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     assert.equal(new URL(page.url()).searchParams.get('category'),'c1');
     await visit(page,'/bayi/');
     assert.equal(await page.locator('html').getAttribute('lang'),'en','cookie persistence');
-    await expect(page.locator('header nav a[href="/magaza/"]')).toHaveText('Store');
+    await expect(page.locator('[data-category-menu] summary')).toContainText('All categories');
     await visit(page,'/hakkimizda/');
     await expect(page.locator('[data-public-content]')).toContainText('English business details');
     await visit(page,'/qr-menu/');
@@ -267,7 +268,8 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     assert.equal(new URL(page.url()).pathname,'/magaza/');
     assert.equal(new URL(page.url()).searchParams.get('q'),'POMPA');
     assert.equal(new URL(page.url()).searchParams.get('category'),'c1');
-    await expect(page.locator('header nav a[href="/magaza/"]')).toHaveCount(1);
+    await expect(page.locator('.nav-inner>a[href="/magaza/"]')).toHaveCount(0);
+    await expect(page.locator('[data-category-menu] summary')).toBeVisible();
     await expect(page.locator('header nav.nav')).not.toContainText('Tüm Ürünler');
     await visit(page,'/iletisim/');
     await expect(page.locator('main [data-business-socials] a[aria-label="instagram"] svg')).toBeVisible();

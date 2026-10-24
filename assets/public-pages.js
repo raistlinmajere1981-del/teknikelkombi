@@ -2,7 +2,7 @@ import {t,locale} from './language.js';
 import {text,contactInfo,aboutText,galleryImages,reviewsFrom,httpsUrl} from './public-info.js';
 import {websiteCampaigns,renderCampaign} from './marketing.js';
 
-export async function loadPublicPage(page,business,fetchPublic,root = document) {
+export async function loadPublicPage(page,business,fetchPublic,root = document,view) {
   const content = root.querySelector('[data-public-content]'), status = root.querySelector('[data-publication-state]');
   const el = (tag,value,cls) => { const node = root.createElement(tag); if (value !== undefined) node.textContent = value; if (cls) node.className = cls; return node; };
   const message = value => { status.textContent = value; status.hidden = !value; };
@@ -13,8 +13,12 @@ export async function loadPublicPage(page,business,fetchPublic,root = document) 
   if (!business) { message(t('Bilgilere ulaşılamadı. Lütfen tekrar deneyin.')); return; }
   const info = business.business || {};
   function unavailable() { message(t('Bu sayfa şu anda yayında değil.')); }
+  if (view && !(page === 'contact' ? view.sections.contact : page === 'brands' ? view.sections.brands : view.pages[page])) { unavailable(); return; }
   try {
-    if (page === 'contact') {
+    if (page === 'brands') {
+      content.className = 'brands public-brands';
+      content.append(...view.brands.map(brand => link(brand,'/magaza/?brand='+encodeURIComponent(brand))));
+    } else if (page === 'contact') {
       if (!contactInfo(info).available) { unavailable(); return; }
       note(t('Ulaşım bilgileri'),info.directions_note);
       note(t('Ödeme bilgileri'),info.payment_note);

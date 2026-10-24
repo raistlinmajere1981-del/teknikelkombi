@@ -54,7 +54,7 @@ export function catalogFrom(value, dealer = false) {
   const raw = dealer ? value?.catalog : value;
   if (!raw || !Array.isArray(raw.products) || !Array.isArray(raw.delivery_methods)) throw new ApiError(t('Katalog bilgileri okunamadı.'), 502);
   if (dealer && (typeof raw.access_id !== 'string' || !/^[a-f0-9]{64}$/.test(raw.catalog_revision))) throw new ApiError(t('Bayi kataloğu doğrulanamadı.'), 502);
-  const products = raw.products.map(p => {
+  const products = raw.products.filter(p => p?.published !== false && p?.is_active !== false && p?.active !== false && p?.visible !== false).map(p => {
     if (!p || typeof p.product_id !== 'string' || !p.product_id || typeof p.name !== 'string' || !p.name || !Number.isFinite(p.price) || p.price < 0 || !/^[A-Z]{3}$/.test(p.currency)) throw new ApiError(t('Ürün yayını geçersiz.'), 502);
     return {...p};
   });

@@ -1,25 +1,17 @@
 import {request,catalogFrom} from './commerce.js';
 
-import {text,contactInfo,aboutText,galleryImages,reviewsFrom} from './public-info.js';
-import {websiteCampaigns} from './marketing.js';
+import {text} from './public-info.js';
+import {hasSurface,storeEnabled,publicCategories,projectPublication,publicationEndpoints} from './publication-model.js';
 export {phoneUrl,emailUrl,websiteUrl} from './public-info.js';
-
-export const hasSurface = (business,surface) => Array.isArray(business?.business?.public_surfaces) && business.business.public_surfaces.includes(surface);
-export const storeEnabled = (business,catalog) => hasSurface(business,'store') && catalog?.enabled === true;
-export function publicCategories(catalog) {
-  const seen = new Set();
-  return (Array.isArray(catalog?.categories) ? catalog.categories : []).filter(category => {
-    if (!text(category?.id) || !text(category?.name) || seen.has(category.id)) return false;
-    seen.add(category.id); return true;
-  });
-}
+export {hasSurface,storeEnabled,publicCategories} from './publication-model.js';
 
 // One snapshot per document, shared by commerce and the public chrome. Dealer
 // catalogs never enter this state. Explicit reloads fetch a fresh publication.
 export function createStorefront(root = document,fetchPublic = request) {
   const all = selector => [...root.querySelectorAll(selector)].filter(item => item.tagName !== 'SCRIPT');
   const node = (tag,label,cls) => { const item = root.createElement(tag); if (label !== undefined) item.textContent = label; if (cls) item.className = cls; return item; };
-  let pending, reads = new Map();
+  let pending, reads = new Map(), latest;
+  const listeners = new Set();
   const cachedRead = (cache,endpoint) => { if (!cache.has(endpoint)) cache.set(endpoint,Promise.resolve().then(() => fetchPublic(endpoint))); return cache.get(endpoint); };
   const read = endpoint => cachedRead(reads,endpoint);
   const origin = root.defaultView?.location.origin || 'https://localhost';
@@ -61,9 +53,11 @@ export function createStorefront(root = document,fetchPublic = request) {
     return svg;
   }
   function render({business,catalog},publications = {}) {
-    const info = business?.business || {};
-    const contact = contactInfo(info), {phone,email,website} = contact;
+    const view = projectPublication({business,catalog,publications},origin);
+    latest = {business,catalog,publications,view};
+    const {info,contact} = view, {phone,email,website} = contact;
     field('[data-business-name]',text(info.display_name));
+    field('[data-business-description]',view.description);
     field('[data-business-phone]',phone ? text(info.phone) : '',phone);
     field('[data-business-email]',email ? text(info.email) : '',email);
     field('[data-business-address]',contact.address);
@@ -82,52 +76,41 @@ export function createStorefront(root = document,fetchPublic = request) {
       })); item.hidden = !contact.socials.length;
     });
     all('[data-business-contact],[data-contact-link]').forEach(item => { item.hidden = !contact.available; });
-    const latitude = Number(info.latitude), longitude = Number(info.longitude);
-    const validLocation = info.latitude !== null && info.latitude !== undefined && info.longitude !== null && info.longitude !== undefined
-      && Number.isFinite(latitude) && Number.isFinite(longitude) && Math.abs(latitude) <= 90 && Math.abs(longitude) <= 180;
     all('[data-business-map]').forEach(section => {
-      section.hidden = !validLocation;
+      section.hidden = !view.map;
       const frame = section.querySelector('[data-business-map-frame]');
       const caption = section.querySelector('[data-business-map-caption]');
       if (!frame) return;
-      if (!validLocation) {
+      if (!view.map) {
         if (frame.hasAttribute('src')) frame.removeAttribute('src');
         if (caption) caption.textContent = '';
         return;
       }
-      const dx=0.018,dy=0.010;
-      const bbox=[longitude-dx,latitude-dy,longitude+dx,latitude+dy].join(',');
-      const url=new URL('https://www.openstreetmap.org/export/embed.html');
-      url.searchParams.set('bbox',bbox);
-      url.searchParams.set('layer','mapnik');
-      url.searchParams.set('marker',latitude+','+longitude);
-      if (frame.getAttribute('src') !== url.href) frame.setAttribute('src',url.href);
+      if (frame.getAttribute('src') !== view.map) frame.setAttribute('src',view.map);
       if (caption) caption.textContent=contact.address;
     });
-    const surfaces = {
-      rooms:publications.rooms?.enabled === true && Array.isArray(publications.rooms.rooms),
-      restaurant:publications.tables?.enabled === true && Array.isArray(publications.tables.tables),
-      qr_menu:publications.menu && publications.menu.enabled !== false && Array.isArray(publications.menu.categories) && Array.isArray(publications.menu.items)
-    };
-    all('[data-surface]').forEach(item => { item.hidden = !(hasSurface(business,item.dataset.surface) && surfaces[item.dataset.surface]); });
-    const pages = {about:!!aboutText(info),gallery:galleryImages(info,origin).length > 0,reviews:info.google_reviews_enabled === true && !!reviewsFrom(publications['google-reviews']),announcements:websiteCampaigns(publications.marketing).length > 0};
+    all('[data-surface]').forEach(item => { item.hidden = !view.sections[item.dataset.surface]; });
+    const pages = view.pages;
     all('[data-public-page]').forEach(item => { item.hidden = !pages[item.dataset.publicPage]; });
-    const enabled = storeEnabled(business,catalog), categories = enabled ? publicCategories(catalog) : [];
+    all('[data-section]').forEach(item => { item.hidden = !view.sections[item.dataset.section]; });
+    const enabled = view.store, categories = view.categories;
     all('[data-store-only]').forEach(item => { item.hidden = !enabled; });
     all('[data-category-nav]').forEach(item => {
-      item.replaceChildren(...categories.slice(0,6).map(category => { const anchor = node('a',category.name); anchor.setAttribute('href','/magaza/?category=' + encodeURIComponent(category.id)); return anchor; }));
+      item.replaceChildren(...categories.map(category => { const anchor = node('a',category.name); anchor.setAttribute('href','/magaza/?category=' + encodeURIComponent(category.id)); return anchor; }));
       item.hidden = !categories.length;
     });
+    all('[data-category-menu]').forEach(item => { item.hidden = !categories.length; });
     all('[data-category-grid]').forEach(item => {
       item.replaceChildren(...categories.slice(0,9).map((category,index) => {
         const anchor = node('a',undefined,'cat'); anchor.setAttribute('href','/magaza/?category=' + encodeURIComponent(category.id));
         anchor.append(node('span',String(index + 1).padStart(2,'0'),'cat-num'),node('strong',category.name),node('span','↗')); return anchor;
       }));
     });
-    all('[data-category-section]').forEach(item => { item.hidden = !categories.length; });
-    const brands = enabled ? [...new Set((catalog.products || []).map(product => text(product.brand)).filter(Boolean))].sort((a,b) => a.localeCompare(b,'tr-TR')).slice(0,24) : [];
-    all('[data-brand-list]').forEach(item => item.replaceChildren(...brands.map(brand => node('span',brand))));
+    all('[data-category-section]').forEach(item => { item.hidden = !view.sections.categories; });
+    const brands = view.sections.brands ? view.brands : [];
+    all('[data-brand-list]').forEach(item => item.replaceChildren(...brands.map(brand => { const anchor = node('a',brand); anchor.href = '/magaza/?brand=' + encodeURIComponent(brand); return anchor; })));
     all('[data-brand-section]').forEach(item => { item.hidden = !brands.length; });
+    listeners.forEach(listener => listener(latest));
   }
   function load(refresh = false) {
     if (!pending || refresh) {
@@ -139,12 +122,7 @@ export function createStorefront(root = document,fetchPublic = request) {
         const publications = {};
         try { business = await currentRead('business'); } catch { /* No stale contact or optional navigation. */ }
         if (pending === current) render({business,catalog});
-        const endpoints = [];
-        if (business) endpoints.push('marketing');
-        if (business?.business?.google_reviews_enabled === true) endpoints.push('google-reviews');
-        for (const [surface,endpoint] of [['rooms','rooms'],['restaurant','tables'],['qr_menu','menu'],['store','catalog']]) {
-          if (hasSurface(business,surface)) endpoints.push(endpoint);
-        }
+        const endpoints = publicationEndpoints(business);
         await Promise.all(endpoints.map(async endpoint => {
           try {
             const value = await currentRead(endpoint);
@@ -153,11 +131,11 @@ export function createStorefront(root = document,fetchPublic = request) {
           } catch { /* A failed publication cannot reveal navigation. */ }
           if (pending === current) render({business,catalog},publications);
         }));
-        return {business,catalog};
+        return {business,catalog,publications,view:projectPublication({business,catalog,publications},origin)};
       });
       pending = current;
     }
     return pending;
   }
-  return {load,read};
+  return {load,read,subscribe(listener) { listeners.add(listener); if (latest) listener(latest); return () => listeners.delete(listener); }};
 }

@@ -7,6 +7,7 @@ import {chromium,expect} from '@playwright/test';
 import {FixtureApi,A,B,tokens} from './fixtures/api.mjs';
 import {galleryScenarios} from './gallery.mjs';
 import {storefrontScenarios} from './storefront.mjs';
+import {experienceScenarios} from './experience.mjs';
 
 const port = await new Promise(resolve => { const probe = createServer(); probe.listen(0,'127.0.0.1',() => { const port = probe.address().port; probe.close(() => resolve(port)); }); });
 const base = `http://127.0.0.1:${port}`;
@@ -39,19 +40,20 @@ async function noPersonalStorage(page) {
   const stored = await page.evaluate(() => JSON.stringify({...localStorage,...sessionStorage}));
   for (const sentinel of ['TEST PRIVATE CUSTOMER','TEST PRIVATE RECIPIENT','TEST PRIVATE ADDRESS','PRIVATE_RETAIL_NOTE','PRIVATE_DEALER_NOTE',tokens.a,'"price"','"currency"','TEST BAYİ A','TEST-POM-101']) assert.equal(stored.includes(sentinel),false,sentinel + ' persisted');
 }
-async function scenario(name,width,run) {
+async function scenario(name,width,run,options = {}) {
   if (process.env.TEST_FILTER && !name.includes(process.env.TEST_FILTER)) return;
-  const context = await browser.newContext({viewport:{width,height:900},locale:'tr-TR'}); const backend = new FixtureApi(); await backend.install(context,base);
+  const context = await browser.newContext({viewport:{width,height:900},locale:'tr-TR',...options}); const backend = new FixtureApi(); await backend.install(context,base);
   const errors = []; context.on('page',page => page.on('pageerror',error => errors.push(error.message)));
   const page = await context.newPage(); page.setDefaultTimeout(7000); expect.setDefaultTimeout?.(7000);
   try {
     await run({page,context,backend,width}); assert.deepEqual(errors,[],'browser exceptions'); results.push({name,width,status:'passed'}); console.log('PASS',width,name);
-  } catch (error) { results.push({name,width,status:'failed',error:error.message}); await page.screenshot({path:'.test-artifacts/failure.png',fullPage:true}).catch(() => {}); throw error; }
+  } catch (error) { results.push({name,width,status:'failed',error:error.message}); if (errors.length) console.error('Browser errors:',errors); await page.screenshot({path:'.test-artifacts/failure.png',fullPage:true}).catch(() => {}); throw error; }
   finally { await context.close(); writeFileSync('.test-artifacts/browser.json',JSON.stringify(results,null,2) + '\n'); }
 }
 try {
   for (let i = 0; i < 100; i++) { try { if ((await fetch(base)).ok) break; } catch {} await new Promise(resolve => setTimeout(resolve,40)); }
   browser = await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || '/usr/bin/brave',args:['--no-sandbox','--disable-gpu']});
+  await experienceScenarios({scenario,base,login,fits,noPersonalStorage});
   await storefrontScenarios({scenario,base,login,fits});
   await galleryScenarios({scenario,base,login,dealerTab,fits,noPersonalStorage});
   for (const campaignWidth of [390,1440]) await scenario('kampanya alanı: yayın yokken gizli, yayınlandığında gerçek içerik',campaignWidth,async ({page,backend}) => {
@@ -72,7 +74,7 @@ try {
   });
   for (const width of [320,390,768,1440]) {
     await scenario('perakende: katalog, stok kodu/kategori araması, detay, çoklu sepet ve teslimatlı sipariş',width,async ({page,backend}) => {
-      await page.goto(base + '/'); await expect(page.getByRole('heading',{name:/Doğru parçayı bulmak/})).toBeVisible(); await expect(page.locator('[data-featured-grid] .product-card')).toHaveCount(2); await fits(page,width);
+      await page.goto(base + '/'); await expect(page.locator('[data-hero-title]')).toContainText('Karşılaştırarak seçin.'); await expect(page.locator('[data-featured-grid] .product-card')).toHaveCount(2); await fits(page,width);
       await page.getByRole('searchbox',{name:'Ürün veya stok kodu ara',exact:true}).fill('TEST-KRT-202'); await page.getByRole('button',{name:'Ara',exact:true}).click();
       await expect(page.getByRole('heading',{name:'TEST Kontrol Kartı',exact:true})).toBeVisible(); await expect(page.locator('[data-product-grid] .product-card')).toHaveCount(1); await expect(page.getByLabel('Marka',{exact:true})).toBeHidden();
       await page.getByLabel('Ürün arama',{exact:true}).fill('Bosch'); await page.getByLabel('Kategori',{exact:true}).selectOption('c1'); await page.getByRole('link',{name:publicName + ' ürününü incele',exact:true}).click();

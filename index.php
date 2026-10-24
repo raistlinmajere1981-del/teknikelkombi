@@ -1,34 +1,34 @@
-<?php require_once __DIR__.'/inc/layout.php'; te_header('home', 'Kombi Yedek Parça ve Kart Tamiri'); ?>
-<section class="hero"><div class="container hero-wrap">
+<?php require_once __DIR__.'/inc/layout.php'; te_header('home', 'Ana Sayfa'); ?>
+<section class="hero" data-section="hero" hidden><div class="container hero-wrap">
 <div class="hero-copy">
-<div class="overline"><span class="red-dot"></span> <?= te_t('SERVİSİN İHTİYACI OLAN HER PARÇA') ?></div>
-<h1><?= te_t('Doğru parçayı bulmak artık') ?> <em><?= te_t('çok daha kolay.') ?></em></h1>
-<p><?= te_t('Kombi yedek parça, teknik ekipman ve kart tamiri için aradığınız çözümler tek bir yerde. Ürün koduyla arayın, hızlıca inceleyin.') ?></p>
-<div class="hero-buttons"><a class="btn btn-red" href="/magaza/" data-store-only hidden><?= te_t('Ürün kataloğunu keşfet') ?> <span>→</span></a><a class="btn btn-light" href="/hesabim/" data-account-only hidden><?= te_t('Bayi misiniz?') ?> <span>↗</span></a></div>
-<div class="hero-highlights" data-store-only hidden><span><b>01</b> <?= te_t('Kolay ürün arama') ?></span><span><b>02</b> <?= te_t('Marka ve kategori filtreleri') ?></span><span><b>03</b> <?= te_t('Bayilere özel alan') ?></span></div>
+<div class="overline"><span class="red-dot"></span><span data-business-name hidden></span></div>
+<h1 data-hero-title></h1>
+<p data-business-description hidden></p>
+<div class="hero-buttons"><a class="btn btn-red" href="/magaza/" data-store-only hidden><?= te_t('Ürün kataloğunu keşfet') ?> <span>→</span></a><a class="btn btn-light" href="/iletisim/" data-contact-link hidden><?= te_t('İletişime geç') ?> <span>↗</span></a></div>
+<div class="hero-highlights" data-section="featured" hidden><span><b>01</b> <?= te_t('Ürünü bulun') ?></span><span><b>02</b> <?= te_t('Detayları inceleyin') ?></span><span><b>03</b> <?= te_t('Görselleri karşılaştırın') ?></span></div>
 </div>
-<div class="hero-visual" aria-hidden="true"><div class="technical-rings"></div><div class="visual-tag"><?= te_t('TEKNİKEL / PARÇA KATALOĞU') ?></div>
-<div class="part-shot shot-a"><img src="/assets/part-valve.jpg" alt=""></div>
-<div class="part-shot shot-b"><img src="/assets/part-pump.jpg" alt=""></div>
-<div class="part-shot shot-c"><img src="/assets/part-exchanger.jpg" alt=""></div>
-<div class="visual-label"><?= te_t('DOĞRU PARÇA.') ?><br><strong><?= te_t('DOĞRU ÇÖZÜM.') ?></strong></div>
-</div>
+<div class="hero-publication" data-hero-media hidden></div>
 </div></section>
-<section class="quick-strip" data-store-only hidden><div class="container quick-inner"><span><b><?= te_t('Ürünü bulun') ?></b><small><?= te_t('İsim, stok kodu veya model') ?></small></span><i>→</i><span><b><?= te_t('Detayları inceleyin') ?></b><small><?= te_t('Teknik bilgiler ve görseller') ?></small></span><i>→</i><span><b><?= te_t('Sipariş sürecine geçin') ?></b><small><?= te_t('Perakende veya bayi hesabıyla') ?></small></span></div></section>
-<section class="section campaign-section" aria-labelledby="campaign-heading" hidden><div class="container">
-<div class="heading"><div><div class="eyebrow"><?= te_t('TEKNİKEL / KAMPANYALAR') ?></div><h2 id="campaign-heading"><?= te_t('Öne çıkan') ?> <span><?= te_t('ürünler ve duyurular.') ?></span></h2></div></div>
-<p class="campaign-feedback" data-campaign-feedback role="status" aria-live="polite" hidden></p>
-<div class="campaign-grid" data-campaign-grid></div>
+<section class="section campaign-section" data-section="campaigns" aria-labelledby="campaign-heading" hidden><div class="container">
+<div class="heading"><div><div class="eyebrow"><?= te_t('GÜNCEL YAYINLAR') ?></div><h2 id="campaign-heading"><?= te_t('Kampanyalar ve duyurular') ?></h2></div><a href="/duyurular/" class="text-link"><?= te_t('Tümünü gör →') ?></a></div>
+<p class="campaign-feedback" data-campaign-feedback role="status" aria-live="polite" hidden></p><div class="campaign-grid" data-campaign-grid></div>
 </div></section>
 <section class="section categories" data-category-section hidden><div class="container">
-<div class="heading"><div><div class="eyebrow"><?= te_t('ÜRÜN GRUPLARI') ?></div><h2><?= te_t('Aradığınız parçaya') ?> <span><?= te_t('doğrudan ulaşın.') ?></span></h2></div><a href="/magaza/" data-store-only hidden class="text-link"><?= te_t('Tüm kategoriler') ?> <span>↗</span></a></div>
+<div class="heading"><div><div class="eyebrow"><?= te_t('ÜRÜN GRUPLARI') ?></div><h2><?= te_t('Aradığınız parçaya') ?> <span><?= te_t('doğrudan ulaşın.') ?></span></h2></div><a href="/magaza/" class="text-link"><?= te_t('Tüm kategoriler') ?> ↗</a></div>
 <div class="category-grid" data-category-grid></div>
 </div></section>
-<section class="section featured" data-store-only hidden><div class="container">
-<div class="heading"><div><div class="eyebrow"><?= te_t('KATALOĞUMUZDAN') ?></div><h2><?= te_t('Parçalar,') ?> <span><?= te_t('tek yerde.') ?></span></h2></div><a class="text-link" href="/magaza/" data-store-only hidden><?= te_t('Kataloğa geç ↗') ?></a></div>
-<p class="status-line" data-catalog-state><?= te_t('Katalog bağlantısı kontrol ediliyor...') ?></p>
-<div class="product-grid" data-featured-grid></div>
+<section class="section featured" data-section="featured" hidden><div class="container">
+<div class="heading"><div><div class="eyebrow"><?= te_t('KATALOĞUMUZDAN') ?></div><h2><?= te_t('İnceleyin.') ?> <span><?= te_t('Karşılaştırarak seçin.') ?></span></h2></div><a class="text-link" href="/magaza/"><?= te_t('Kataloğa geç ↗') ?></a></div>
+<p class="status-line" data-catalog-state></p><div class="product-grid" data-featured-grid></div>
 </div></section>
-<section class="brand-section" data-brand-section hidden><div class="container"><span class="eyebrow"><?= te_t('KATALOĞUMUZDAKİ MARKALAR') ?></span><div class="brands" data-brand-list></div></div></section>
-<section class="dealer-callout" data-account-only hidden><div class="container callout-inner"><div><div class="eyebrow"><?= te_t('PROFESYONELLERE ÖZEL') ?></div><h2><?= te_t('Teknik servisiniz için') ?> <span><?= te_t('daha hızlı sipariş.') ?></span></h2><p><?= te_t('Müşteri hesabınızla giriş yapın; bayi yetkiniz varsa özel kataloğunuza, fiyatlarınıza ve siparişlerinize ulaşın.') ?></p></div><a href="/hesabim/" data-account-only hidden class="btn btn-red"><?= te_t('Bayi alanını incele') ?> <span>↗</span></a></div></section>
+<section class="brand-section" id="markalar" data-brand-section hidden><div class="container"><span class="eyebrow"><?= te_t('KATALOĞUMUZDAKİ MARKALAR') ?></span><div class="brands" data-brand-list></div></div></section>
+<?php foreach ([['rooms','Odalar','/odalar/'],['restaurant','Restoran','/restoran/'],['qr_menu','QR Menü','/qr-menu/'],['gallery','Galeri','/galeri/'],['reviews','Google yorumları','/yorumlar/']] as [$key,$label,$href]): ?>
+<section class="section home-publication" data-section="<?= te($key) ?>" hidden><div class="container">
+<div class="heading"><h2><?= te_t($label) ?></h2><a href="<?= te($href) ?>" class="text-link"><?= te_t('Tümünü gör →') ?></a></div>
+<?php if ($key === 'reviews'): ?><div data-home-review-summary class="home-review-summary"></div><?php endif; ?>
+<div class="publication-grid" data-home-list="<?= te($key) ?>"></div></div></section>
+<?php endforeach; ?>
+<section class="dealer-callout" data-section="dealer" hidden><div class="container callout-inner"><div><div class="eyebrow"><?= te_t('BAYİ SİSTEMİ') ?></div><h2><?= te_t('İşletmeniz için') ?> <span><?= te_t('tek bir çalışma alanı.') ?></span></h2><p data-business-description hidden></p></div><div class="callout-actions"><button type="button" class="btn btn-red" data-support-flow="dealer"><?= te_t('Bayi başvurusu') ?> ↗</button><a href="/hesabim/" class="text-link" data-account-only hidden><?= te_t('Bayi hesabına giriş →') ?></a></div></div></section>
+<section class="section support-callout" data-section="support" hidden><div class="container callout-inner"><div><div class="eyebrow"><?= te_t('YARDIMCI ASİSTAN') ?></div><h2><?= te_t('Birlikte bulalım.') ?></h2><p><?= te_t('İhtiyacınız olan işlemle devam edin.') ?></p></div><div class="home-support-actions" data-home-support></div></div></section>
+<section class="section home-contact" data-section="contact" hidden><div class="container"><div class="heading"><h2><?= te_t('İletişim') ?></h2><a href="/iletisim/" class="text-link"><?= te_t('İletişim ve konum →') ?></a></div><div class="public-contact"><?php te_contact_fields(); ?></div></div></section>
 <?php te_footer(); ?>

@@ -5,14 +5,20 @@ import {createStorefront,hasSurface,storeEnabled} from './storefront.js';
 import {loadPublicationPage} from './publications.js';
 import {loadRooms} from './rooms.js';
 import {loadPublicPage} from './public-pages.js';
-import {loadCampaigns} from './marketing.js';
+import {renderHomepage} from './homepage.js';
+import {createComparison} from './compare.js';
+import {initAssistantPresentation} from './assistant/presentation.js';
 
 const $ = (selector,root = document) => root.querySelector(selector);
 const all = (selector,root = document) => [...root.querySelectorAll(selector)];
 initLanguageChooser();
+document.addEventListener('pointerdown',event => {
+  all('[data-category-menu][open]').forEach(menu => { if (!menu.contains(event.target)) menu.open = false; });
+});
+document.addEventListener('keydown',event => { if (event.key === 'Escape') all('[data-category-menu][open]').forEach(menu => { menu.open = false; menu.querySelector('summary')?.focus(); }); });
 const page = document.body.dataset.page;
 const dealerMode = page === 'account';
-const publicationPage = ['restaurant','qr-menu','rooms','room','contact','about','gallery','reviews','announcements'].includes(page);
+const publicationPage = ['restaurant','qr-menu','rooms','room','contact','about','gallery','reviews','announcements','brands'].includes(page);
 const storefront = createStorefront();
 const RETAIL_KEY = 'teknikel.retail.v1';
 const LOCK_KEY = 'teknikel.dealer.signed-out';
@@ -22,6 +28,31 @@ const el = (tag,text,cls) => { const node = document.createElement(tag); if (tex
 const action = (text,callback,cls = 'btn btn-red') => { const button = el('button',text,cls); button.type = 'button'; button.addEventListener('click',callback); return button; };
 const link = (text,href,cls = 'text-link') => { const node = el('a',text,cls); node.href = href; return node; };
 const state = {business:null,catalog:null,cart:null,epoch:0,busy:false,identity:null,tab:'catalog',detail:null,orders:null,catalogError:'',ordersError:'',filter:{q:params.get('q') || '',category:params.get('category') || '',brand:params.get('brand') || ''},favoritesOnly:false,pageNo:1};
+const comparisonSource = () => ({products:canBrowse() ? products() : [],categories:state.catalog?.categories || [],private:dealerMode && !!state.identity,accessId:dealerMode ? state.identity?.access_id : null});
+const comparison = createComparison({getSource:comparisonSource,revalidate:async () => {
+  const epoch = state.epoch;
+  if (dealerMode) {
+    const accessId = state.identity?.access_id;
+    if (!accessId) return {products:[],categories:[],private:false};
+    const session = await dealerRequest('session',undefined,epoch);
+    if (session.authenticated !== true || session.dealer?.access_id !== accessId) { lockDealer(t('Hesabınıza yeniden giriş yapın.')); throw new Error('account_changed'); }
+    const catalog = catalogFrom(await dealerRequest('catalog',undefined,epoch),true);
+    if (epoch !== state.epoch || catalog.access_id !== state.identity?.access_id) throw new Error('account_changed');
+    state.catalog = catalog; renderDealer();
+  } else {
+    const snapshot = await storefront.load(true);
+    if (epoch !== state.epoch) throw new Error('catalog_changed');
+    state.business = snapshot.business; state.catalog = snapshot.catalog; renderPublic();
+    if (!snapshot.business || !snapshot.catalog && hasSurface(snapshot.business,'store')) throw new Error('publication_unavailable');
+  }
+  return comparisonSource();
+}});
+initAssistantPresentation(storefront);
+storefront.subscribe(({view}) => {
+  renderHomepage(view);
+  const meta = $('[data-public-description]'); if (meta) meta.content = view.description;
+  const title = $('[data-page-title]'); if (title) document.title = [title.dataset.pageTitle,view.name].filter(Boolean).join(' | ');
+});
 let retailCart;
 const checkoutValues = {};
 function notify(message,privateMessage = false) {
@@ -146,15 +177,17 @@ function productCard(product) {
   const actions = el('div',undefined,'card-actions');
   const detail = dealerMode ? action(t('Ürünü incele →'),() => { state.detail = product.product_id; renderDealer(); },'product-link') : link(t('Ürünü incele →'),'/urun/?id=' + encodeURIComponent(product.product_id),'product-link');
   detail.setAttribute('aria-label',product.name + t(' ürününü incele')); actions.append(detail);
+  const compare = action(t('Karşılaştır'),event => comparison.open(product.product_id,event.currentTarget),'compare-button'); compare.dataset.compareId = product.product_id; compare.setAttribute('aria-label',product.name + t(' karşılaştır')); actions.append(compare);
   const button = action(t('Sepete ekle'),protect(() => add(product))); button.setAttribute('aria-label',product.name + t(' sepete ekle')); button.disabled = !canOrder() || !!state.cart?.pending || state.busy; actions.append(button);
   info.append(actions); card.append(photo(product.image_url,product.name),info); return card;
 }
 function productDetail(root,product) {
   root.replaceChildren(); const view = el('div',undefined,'product-detail'); const info = el('div');
-  info.append(el('div',dealerMode ? t('TEKNİKEL / BAYİ ÜRÜNÜ') : t('TEKNİKEL / ÜRÜN'),'eyebrow'),el('h1',product.name));
+  info.append(el('div',dealerMode ? t('Bayi ürünü') : t('Ürün'),'eyebrow'),el('h1',product.name));
   if (product.brand || product.category_name) info.append(el('p',[product.brand,product.category_name].filter(Boolean).join(' · '),'product-meta'));
   if (product.sku) info.append(el('p',t('Stok kodu: ') + product.sku,'sku'));
   info.append(el('div',money(product.price,product.currency),'price'),el('p',product.description || t('Bu ürün için açıklama yayınlanmamış.'),'description'));
+  const compare = action(t('Görsel ve ürün karşılaştır'),event => comparison.open(product.product_id,event.currentTarget),'compare-button'); compare.dataset.compareId = product.product_id; info.append(compare);
   const quantity = field(info,t('Miktar'),1,{type:'number',min:'0.0001',max:'1000',step:'0.0001',id:'detail-quantity'});
   const addButton = action(t('Sepete ekle'),protect(() => { if (!quantity.reportValidity()) return; add(product,quantity.valueAsNumber); })); addButton.disabled = !canOrder() || !!state.cart?.pending; info.append(addButton);
   if (dealerMode) {
@@ -206,7 +239,7 @@ async function loadPublic(refresh = false) {
   const snapshot = await storefront.load(refresh); if (epoch !== state.epoch) return;
   state.business = snapshot.business; state.catalog = snapshot.catalog;
   if (!publicEnabled() && state.catalog) state.catalog = {...state.catalog,products:[],categories:[]};
-  const form = $('[data-catalog-filter]'); if (form) { filterSelects(form,state.catalog); form.hidden = !publicEnabled(); } renderPublic();
+  const form = $('[data-catalog-filter]'); if (form) { filterSelects(form,state.catalog); form.hidden = !publicEnabled(); } renderPublic(); comparison.sourceChanged();
 }
 function field(parent,caption,value,{id,type = 'text',name = id,required = true,maxLength = 180,...attributes} = {}) {
   const wrap = el('div',undefined,'form-field'); const label = el('label',caption); const input = el('input');
@@ -317,6 +350,7 @@ function broadcastDealerLock() {
   try { localStorage.setItem(EVENT_KEY,JSON.stringify({state:'locked',nonce:crypto.randomUUID()})); } catch { /* Server validation remains authoritative. */ }
 }
 function lockDealer(message = t('Bayi erişimi gerekli.'),broadcast = true) {
+  comparison.clear();
   state.epoch++; state.busy = false; if (state.cart) { delete checkoutValues[state.cart.key]; state.cart.payload = null; }
   state.identity = null; state.catalog = null; state.orders = null; state.cart = null; state.detail = null;
   $('[data-dealer-workspace]').hidden = true; $('[data-dealer-content]').replaceChildren(); $('[data-dealer-name]').textContent = ''; $('[data-dealer-state]').textContent = ''; $('[data-dealer-login]').hidden = false;
@@ -414,10 +448,9 @@ window.addEventListener('storage',event => {
 });
 // Chrome and read-only publications also work when cart storage is unavailable.
 storefront.load().then(snapshot => {
-  if (page === 'home') { if (snapshot.business) return loadCampaigns(storefront.read); return loadCampaigns(() => Promise.reject(new Error('business_unavailable'))); }
-  if (['restaurant','qr-menu'].includes(page)) return loadPublicationPage(page,snapshot.business,document,storefront.read);
-  if (['rooms','room'].includes(page)) return loadRooms(page,snapshot.business,storefront.read);
-  if (publicationPage) return loadPublicPage(page,snapshot.business,storefront.read);
+  if (['restaurant','qr-menu'].includes(page)) return loadPublicationPage(page,snapshot.business,document,storefront.read,snapshot.view);
+  if (['rooms','room'].includes(page)) return loadRooms(page,snapshot.business,storefront.read,document,snapshot.view);
+  if (publicationPage) return loadPublicPage(page,snapshot.business,storefront.read,document,snapshot.view);
 }).catch(() => {});
 try {
   retailCart = openCart(RETAIL_KEY); updateCounts();
