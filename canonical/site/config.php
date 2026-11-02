@@ -14,6 +14,4 @@ return [
     // Restrict/reorder existing pages; this cannot grant publication visibility.
     'page_order' => ['home', 'catalog', 'announcements', 'about', 'gallery', 'reviews', 'contact', 'account'],
     'hidden_pages' => [],
-    // slot => filename under public/assets/site/scenes/. Empty means zero engine requests.
-    'effects' => [],
 ];
