@@ -1,4 +1,5 @@
-<?php require_once __DIR__.'/inc/layout.php'; te_header('home', 'Ana Sayfa'); ?>
+<?php // teknikel-site
+require_once __DIR__.'/inc/layout.php'; te_header('home', 'Ana Sayfa'); ?>
 <section class="hero" data-section="hero" hidden><div class="container hero-wrap">
 <div class="hero-copy">
 <div class="overline"><span class="red-dot"></span><span data-business-name hidden></span></div>
