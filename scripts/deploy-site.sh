@@ -44,9 +44,9 @@ fi
 REMOTE_PREP
 )"
 [[ "$remote_identity" == 'owned' || "$remote_identity" == 'canonical-owned' ]]
-version="$(curl -fsS --max-time 15 "$url/yardimci-asistan/api/version.php" | php -r '$j=json_decode(stream_get_contents(STDIN),true);if(($j["product_version"]??"")!=="2.2.0" || ($j["web_module_version"]??"")!=="2.2.0") exit(3);echo $j["product_version"];')"
-[[ "$version" == '2.2.0' ]]
-echo "Teknikel site ownership=$remote_identity, Web 2.2.0 verified"
+version="$(curl -fsS --max-time 15 "$url/yardimci-asistan/api/version.php" | php -r '$j=json_decode(stream_get_contents(STDIN),true);if(($j["product_version"]??"")!=="2.2.1" || ($j["web_module_version"]??"")!=="2.2.1") exit(3);echo $j["product_version"];')"
+[[ "$version" == '2.2.1' ]]
+echo "Teknikel site ownership=$remote_identity, Web 2.2.1 verified"
 for name in "${site_dirs[@]}"; do
   if [[ "$dry" == true ]]; then flags='-azni'; else flags='-azi'; fi
   rsync "$flags" --omit-dir-times --chmod=D755,F644 -e "$ssh_rsync" "$repo/$name/" "$host:$root/$name/"
