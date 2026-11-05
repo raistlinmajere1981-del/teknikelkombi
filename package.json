@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "check": "node tests/check.mjs",
-    "test": "node --test tests/*.test.mjs && node tests/smoke.mjs",
+    "test": "node --test tests/*.test.mjs && node tests/canonical-live-entry.mjs",
     "test:accounts": "node tests/accounts.mjs"
   },
   "devDependencies": {

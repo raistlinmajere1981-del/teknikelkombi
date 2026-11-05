@@ -11,11 +11,13 @@ const zipFile = path.join(root, "assets/downloads/teknikel-demo-verileri.zip");
 const archiveRoot = "yardimci-asistan-demo-d-teknikel/";
 
 test("Teknikel demo ZIP is a safe, downloadable current backup-v2 package", () => {
-  const page = fs.readFileSync(path.join(root, "demo-icerik/index.php"), "utf8");
-  const footer = fs.readFileSync(path.join(root, "inc/layout.php"), "utf8");
-  assert.match(footer, /href="\/demo-icerik\//);
+  const alias = fs.readFileSync(path.join(root, "demo-icerik/index.php"), "utf8");
+  const page = fs.readFileSync(path.join(root, "canonical/site/views/pages/demo-content.php"), "utf8");
+  const translations = JSON.parse(fs.readFileSync(path.join(root, "canonical/locales/tr.json"), "utf8"));
+  assert.match(alias, /'page' => 'demo-content'/);
   assert.match(page, /href="\/assets\/downloads\/teknikel-demo-verileri\.zip"/);
-  assert.match(page, /Web sitesi verileri ve kullanıcı giriş hesapları otomatik oluşturulmaz/);
+  assert.match(page, /theme\.teknikel\.demo\.14/);
+  assert.equal(translations['theme.teknikel.demo.14'],'Bu test paketindeki telefon ve e-posta alanlarına gerçek ileti göndermeyin.');
   assert.ok(fs.statSync(zipFile).size > 5_000_000);
   const listing = spawnSync("unzip", ["-Z1", zipFile], { encoding: "utf8" });
   assert.equal(listing.status, 0, listing.stderr);

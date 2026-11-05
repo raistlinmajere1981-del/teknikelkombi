@@ -20,10 +20,9 @@ if [[ "$dry" == true ]]; then
   echo "LOCAL_ONLY_DRY_RUN_PASS $package (no remote reads or writes; browser/HTTPS acceptance still required)"
   exit 0
 fi
-# Fail closed until exact-hash remote retirement + origin/authentication preflight
-# has an independently reviewed executor. Local test readiness is separate.
-echo 'DEPLOY BLOCKER: legacy retirement is preview-only; remote activation disabled.' >&2
-exit 4
+# Presentation-only activation. The remote must already be free of retired legacy
+# code, with a plan exactly matching the locally hashed retirement manifest.
+# Nothing in yardimci-asistan/ is changed by this script.
 host='yardimciasistantoptanci@ssh-yardimciasistantoptanci.alwaysdata.net'
 root='/home/yardimciasistantoptanci/www'
 backup='/home/yardimciasistantoptanci/backups'
@@ -34,9 +33,22 @@ for bin in ssh rsync curl; do command -v "$bin" >/dev/null; done
 # Strict independent equality to the current central product policy; no fixed version.
 version="$(curl --proto '=https' -fsS --max-time 15 "$url/yardimci-asistan/api/version.php" | node ../YardimciAsistan/scripts/site-release-target.mjs --verify-backend)"
 stamp="$(date -u +%Y%m%dT%H%M%SZ)-$$"
-ssh "${ssh_opts[@]}" "$host" bash -s -- "$root" "$backup" "$stamp" <<'REMOTE_PREP'
+retired_sha="$(sha256sum "$package/retired-paths.json" | cut -d' ' -f1)"
+ssh "${ssh_opts[@]}" "$host" bash -s -- "$root" "$backup" "$stamp" "$retired_sha" 'teknikel-site' <<'REMOTE_PREP'
 set -Eeuo pipefail
-root="$1"; backup="$2"; stamp="$3"
+root="$1"; backup="$2"; stamp="$3"; retired_sha="$4"; identity="$5"
+[[ "$retired_sha" =~ ^[a-f0-9]{64}$ ]]
+[[ -f "$root/retired-paths.json" && ! -L "$root/retired-paths.json" ]]
+[[ "$(sha256sum "$root/retired-paths.json" | cut -d' ' -f1)" == "$retired_sha" ]]
+php -r '
+$plan=json_decode(file_get_contents($argv[1]),true,512,JSON_THROW_ON_ERROR);
+if(($plan["format"]??null)!==1 || ($plan["identity"]??"")!==$argv[2]) exit(2);
+$root=$argv[3];
+foreach(array_keys($plan["files"]) as $path) {
+  if(file_exists("$root/$path") || is_link("$root/$path")) {
+    fwrite(STDERR,"Retired legacy path still present: $path\n");exit(3);
+  }
+}' "$root/retired-paths.json" "$identity" "$root"
 for path in /home/yardimciasistantoptanci "$root" "$backup" "$root/yardimci-asistan"; do [[ -d "$path" && ! -L "$path" ]]; done
 [[ "$stamp" =~ ^20[0-9]{6}T[0-9]{6}Z-[0-9]+$ ]]
 [[ -f "$root/index.php" && ! -L "$root/index.php" && -f "$root/.htaccess" && ! -L "$root/.htaccess" ]]
@@ -65,7 +77,7 @@ $r=json_decode(file_get_contents("teknikel-release.json"),true,512,JSON_THROW_ON
 if(($r["identity"]??null)!=="teknikel-site" || ($r["template_version"]??null)!==($target["template_version"]??null)) exit(2);
 $root=$argv[1];
 foreach(array_keys($r["files"]) as $p) {
- if(!preg_match("~^(?:index\\.php|\\.htaccess|canonical/(?:README\\.md|template-manifest\\.json|public/|core/|site/|locales/tr\\.json|tools/)|assets/(?:core/|site/|vendor/effect-engine/|downloads/teknikel-demo-verileri\\.zip)|(?:magaza|katalog|urun|sepet|hesabim|bayi|markalar|galeri|odalar(?:/oda)?|restoran|qr-menu|iletisim|yorumlar|duyurular|hakkimizda|demo-icerik)/index\\.php)~D",$p) || str_contains($p,"..")) exit(3);
+ if($p!=="retired-paths.json" && (!preg_match("~^(?:index\\.php|\\.htaccess|canonical/(?:README\\.md|template-manifest\\.json|public/|core/|site/|locales/tr\\.json|tools/)|assets/(?:core/|site/|vendor/effect-engine/|downloads/teknikel-demo-verileri\\.zip)|(?:magaza|katalog|urun|sepet|hesabim|bayi|markalar|galeri|odalar(?:/oda)?|restoran|qr-menu|iletisim|yorumlar|duyurular|hakkimizda|demo-icerik)/index\\.php)~D",$p) || str_contains($p,".."))) exit(3);
  $cursor=$root; foreach(explode("/",$p) as $part) { $cursor.="/".$part; if(is_link($cursor)) exit(4); }
 }
 $m="$root/canonical/template-manifest.json";

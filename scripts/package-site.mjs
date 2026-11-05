@@ -35,7 +35,7 @@ export function stagePackage(repo) {
   const stage=mkdtempSync(join(parent,'site-package-'));
   const hashes={};
   for (const path of files) {const target=join(stage,path); mkdirSync(resolve(target,'..'),{recursive:true}); const source=join(repo,path==='retired-paths.json'?'scripts/'+path:path); cpSync(source,target); hashes[path]=hash(target); if(hashes[path]!==hash(source)) throw new Error('Package changed during staging');}
-  const receipt={format:1,identity:'teknikel-site',origin:'https://yardimciasistantoptanci.alwaysdata.net',module_url:'https://yardimciasistantoptanci.alwaysdata.net/yardimci-asistan',...releaseTarget(join(repo,'canonical')),retirement_mode:'preview-only-deploy-blocked',retired_paths_sha256:hash(join(stage,'retired-paths.json')),files:hashes};
+  const receipt={format:1,identity:'teknikel-site',origin:'https://yardimciasistantoptanci.alwaysdata.net',module_url:'https://yardimciasistantoptanci.alwaysdata.net/yardimci-asistan',...releaseTarget(join(repo,'canonical')),retirement_mode:'pre-retired-hash-verified',retired_paths_sha256:hash(join(stage,'retired-paths.json')),files:hashes};
   writeFileSync(join(stage,'teknikel-release.json'),JSON.stringify(receipt,null,2)+'\n');
   writeFileSync(join(stage,'SHA256SUMS'),Object.entries({...hashes,'teknikel-release.json':hash(join(stage,'teknikel-release.json'))}).map(([path,sha])=>sha+'  '+path+'\n').join(''));
   return stage;
