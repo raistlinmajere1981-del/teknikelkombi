@@ -18,6 +18,12 @@ $accountAvailable = isset($view['pages']['account']);
     </nav>
     <div class="header-tools">
       <?php render_view('components/social-icons', ['social' => $publication['contact']['social'], 'variant' => 'header'], $site); ?>
+      <?php if (isset($view['pages']['catalog'])): ?>
+      <a class="header-cart-link" href="<?= e($view['page'] === 'catalog' ? '#cart' : page_url($site, 'catalog') . '#cart') ?>" aria-label="<?= e(t($site, 'cart.title')) ?>" title="<?= e(t($site, 'cart.title')) ?>">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.2 11.3a2 2 0 0 0 2 1.7H19a2 2 0 0 0 2-1.6L22 8H6"/><circle cx="10" cy="21" r="1"/><circle cx="19" cy="21" r="1"/></svg>
+        <span id="header-cart-count" class="header-cart-count" hidden>0</span>
+      </a>
+      <?php endif; ?>
       <?php if (count($site['language']['catalogs']) > 1): ?>
       <form method="get" class="language-picker" aria-label="<?= e(t($site, 'language.label')) ?>">
         <?php foreach (language_query_fields($view) as $key => $value): ?>
