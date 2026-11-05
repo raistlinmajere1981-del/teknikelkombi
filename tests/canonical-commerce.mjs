@@ -27,6 +27,48 @@ try{
   const catalog=async page=>{await page.goto(base+'/?page=catalog');await expect(page.locator('#product-grid article').first()).toBeVisible();};
   const add=async page=>page.locator('#product-grid article').first().getByRole('button',{name:'Sepete ekle',exact:true}).click();
   const checkout=async page=>{await add(page);await page.locator('#open-checkout').click();await page.locator('#buyer-phone').fill('+905550000000');};
+  await scenario('guest tab switch retains published catalog cart and filters without refetch',async page=>{
+    await catalog(page);
+    await expect.poll(()=>page.evaluate(()=>window.YaAccount.state.status)).toBe('guest');
+    await add(page);
+    await page.locator('#catalog-search').fill('TEST');
+    const before=state.requests.filter(request=>request.path==='catalog').length;
+    await page.evaluate(()=>{
+      window.__stablePublicProduct=document.querySelector('#product-grid article');
+      Object.defineProperty(document,'hidden',{configurable:true,value:true});
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    await expect(page.locator('#product-grid article')).toHaveCount(state.products.length);
+    await expect(page.locator('#cart-count')).toHaveText('1');
+    await expect(page.locator('#catalog-search')).toHaveValue('TEST');
+    await page.evaluate(()=>{
+      Object.defineProperty(document,'hidden',{configurable:true,value:false});
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    await expect.poll(()=>page.evaluate(()=>window.YaAccount.state.status)).toBe('guest');
+    await page.waitForTimeout(120);
+    await expect(page.locator('#product-grid article')).toHaveCount(state.products.length);
+    await expect(page.locator('#cart-count')).toHaveText('1');
+    assert.equal(state.requests.filter(request=>request.path==='catalog').length,before,'public catalog must not refetch after tab switch');
+    assert.equal(await page.evaluate(()=>document.querySelector('#product-grid article')===window.__stablePublicProduct),true,'visible product DOM should remain stable');
+  });
+  await scenario('dealer tab switch fences private prices and revalidates on return',async page=>{
+    await catalog(page);
+    await expect.poll(()=>page.evaluate(()=>window.YaAccount.state.status)).toBe('authenticated');
+    await expect(page.locator('#product-grid article').first().locator('.price')).toContainText('80,00');
+    await page.evaluate(()=>{
+      Object.defineProperty(document,'hidden',{configurable:true,value:true});
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    await expect(page.locator('#product-grid article')).toHaveCount(0);
+    await expect.poll(()=>page.evaluate(()=>window.YaAccount.state.status)).toBe('unavailable');
+    await page.evaluate(()=>{
+      Object.defineProperty(document,'hidden',{configurable:true,value:false});
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    await expect.poll(()=>page.evaluate(()=>window.YaAccount.state.status)).toBe('authenticated');
+    await expect(page.locator('#product-grid article').first().locator('.price')).toContainText('80,00');
+  },{identity:'a'});
   await scenario('unconfigured optional account allows guest retail checkout',async page=>{
     await page.route('**/api/account/refresh.php',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({ok:false,code:'account_unconfigured'})}));
     await page.goto(base+'/?page=catalog');
