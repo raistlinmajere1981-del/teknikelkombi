@@ -27,6 +27,26 @@ try{
   const catalog=async page=>{await page.goto(base+'/?page=catalog');await expect(page.locator('#product-grid article').first()).toBeVisible();};
   const add=async page=>page.locator('#product-grid article').first().getByRole('button',{name:'Sepete ekle',exact:true}).click();
   const checkout=async page=>{await add(page);await page.locator('#open-checkout').click();await page.locator('#buyer-phone').fill('+905550000000');};
+  await scenario('public catalog remains browsable when account refresh returns 503',async page=>{
+    await page.route('**/api/account/refresh.php',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({ok:false,code:'account_unconfigured'})}));
+    await page.goto(base+'/?page=catalog');
+    await expect(page.locator('#product-grid article').first()).toBeVisible();
+    await expect.poll(()=>page.evaluate(()=>window.YaAccount?.state.status)).toBe('unavailable');
+    await expect(page.locator('#product-grid article')).toHaveCount(state.products.length);
+    await expect(page.locator('#catalog-state')).toContainText('Hesap şu anda doğrulanamıyor');
+    await expect(page.locator('#product-grid article').first().getByRole('button',{name:'Sepete ekle'})).toBeDisabled();
+    await expect(page.locator('#open-checkout')).toBeDisabled();
+  });
+  await scenario('failed private account refresh never leaves private prices visible',async page=>{
+    await catalog(page);
+    await expect(page.locator('#product-grid article').first().locator('.price')).toContainText('80,00');
+    await page.route('**/api/account/session.php',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({ok:false,code:'account_unconfigured'})}));
+    await page.evaluate(()=>window.YaAccount.refresh());
+    await expect.poll(()=>page.evaluate(()=>window.YaAccount?.state.status)).toBe('unavailable');
+    await expect(page.locator('#product-grid article').first().locator('.price')).toContainText('100,00');
+    await expect(page.locator('#product-grid')).not.toContainText('80,00');
+    await expect(page.locator('#open-checkout')).toBeDisabled();
+  },{identity:'a'});
   for(const identity of [undefined,'retail','a','b'])await scenario('one canonical catalog '+(identity||'guest'),async page=>{
     await catalog(page);await expect(page.locator('.ya-storefront')).toHaveCount(1);await expect(page.locator('#cart')).toHaveCount(1);await expect(page.locator('#checkout-form')).toHaveCount(1);
     await expect(page.locator('#dealer-store')).toHaveCount(0);
