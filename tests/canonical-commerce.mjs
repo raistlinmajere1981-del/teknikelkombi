@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import net from 'node:net';
-import {mkdir,readFile} from 'node:fs/promises';
+import {cp,mkdir,mkdtemp,readFile,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import {chromium,expect} from '@playwright/test';
 import {commerceState,commerceFixtureServer,proxyServer} from './fixtures/canonical-commerce-api.mjs';
 const artifacts=new URL('../.test-artifacts/canonical-commerce/',import.meta.url).pathname;
@@ -10,17 +12,17 @@ const logo=await readFile(new URL('../canonical/public/assets/site/brand/logo.we
 const state=commerceState(),api=await commerceFixtureServer(state);
 const port=await new Promise(resolve=>{const server=net.createServer();server.listen(0,'127.0.0.1',()=>{const port=server.address().port;server.close(()=>resolve(port));});});
 const php=spawn('php',['-S',`127.0.0.1:${port}`,'-t',process.env.CANONICAL_DOCUMENT_ROOT || 'canonical/public'],{env:{...process.env,YA_SITE_API_ORIGIN:api.origin},stdio:'ignore'});
-let proxy,browser;const results=[];
+let proxy,browser,otherPhp,otherProxy,otherRoot;const results=[];
 const fits=async page=>assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'horizontal overflow');
 try{
   for(let i=0;i<80;i++){try{await fetch(`http://127.0.0.1:${port}/`);break;}catch{await new Promise(resolve=>setTimeout(resolve,50));}}
   proxy=await proxyServer(`http://127.0.0.1:${port}`,api.origin);const base=proxy.origin;
   browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE||'/usr/bin/brave',args:['--no-sandbox','--disable-gpu']});
-  const scenario=async(name,run,{identity,width=390}={})=>{
+  const scenario=async(name,run,{identity,width=390,origin=base}={})=>{
     if(process.env.TEST_FILTER&&!name.includes(process.env.TEST_FILTER))return;
     Object.assign(state,commerceState());const context=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce'});
-    if(identity)await context.addCookies([{name:'TEST_identity',value:identity,url:base,httpOnly:true}]);
-    await context.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():new URL(route.request().url()).hostname==='images.example.com'?route.fulfill({contentType:'image/webp',body:logo}):route.abort());
+    if(identity)await context.addCookies([{name:'TEST_identity',value:identity,url:origin,httpOnly:true}]);
+    await context.route('**/*',route=>new URL(route.request().url()).origin===origin?route.continue():new URL(route.request().url()).hostname==='images.example.com'?route.fulfill({contentType:'image/webp',body:logo}):route.abort());
     const page=await context.newPage(),runtimeErrors=[];page.on('pageerror',error=>runtimeErrors.push(error.message));
     try{await run(page,context);assert.deepEqual(runtimeErrors,[],'uncaught browser errors');assert.equal(state.fixtureError,undefined,state.fixtureError?.stack);results.push(name);console.log('PASS',name);}catch(error){if(runtimeErrors.length)console.error('Browser errors',name,runtimeErrors);throw error;}finally{await context.close();}
   };
@@ -42,12 +44,12 @@ try{
     assert.equal(structure.filter,'sticky');
     assert.equal(structure.cart,'sticky');
     await page.locator('#category-query').fill('Pomp');
-    await expect(page.locator('#category-options .category-option')).toHaveCount(1);
-    await page.locator('#category-options .category-option').click();
+    await expect(page.locator('#category-options .category-choice')).toHaveCount(1);
+    await page.locator('#category-options input[data-category-id="c1"]').check();
     await expect(page.locator('#catalog-category')).toHaveValue('c1');
     await expect(page.locator('#product-grid article')).toHaveCount(1);
-    await expect(page.locator('#category-selected')).toContainText('TEST Pompalar');
-    await page.locator('#category-selected button').click();
+    await expect(page.locator('#category-selected-count')).toHaveText('1');
+    await page.locator('#category-clear').click();
     await expect(page.locator('#catalog-category')).toHaveValue('');
     await expect(page.locator('#product-grid article')).toHaveCount(state.products.length);
     await page.locator('[data-product-link]').first().click();
@@ -58,6 +60,36 @@ try{
     await expect(page.locator('#header-cart-count')).toHaveText('1');
     await page.locator('.header-cart-link').click();
     await expect(page).toHaveURL(/#cart/);
+    await fits(page);
+  },{width:1440});
+  await scenario('multi category filters survive reload and retain brand with no dropdowns',async page=>{
+    await page.setViewportSize({width:1440,height:900});
+    await catalog(page);
+    await expect(page.locator('#catalog-filter-rail select')).toHaveCount(0);
+    await expect(page.locator('#catalog-filter-rail .rail-heading')).toHaveText(/Filtreler/);
+    await expect(page.locator('#category-options .category-choice')).toHaveCount(2);
+    await page.locator('#category-options input[data-category-id="c1"]').check();
+    await expect(page.locator('#category-options input[data-category-id="c1"]')).toBeFocused();
+    await expect(page.locator('#product-grid article')).toHaveCount(1);
+    await page.locator('#category-options input[data-category-id="c2"]').check();
+    await expect(page.locator('#category-options input[data-category-id="c2"]')).toBeFocused();
+    await expect(page.locator('#catalog-category')).toHaveValue('c1,c2');
+    await expect(page.locator('#category-selected-count')).toHaveText('2');
+    await expect(page.locator('#product-grid article')).toHaveCount(2);
+    await expect(page).toHaveURL(/category=c1%2Cc2/);
+    await page.reload();
+    await expect(page.locator('#category-options input[data-category-id="c1"]')).toBeChecked();
+    await expect(page.locator('#category-options input[data-category-id="c2"]')).toBeChecked();
+    await expect(page.locator('#product-grid article')).toHaveCount(2);
+    await page.locator('#category-options input[data-category-id="c1"]').uncheck();
+    await expect(page.locator('#catalog-category')).toHaveValue('c2');
+    await expect(page.locator('#product-grid article')).toHaveCount(1);
+    await page.locator('#brand-options input[data-brand="TEST Siemens"]').check();
+    await expect(page.locator('#catalog-brand')).toHaveValue('TEST Siemens');
+    await page.locator('#catalog-reset').click();
+    await expect(page.locator('#catalog-category')).toHaveValue('');
+    await expect(page.locator('#catalog-brand')).toHaveValue('');
+    await expect(page.locator('#product-grid article')).toHaveCount(2);
     await fits(page);
   },{width:1440});
   await scenario('guest tab switch retains published catalog cart and filters without refetch',async page=>{
@@ -118,15 +150,23 @@ try{
     assert.equal(state.requests.filter(call=>call.path==='order').length,1);
     assert.equal(state.requests.filter(call=>call.path==='dealer/order').length,0);
   });
-  await scenario('ambiguous account outage keeps checkout closed without verified guest',async page=>{
+  await scenario('ambiguous account outage fences detail and recovers verified guest without refetch',async page=>{
     await page.route('**/api/account/refresh.php',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({ok:false,code:'temporary_unavailable'})}));
-    await page.goto(base+'/?page=catalog');
+    await page.goto(base+'/?page=catalog&id=p1');
     await expect(page.locator('#product-grid article').first()).toBeVisible();
     await expect.poll(()=>page.evaluate(()=>window.YaAccount?.state.status)).toBe('unavailable');
     await expect(page.locator('#product-grid article')).toHaveCount(state.products.length);
     await expect(page.locator('#catalog-state')).toContainText('Hesap şu anda doğrulanamıyor');
     await expect(page.locator('#product-grid article').first().getByRole('button',{name:'Sepete ekle'})).toBeDisabled();
     await expect(page.locator('#open-checkout')).toBeDisabled();
+    await expect(page.locator('#product-detail button.button')).toBeDisabled();
+    const before=state.requests.filter(call=>call.path==='catalog').length;
+    await page.unroute('**/api/account/refresh.php');await page.evaluate(()=>window.YaAccount.refresh());
+    await expect.poll(()=>page.evaluate(()=>window.YaAccount.state.status)).toBe('guest');
+    await expect(page.locator('#product-grid article').first().getByRole('button',{name:'Sepete ekle'})).toBeEnabled();
+    await expect(page.locator('#product-detail button.button')).toBeEnabled();
+    await expect(page.locator('#catalog-state')).toBeHidden();
+    assert.equal(state.requests.filter(call=>call.path==='catalog').length,before);
   });
   await scenario('expired dealer session falls back to retail without private prices',async page=>{
     await catalog(page);
@@ -176,8 +216,8 @@ try{
     await catalog(page);
     const search=page.locator('#catalog-search');await search.fill('TEST-POM-101');await expect(page.locator('#product-grid article')).toHaveCount(1);await expect(page.locator('#product-grid')).toContainText('TEST Bosch Pompa');
     await search.fill('Kontrol');await expect(page.locator('#product-grid article')).toHaveCount(1);await expect(page.locator('#product-grid')).toContainText('TEST Kontrol Kartı');await search.fill('');await page.locator('#catalog-sku').fill('TEST-KRT-202');await expect(page.locator('#product-grid article')).toHaveCount(1);await page.locator('#catalog-sku').fill('');
-    await page.locator('#catalog-category').selectOption('c1');await expect(page.locator('#product-grid article')).toHaveCount(1);await page.locator('#catalog-category').selectOption('');
-    await page.locator('#catalog-brand').selectOption('TEST Siemens');await expect(page.locator('#product-grid article')).toHaveCount(1);await page.locator('#catalog-brand').selectOption('');
+    await page.locator('#category-options input[data-category-id="c1"]').check();await expect(page.locator('#product-grid article')).toHaveCount(1);await page.locator('#category-options input[data-category-id="c1"]').uncheck();
+    await page.locator('#brand-options input[data-brand="TEST Siemens"]').check();await expect(page.locator('#product-grid article')).toHaveCount(1);await page.locator('#brand-options input[data-brand="TEST Siemens"]').uncheck();
     await page.goto(base+'/?page=catalog&id=p1');await expect(page.locator('#product-detail')).toBeVisible();await expect(page.locator('#product-detail')).toContainText('TEST-POM-101');
     await catalog(page);await page.locator('#product-grid article').nth(0).locator('.compare-select').check();await page.locator('#product-grid article').nth(1).locator('.compare-select').check();
     await page.locator('#compare-open').click();await expect(page.locator('#comparison-panel')).toBeVisible();await expect(page.locator('#comparison-panel')).toContainText('TEST Bosch Pompa');await expect(page.locator('#comparison-panel')).toContainText('TEST Kontrol Kartı');
@@ -209,6 +249,16 @@ try{
     await catalog(page);await checkout(page);state.malformedNext=identity==='a'?'dealer/order':'order';await page.locator('#submit-order').click();await expect(page.locator('#submission-message')).toContainText('doğrulanamadı');
     page.on('dialog',dialog=>dialog.accept());await page.reload();await expect(page.locator('#success')).toBeVisible();assert.equal(state.created.length,1);assert.equal(state.requests.filter(call=>call.path===(identity==='a'?'dealer/order':'order')).length,1);assert.ok(state.requests.some(call=>call.path==='account/receipt'));
   },{identity});
+  await scenario('recovered acceptance blocks queued reorder until explicit new order',async page=>{
+    await catalog(page);await checkout(page);state.malformedNext='dealer/order';await page.locator('#submit-order').click();
+    await expect(page.locator('#submission-message')).toContainText('doğrulanamadı');page.on('dialog',dialog=>dialog.accept());
+    await page.goto(base+'/?page=catalog&reorder=web_dealer_order_history_a');
+    await expect(page.locator('#success')).toBeVisible();await expect(page.locator('#cart-count')).toHaveText('0');
+    assert.equal(state.requests.filter(call=>call.path==='account/orders').length,0);assert.equal(state.created.length,1);
+    await page.locator('#new-order').click();await expect(page.locator('#success')).toBeHidden();
+    await expect(page.locator('#product-grid article').first().getByRole('button',{name:'Sepete ekle',exact:true})).toBeEnabled();
+    await add(page);await expect(page.locator('#cart-count')).toHaveText('1');assert.equal(state.created.length,1);
+  },{identity:'a'});
   await scenario('guest uncertain retry replays exact body once',async page=>{
     await catalog(page);await checkout(page);await page.locator('#buyer-name').fill('TEST Alıcı');state.malformedNext='order';await page.locator('#submit-order').click();await expect(page.locator('#submission-message')).toContainText('doğrulanamadı');await page.locator('#submit-order').click();await expect(page.locator('#success')).toBeVisible();const calls=state.requests.filter(call=>call.path==='order');assert.equal(calls.length,2);assert.equal(calls[0].raw,calls[1].raw);assert.equal(state.created.length,1);
   });
@@ -246,7 +296,7 @@ try{
     const many=Array.from({length:38},(_,index)=>({...state.products[index%state.products.length],product_id:`page-${index+1}`,name:`TEST Sayfalı Ürün ${String(index+1).padStart(2,'0')}`,sku:`TEST-PAGE-${String(index+1).padStart(2,'0')}`,sort_order:index}));
     state.products=many;if(identity==='a')state.catalog=owner=>({access_id:owner,access_revision:1,catalog_revision:'a'.repeat(64),delivery_methods:['pickup'],products:many.map(product=>({...product,price:80}))});
     await catalog(page);await expect(page.locator('#product-grid article')).toHaveCount(18);await expect(page.locator('#catalog-page-status')).toHaveText('Sayfa 1 / 3');await add(page);await page.locator('#catalog-next').click();await expect(page.locator('#catalog-page-status')).toHaveText('Sayfa 2 / 3');await expect(page.locator('#product-grid article')).toHaveCount(18);await expect(page.locator('#cart-count')).toHaveText('1');await page.locator('#catalog-next').click();await expect(page.locator('#catalog-page-status')).toHaveText('Sayfa 3 / 3');await expect(page.locator('#product-grid article')).toHaveCount(2);await expect(page.locator('#product-grid')).toContainText('TEST Sayfalı Ürün 38');await expect(page.locator('#catalog-next')).toBeDisabled();
-    await page.locator('#catalog-sku').fill('TEST-PAGE-38');await expect(page.locator('#catalog-page-status')).toHaveText('Sayfa 1 / 1');await expect(page.locator('#product-grid article')).toHaveCount(1);await expect(page.locator('#product-grid')).toContainText('TEST Sayfalı Ürün 38');await page.locator('#catalog-sku').fill('');await page.locator('#catalog-category').selectOption('c2');await page.locator('#catalog-brand').selectOption('TEST Siemens');await expect(page.locator('#catalog-page-status')).toHaveText('Sayfa 1 / 2');await expect(page.locator('#product-grid article')).toHaveCount(18);await page.locator('#catalog-next').click();await expect(page.locator('#product-grid article')).toHaveCount(1);await expect(page.locator('#product-grid')).toContainText('TEST Sayfalı Ürün 38');await page.locator('button[data-favorite-toggle][data-product-id="page-38"]').click();await page.locator('#favorites-only').check();await expect(page.locator('#catalog-page-status')).toHaveText('Sayfa 1 / 1');await expect(page.locator('#product-grid article')).toHaveCount(1);await expect(page.locator('#product-grid')).toContainText('TEST Sayfalı Ürün 38');await fits(page);
+    await page.locator('#catalog-sku').fill('TEST-PAGE-38');await expect(page.locator('#catalog-page-status')).toHaveText('Sayfa 1 / 1');await expect(page.locator('#product-grid article')).toHaveCount(1);await expect(page.locator('#product-grid')).toContainText('TEST Sayfalı Ürün 38');await page.locator('#catalog-sku').fill('');await page.locator('#category-options input[data-category-id="c2"]').check();await page.locator('#brand-options input[data-brand="TEST Siemens"]').check();await expect(page.locator('#catalog-page-status')).toHaveText('Sayfa 1 / 2');await expect(page.locator('#product-grid article')).toHaveCount(18);await page.locator('#catalog-next').click();await expect(page.locator('#product-grid article')).toHaveCount(1);await expect(page.locator('#product-grid')).toContainText('TEST Sayfalı Ürün 38');await page.locator('button[data-favorite-toggle][data-product-id="page-38"]').click();await page.locator('#favorites-only').check();await expect(page.locator('#catalog-page-status')).toHaveText('Sayfa 1 / 1');await expect(page.locator('#product-grid article')).toHaveCount(1);await expect(page.locator('#product-grid')).toContainText('TEST Sayfalı Ürün 38');await fits(page);
   },{identity});
   await scenario('reorder intent merges current authorized catalog skips removed and uses current prices',async page=>{
     state.historyItems=[{product_id:'p1',name:'TEST Old catalog name',quantity:2},{product_id:'p2',name:'TEST Old board name',quantity:1},{product_id:'removed-1',name:'TEST Removed item',quantity:4}];
@@ -283,5 +333,47 @@ try{
   for(const width of [390,1440])await scenario('catalog account order-detail screenshots '+width,async page=>{
     await catalog(page);await fits(page);await page.screenshot({path:artifacts+'catalog-'+width+'.png',fullPage:true});await add(page);await expect(page.locator('#cart-lines .cart-line')).toHaveCount(1);await fits(page);await page.screenshot({path:artifacts+'cart-'+width+'.png',fullPage:true});await page.goto(base+'/?page=account');await expect(page.locator('#account-profile')).toBeVisible();await expect(page.locator('#account-order-list')).toContainText('web_dealer_order_history_');await fits(page);await page.screenshot({path:artifacts+'account-'+width+'.png',fullPage:true});await page.locator('#account-order-list a').first().click();await expect(page.locator('#account-order-detail')).toBeVisible();await fits(page);await page.screenshot({path:artifacts+'order-detail-'+width+'.png',fullPage:true});
   },{identity:'a',width});
+  // Independent installation: the real PHP resolver selects a different page/runtime.
+  otherRoot=await mkdtemp(join(tmpdir(),'ya-independent-commerce-'));
+  await cp(new URL('../../YardimciAsistan/web-site-template/',import.meta.url),otherRoot,{recursive:true});
+  const otherPort=await new Promise(resolve=>{const server=net.createServer();server.listen(0,'127.0.0.1',()=>{const port=server.address().port;server.close(()=>resolve(port));});});
+  otherPhp=spawn('php',['-S',`127.0.0.1:${otherPort}`,'-t',join(otherRoot,'public')],{env:{...process.env,YA_SITE_API_ORIGIN:api.origin},stdio:'ignore'});
+  for(let i=0;i<80;i++){try{await fetch(`http://127.0.0.1:${otherPort}/`);break;}catch{await new Promise(resolve=>setTimeout(resolve,50));}}
+  otherProxy=await proxyServer(`http://127.0.0.1:${otherPort}`,api.origin);
+  await scenario('optional generic fallback has no Teknikel layout and completes checkout',async page=>{
+    await page.goto(otherProxy.origin+'/?page=catalog');
+    await expect(page.locator('[data-commerce-products] article')).toHaveCount(2);
+    await expect(page.locator('.ya-storefront,#catalog-filter-rail,.category-choice')).toHaveCount(0);
+    await expect(page.locator('script[src="/assets/core/storefront.js"]')).toHaveCount(1);
+    await page.locator('[data-commerce-products] button').first().click();
+    await page.locator('[data-commerce-checkout]').click();
+    await page.locator('[name="name"]').fill('TEST generic buyer'); await page.locator('[name="phone"]').fill('+905550000000');
+    await page.locator('[data-commerce-submit]').click(); await expect(page.locator('[data-commerce-success]')).toBeVisible();
+    assert.equal(state.created.length,1);await fits(page);
+  },{origin:otherProxy.origin});
+  await cp(new URL('./fixtures/independent-catalog.php',import.meta.url),join(otherRoot,'site/views/pages/catalog.php'));
+  await cp(new URL('./fixtures/independent-catalog.js',import.meta.url),join(otherRoot,'public/assets/site/catalog.js'));
+  for(const identity of [undefined,'a'])await scenario('independent catalog runtime shares fenced commerce '+(identity||'guest'),async(page,context)=>{
+    await page.goto(otherProxy.origin+'/?page=catalog');
+    await expect(page.locator('[data-independent-catalog] tr').first()).toBeVisible();
+    await expect(page.locator('script[src="/assets/site/catalog.js"]')).toHaveCount(1);
+    await expect(page.locator('script[src="/assets/core/commerce.js"]')).toHaveCount(1);
+    await expect(page.locator('script[src*="storefront.js"],.ya-storefront,#product-grid,#catalog-filter-rail')).toHaveCount(0);
+    const price=identity==='a'?80:100;
+    await expect(page.locator('[data-independent-catalog] tr[data-id="p1"] td').nth(1)).toHaveText(String(price));
+    assert.equal(await page.evaluate(()=>{const state=window.TESTCommerce.state;state.products[0].price=1;return window.TESTCommerce.state.products[0].price;}),price,'renderer snapshots cannot change authoritative client data');
+    await page.locator('[data-independent-catalog] tr[data-id="p1"] button').click();
+    await expect(page.locator('[data-independent-cart]')).toHaveText('1');
+    state.malformedNext=identity==='a'?'dealer/order':'order';
+    await page.locator('[data-independent-order]').click();await expect(page.locator('[data-independent-message]')).toContainText('doğrulanamadı');
+    await page.locator('[data-independent-order]').click();await expect(page.locator('[data-independent-message]')).toContainText('order_TEST_1');
+    const calls=state.requests.filter(call=>call.path===(identity==='a'?'dealer/order':'order'));assert.equal(calls.length,2);assert.equal(calls[0].raw,calls[1].raw);assert.equal(state.created.length,1);
+    if(identity){
+      await context.setOffline(true);await page.evaluate(()=>window.dispatchEvent(new Event('offline')));
+      await expect(page.locator('[data-independent-catalog] tr')).toHaveCount(0);
+      assert.equal(await page.evaluate(()=>window.TESTCommerce.state.canSubmit),false);
+    }
+    await fits(page);
+  },{identity,origin:otherProxy.origin});
   console.log(JSON.stringify({passed:results.length,results,artifacts},null,2));
-}finally{await browser?.close();proxy?.server.closeAllConnections();api.server.closeAllConnections();await new Promise(resolve=>proxy?proxy.server.close(resolve):resolve());await new Promise(resolve=>api.server.close(resolve));php.kill('SIGTERM');}
+}finally{await browser?.close();otherProxy?.server.closeAllConnections();await new Promise(resolve=>otherProxy?otherProxy.server.close(resolve):resolve());otherPhp?.kill('SIGTERM');if(otherRoot)await rm(otherRoot,{recursive:true,force:true});proxy?.server.closeAllConnections();api.server.closeAllConnections();await new Promise(resolve=>proxy?proxy.server.close(resolve):resolve());await new Promise(resolve=>api.server.close(resolve));php.kill('SIGTERM');}

@@ -1,4 +1,4 @@
-# Teknikel — active canonical 0.6.1 skin (Chunk 4A)
+# Teknikel — canonical 0.7.5 site presentation
 
 Repository root `index.php` is the hosting adapter for `canonical/public/index.php`.
 Document root is the repository root. `canonical/` remains HTTP-private; PHP includes
@@ -36,7 +36,16 @@ Product detail adds a presentation-only canonical `request.general` trigger for 
 already published public product ID. The common widget owns validation, transport,
 idempotency and dates (none for general_info), independently of AI. Private product
 request hooks and the old advanced overlay/pinch/filter comparison have not been
-ported. Shared canonical comparison remains available.
+ported. Site-owned catalog detail, gallery and comparison use the authorized products
+from the common headless controller.
+
+`site/views/pages/catalog.php` owns the complete catalog HTML. `public/assets/site/catalog.js`
+owns category/brand widgets, filtering, pagination, product cards, comparison, detail,
+cart thumbnails and form presentation; `catalog.css` owns their structure and responsive
+layout. The common layout selects these fixed site assets. `core/commerce.js` alone owns
+catalog/session/cart validation, current price snapshots, order payloads, uncertain
+retry/idempotency and receipt recovery. There is no site-specific order transport.
+`theme.css` retains the existing Teknikel visual additions and overrides `catalog.css`.
 
 See the root README and milestone handoff for exact local/host acceptance commands.
 Not live-ready: browser, real backend callback/session/receipt and HTTPS checks remain.

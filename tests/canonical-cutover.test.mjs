@@ -4,7 +4,8 @@ import assert from 'node:assert/strict';
 import {cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
-import {createHash} from 'node:crypto';
+import {createHash,webcrypto} from 'node:crypto';
+import vm from 'node:vm';
 import {inventory} from '../canonical/tools/manifest.mjs';
 import {hash, tree} from '../scripts/lib/files.mjs';
 import {update} from '../scripts/update-canonical.mjs';
@@ -14,8 +15,8 @@ const repo=new URL('../',import.meta.url).pathname;
 const upstream=process.env.YA_TEMPLATE_SOURCE || join(repo,'../YardimciAsistan/web-site-template');
 const json=path=>JSON.parse(readFileSync(path,'utf8'));
 const manifest=json(join(repo,'canonical/template-manifest.json'));
-test('all 76 installed common hashes equal incoming release and baseline',()=>{
-  assert.equal(manifest.template_version,'0.7.4'); assert.equal(Object.keys(manifest.common).length,76);
+test('all 77 installed common hashes equal incoming release and baseline',()=>{
+  assert.equal(manifest.template_version,'0.7.5'); assert.equal(Object.keys(manifest.common).length,77);
   assert.deepEqual(inventory(join(repo,'canonical')),manifest.common);
   assert.deepEqual(manifest.common,json(join(upstream,'template-manifest.json')).common);
   assert.deepEqual(inventory(upstream),manifest.common);
@@ -50,10 +51,77 @@ test('public mirror hashes, root adapter and all wrappers use common owner',()=>
 });
 test('deploy package includes canonical and mirrored assets, excludes old runtime and API',()=>{
   const files=packageFiles(repo);
-  for(const path of ['canonical/core/bootstrap.php','canonical/site/config.php','canonical/site/views/pages/catalog.php','canonical/public/index.php','assets/core/widget.js','assets/vendor/effect-engine/provenance.json','demo-icerik/index.php','assets/downloads/teknikel-demo-verileri.zip']) assert.ok(files.includes(path),path);
+  for(const path of ['canonical/core/bootstrap.php','canonical/site/config.php','canonical/site/views/pages/catalog.php','canonical/public/index.php','assets/core/widget.js','assets/core/commerce.js','canonical/public/assets/site/catalog.js','canonical/public/assets/site/catalog.css','assets/site/catalog.js','assets/site/catalog.css','assets/vendor/effect-engine/provenance.json','demo-icerik/index.php','assets/downloads/teknikel-demo-verileri.zip']) assert.ok(files.includes(path),path);
   for(const path of files) assert.ok(!/^(?:inc\/|yardimci-asistan\/|assets\/assistant\/|assets\/i18n\/)|^assets\/[^/]+\.js$/.test(path),path);
   const access=readFileSync(join(repo,'.htaccess'),'utf8');
   assert.match(access,/canonical\|inc/); assert.match(access,/assistant\|i18n/); assert.match(access,/!\^\/yardimci-asistan/);
+});
+test('commerce is headless and Teknikel owns its complete catalog presentation',()=>{
+  const read=path=>readFileSync(join(repo,'canonical',path),'utf8');
+  const controller=read('public/assets/core/commerce.js');
+  assert.match(controller,/window\.YaCommerce = Object\.freeze/);
+  assert.doesNotMatch(controller,/\bdocument\b|querySelector|createElement|innerHTML|classList|catalog-filter-rail|category-choice/);
+  assert.match(controller,/account\/receipt\.php/);
+  assert.match(controller,/dealer\/catalog\.php/);
+  assert.match(controller,/fingerprint/);
+  const page=read('site/views/pages/catalog.php'),renderer=read('public/assets/site/catalog.js');
+  assert.match(page,/class="ya-storefront teknikel-catalog"/);
+  assert.match(page,/id="catalog-filter-rail"/);
+  assert.doesNotMatch(page,/require.*core\/views\/pages\/catalog/);
+  assert.match(renderer,/YaCommerce\.create/);
+  assert.doesNotMatch(renderer,/\bfetch\s*\(|sessionStorage|localStorage|idempotencyKey|catalogRevision/);
+  for(const path of ['core/views/pages/catalog.php','public/assets/core/storefront.js','public/assets/core/site.css']) {
+    assert.doesNotMatch(read(path),/ya-storefront|catalog-filter-rail|category-choice|brand-choice|cart-line-thumb|comparison-viewport|minmax\(190px,232px\)/,path);
+  }
+});
+function headless(fetcher) {
+  const local=new Map(),session=new Map(),events=new Map();
+  const storage=values=>({getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,value),removeItem:key=>values.delete(key)});
+  // No document/DOM exists in this fixture; the production controller must work without it.
+  const context={URL,AbortSignal,structuredClone,TextEncoder,crypto:webcrypto,setTimeout,clearTimeout,fetch:fetcher,
+    location:{href:'https://site.example/?page=catalog',origin:'https://site.example'},
+    localStorage:storage(local),sessionStorage:storage(session),addEventListener:(name,listener)=>events.set(name,listener),removeEventListener:name=>events.delete(name)};
+  context.window=context;vm.runInNewContext(readFileSync(join(repo,'canonical/public/assets/core/commerce.js'),'utf8'),context);
+  const client=context.YaCommerce.create({account:null});
+  return {client,context,local,session,events};
+}
+const reply=(status,value)=>({status,ok:status>=200&&status<300,json:async()=>value});
+const product=(id,unit,price)=>({product_id:id,name:'TEST '+id,unit,price,currency:'TRY',availability:'available'});
+async function startHeadless(client) {
+  const ready=new Promise(resolve=>client.subscribe((state,reason)=>{if(reason==='catalog')resolve(state);}));client.start();return ready;
+}
+test('headless commands enforce units and totals while storage keeps only IDs/quantities',async()=>{
+  const f=headless(async()=>reply(200,{ok:true,enabled:true,delivery_methods:['pickup','shipping'],products:[product('p1','piece',1.23),product('p2','kg',3.5)]}));
+  try {
+    await startHeadless(f.client);f.client.add('p1');f.client.add('p2');
+    assert.equal(f.client.setQuantity('p1','0.5'),false);assert.equal(f.client.setQuantity('p1',1001),false);
+    assert.equal(f.client.setQuantity('p2','0,125'),true);
+    assert.equal(f.client.state.cart[0].q,10000);assert.equal(f.client.state.totals[0].amount,1.67);
+    const snapshot=f.client.state;snapshot.products[0].price=99;snapshot.cart[0].q=999;
+    assert.equal(f.client.state.products[0].price,1.23);assert.equal(f.client.state.cart[0].q,10000);
+    assert.deepEqual(JSON.parse([...f.local.values()][0]),{version:2,items:[{productId:'p1',quantity:1},{productId:'p2',quantity:0.125}]});
+    f.client.setDelivery('shipping');const invalid=await f.client.submit({name:'TEST buyer',phone:'+905551112233',address:{countryCode:'bad'}});
+    assert.ok(invalid.errors['delivery-countryCode']);assert.ok(invalid.errors['delivery-addressLine1']);assert.equal(f.session.size,0);
+    assert.throws(()=>f.context.YaCommerce.create({apiBase:'https://other.example/api/'}),/same_origin_api_required/);
+    f.client.subscribe((state,reason)=>{if(reason==='fence')throw new Error('TEST observer failure');});
+    let fenced=false;f.client.subscribe((state,reason)=>{if(reason==='fence')fenced=state.products.length===0&&state.cart.length===0;});
+    f.client.destroy();assert.equal(fenced,true);assert.equal(f.events.size,0);
+  } finally {f.client.destroy();}
+});
+test('headless uncertain submit locks edits and retries the exact body without storing personal fields',async()=>{
+  const calls=[];let fail=true;
+  const f=headless(async(url,options)=>{
+    if(url.pathname.endsWith('/catalog.php'))return reply(200,{ok:true,enabled:true,delivery_methods:['pickup'],products:[product('p1','piece',12)]});
+    calls.push(options.body);if(fail){fail=false;throw new Error('TEST lost response');}return reply(201,{ok:true,order_id:'TEST_order'});
+  });
+  try {
+    await startHeadless(f.client);f.client.add('p1');await f.client.submit({name:'TEST buyer',phone:'+905551112233'});
+    assert.equal(f.client.state.pending.hasPayload,true);assert.equal(f.client.state.canEdit,false);
+    f.client.clearCart();f.client.add('p1');assert.equal(f.client.setQuantity('p1',2),false);assert.equal(f.client.state.cart[0].q,10000);
+    assert.ok(![...f.session.values()][0].includes('TEST buyer'));assert.ok(![...f.session.values()][0].includes('90555'));
+    await f.client.submit({name:'TEST changed',phone:'invalid'});assert.equal(calls.length,2);assert.equal(calls[0],calls[1]);
+    assert.equal(f.client.state.receipt.order_id,'TEST_order');assert.equal(f.client.state.cart.length,0);assert.equal(f.session.size,0);
+  } finally {f.client.destroy();}
 });
 const scratch=()=>mkdtempSync(join(tmpdir(),'teknikel-update-test-'));
 function releases(dir) {

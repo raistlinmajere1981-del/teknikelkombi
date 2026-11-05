@@ -51,16 +51,44 @@ foreach (array_keys($pages) as $page) {
         ob_start(); \YaSite\render_view('layout', $renderView, $site); $full=ob_get_clean();
         check(substr_count($full, 'src="/assets/core/widget.js"') === 1, 'Exactly one common widget on '.$page);
         check(!str_contains($full, '/assets/assistant/'), 'No custom request runtime on '.$page);
-        check(str_contains($full, $page === 'catalog' ? '/assets/core/storefront.js' : '/assets/core/portal.js'), 'Correct shared interaction on '.$page);
+        check(str_contains($full, $page === 'catalog' ? '/assets/site/catalog.js' : '/assets/core/portal.js'), 'Correct selected interaction on '.$page);
+        if ($page === 'catalog') {
+            check(substr_count($full, 'src="/assets/core/commerce.js"') === 1, 'One headless commerce controller');
+            check(!str_contains($full, '/assets/core/storefront.js'), 'Generic renderer is replaced');
+            check(str_contains($full, '/assets/site/catalog.css'), 'Site owns catalog styles');
+        }
         preg_match_all('~(?:src|href)="(/assets/[^"?]+)"~', $full, $assets);
         foreach ($assets[1] as $asset) check(is_file(__DIR__.'/..'.$asset), 'Loaded root asset exists: '.$asset);
     }
 
 }
 restore_error_handler();
+// A differently shaped site page and runtime use the same layout/controller.
+$scratch = sys_get_temp_dir().'/ya-catalog-boundary-'.bin2hex(random_bytes(8));
+mkdir($scratch.'/site/views/pages', 0700, true); mkdir($scratch.'/public/assets/site', 0700, true); mkdir($scratch.'/locales', 0700, true);
+symlink(realpath($root.'/core'), $scratch.'/core'); copy($root.'/locales/tr.json', $scratch.'/locales/tr.json');
+try {
+    file_put_contents($scratch.'/site/views/pages/catalog.php', '<table data-unrelated-catalog><tr><td>TEST custom table</td></tr></table>');
+    file_put_contents($scratch.'/public/assets/site/catalog.js', '// TEST custom renderer');
+    file_put_contents($scratch.'/public/assets/site/catalog.css', '/* TEST custom stylesheet */');
+    $other = $site; $other['root'] = $scratch;
+    $renderView['page'] = 'catalog'; $renderView['title'] = 'TEST catalog';
+    ob_start(); \YaSite\render_view('layout', $renderView, $other); $custom = ob_get_clean();
+    check(str_contains($custom, 'data-unrelated-catalog'), 'Actual PHP page override selected');
+    check(str_contains($custom, '/assets/site/catalog.js') && str_contains($custom, '/assets/site/catalog.css'), 'Actual site runtime/styles selected');
+    check(str_contains($custom, '/assets/core/commerce.js') && !str_contains($custom, '/assets/core/storefront.js'), 'Custom view shares only commerce controller');
+    check(!str_contains($custom, 'catalog-filter-rail') && !str_contains($custom, 'id="product-grid"'), 'No Teknikel markup forced on unrelated site');
+    unlink($scratch.'/site/views/pages/catalog.php'); unlink($scratch.'/public/assets/site/catalog.js'); unlink($scratch.'/public/assets/site/catalog.css');
+    ob_start(); \YaSite\render_view('layout', $renderView, $other); $fallback = ob_get_clean();
+    check(str_contains($fallback, 'data-commerce-products') && str_contains($fallback, '/assets/core/storefront.js'), 'Optional generic page and runtime selected');
+    check(!str_contains($fallback, 'catalog-filter-rail') && !str_contains($fallback, '/assets/site/catalog.css'), 'Generic fallback carries no site presentation');
+} finally {
+    foreach (['site/views/pages/catalog.php','public/assets/site/catalog.js','public/assets/site/catalog.css','locales/tr.json','core'] as $path) if (file_exists($scratch.'/'.$path)) unlink($scratch.'/'.$path);
+    foreach (['site/views/pages','site/views','site','public/assets/site','public/assets','public','locales',''] as $path) rmdir($scratch.($path !== '' ? '/'.$path : ''));
+}
 $business['business']['public_surfaces']=[];
 $closed=\YaSite\available_pages(\YaSite\project_publication($business,$sources,'/yardimci-asistan','tr'),$config,$root);
 foreach (['catalog','rooms','restaurant','menu'] as $page) check(!isset($closed[$page]), 'Surface OFF gate: '.$page);
 $empty=\YaSite\available_pages(\YaSite\project_publication([],[],'/yardimci-asistan','tr'),$config,$root);
 check(array_keys($empty)===['home','demo-content'], 'Unavailable publication leaves only home and site editorial demo');
-echo "canonical-entry-php-ok: actual root, assets, source, language OFF, 12 page renders/gates, AI OFF product hook\n";
+echo "canonical-entry-php-ok: actual root, assets, source, 12 page gates, site page/JS/CSS override and generic fallback, AI OFF product hook\n";
