@@ -131,3 +131,156 @@ p { margin-block:0 16px; }
   .technical-products { grid-template-columns:1fr; }
   .hero-actions .button { width:100%; }
 }
+
+/* Teknikel site-only navigation / brand system. No shared template overrides. */
+.teknikel-header {
+  top:0; background:rgba(255,255,255,.97); border-block-start:4px solid #cf2137;
+  border-block-end:1px solid #dce3e9; box-shadow:0 6px 24px rgba(18,40,61,.055);
+  backdrop-filter:blur(18px);
+}
+.teknikel-header .header-content {
+  display:grid; grid-template-columns:250px minmax(0,1fr) auto;
+  align-items:center; gap:clamp(12px,1.7vw,26px); min-height:104px; padding-block:14px;
+}
+.teknikel-header .site-name {display:flex; align-items:center; margin:0; min-width:0;}
+.teknikel-header .brand-logo {width:min(100%,250px); height:auto; display:block;}
+.teknikel-header .main-navigation {
+  display:flex; align-items:center; justify-content:center;
+  flex-flow:row nowrap; gap:3px; min-width:0; width:auto;
+}
+.teknikel-header .main-navigation > a {
+  display:inline-flex; position:relative; white-space:nowrap; min-height:44px;
+  border-radius:10px; padding:11px clamp(9px,1vw,15px);
+  color:#263b4e; font-size:13px; font-weight:750;
+  transition:background-color .17s ease,color .17s ease;
+}
+.teknikel-header .main-navigation > a:hover,
+.teknikel-header .main-navigation > a:focus-visible {color:#bb1c32;background:#f9eef0; text-decoration:none;}
+.teknikel-header .main-navigation > a[aria-current="page"] {color:#bd2035; background:#fff1f3; box-shadow:inset 0 -2px 0 #d5263b;}
+.teknikel-header .header-tools {display:flex; align-items:center; justify-content:flex-end; gap:11px; min-width:0;}
+.teknikel-header .social-links {display:flex; align-items:center; gap:7px;}
+.social-link {
+  display:inline-flex; align-items:center; justify-content:center; flex:none;
+  width:38px; height:38px; border:1px solid #d9e1e9; border-radius:12px;
+  color:#33495e; background:#f6f8fa;
+  text-decoration:none; transition:color .18s ease,background-color .18s ease,border-color .18s ease,transform .18s ease;
+}
+.social-link:hover,.social-link:focus-visible {
+  color:#fff; border-color:#c92134; background:#c92134; text-decoration:none; transform:translateY(-1px);
+}
+.teknikel-header .language-picker {
+  display:flex; align-items:center; flex-wrap:nowrap; gap:3px;
+  border-inline-start:1px solid #e4e9ee; padding-inline-start:11px; margin:0;
+}
+.teknikel-header .language-picker .flag-option {
+  display:inline-flex; flex-direction:column; align-items:center; justify-content:center;
+  min-width:43px; min-height:46px; padding:3px 6px;
+  border:1px solid transparent; border-radius:10px; background:transparent;
+  color:#526171; font-weight:800; font-size:10px; line-height:1.15; text-decoration:none;
+  transition:background-color .15s ease,border-color .15s ease;
+}
+.teknikel-header .language-picker .flag-option:hover,.teknikel-header .language-picker .flag-option:focus-visible {background:#eef2f5; text-decoration:none;}
+.teknikel-header .language-picker .flag-option.is-active {background:#fff1f3; border-color:#e7bdc5; color:#b61a2f;}
+.flag-pictogram {font-size:22px; line-height:1.15; font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif;}
+.language-code {letter-spacing:.09em; margin-block-start:2px;}
+.account-link {
+  display:inline-flex; align-items:center; justify-content:center; flex:none; gap:8px;
+  min-height:45px; padding:10px 15px; border:1px solid #14283c; border-radius:12px;
+  color:#fff; background:#172d42; box-shadow:0 4px 13px rgba(18,40,61,.15);
+  text-decoration:none; font-weight:750; font-size:13px; white-space:nowrap;
+  transition:background-color .17s ease,transform .17s ease;
+}
+.account-link:hover,.account-link:focus-visible {background:#bf2036; border-color:#bf2036; color:#fff; text-decoration:none; transform:translateY(-1px);}
+.account-link[aria-current="page"] {background:#bf2036; border-color:#bf2036;}
+.teknikel-header .menu-social {display:none;}
+.teknikel-header .menu-toggle {
+  min-width:44px; min-height:44px; width:44px; align-items:center; justify-content:center;
+  border:1px solid #dce3e9; border-radius:12px; background:#f5f7f9;
+  font-size:0; color:#132a40; padding:6px; cursor:pointer;
+}
+.teknikel-header .menu-toggle::before {content:"☰"; font-size:23px; line-height:1;}
+.teknikel-header .menu-toggle[aria-expanded="true"]::before {content:"×"; font-size:29px;}
+
+.teknikel-footer {background:#152b40; color:#e8eff4; border-block-start:4px solid #c92134; padding-block:52px 24px;}
+.teknikel-footer .footer-grid {
+  display:grid; grid-template-columns:1.1fr .95fr 1.15fr .85fr;
+  gap:32px; align-items:start;
+}
+.teknikel-footer .footer-logo {
+  display:inline-flex; align-items:center; border-radius:12px; padding:12px 16px;
+  background:#fff; border:1px solid rgba(255,255,255,.16); text-decoration:none;
+}
+.teknikel-footer .footer-brand .brand-logo {width:min(100%,220px); height:auto; display:block;}
+.teknikel-footer .footer-brand p {color:#aabaca; margin-block-start:16px; line-height:1.5; font-size:13px;}
+.teknikel-footer .footer-navigation {display:flex; flex-direction:column; align-items:start; gap:6px; margin:0;}
+.teknikel-footer .footer-navigation a {
+  color:#d5e1ea; padding:5px 0; min-height:30px; font-size:14px;
+  font-weight:550; text-decoration:none;
+}
+.teknikel-footer .footer-navigation a:hover,.teknikel-footer .footer-navigation a[aria-current="page"] {color:#ff6979; text-decoration:none;}
+.teknikel-footer .footer-contact {color:#b7c8d6; font-size:13px; line-height:1.65; overflow-wrap:anywhere;}
+.teknikel-footer .footer-contact a {color:#e6edf4; font-size:13px; margin-block-end:10px;}
+.teknikel-footer .footer-contact a:hover {color:#ff8291;}
+.teknikel-footer .footer-contact p {color:#b7c8d6; margin-block-start:12px;}
+.teknikel-footer .footer-extras {display:flex; flex-direction:column; align-items:start; gap:14px;}
+.teknikel-footer .footer-account-link {
+  display:inline-flex; align-items:center; gap:10px; padding:11px 15px;
+  background:#263f56; border:1px solid #496176; border-radius:11px;
+  color:#fff; font-weight:700; font-size:13px; text-decoration:none;
+}
+.teknikel-footer .footer-account-link:hover,.teknikel-footer .footer-account-link[aria-current="page"] {
+  background:#c92134; border-color:#c92134; color:#fff; text-decoration:none;
+}
+.teknikel-footer .footer-social-label {font-size:12px; color:#c6d5df; font-weight:700;}
+.teknikel-footer .social-links {display:flex; flex-wrap:wrap; gap:9px;}
+.teknikel-footer .social-link {background:#263e53; border-color:#466075; color:#e4edf4; border-radius:11px;}
+.teknikel-footer .social-link:hover {background:#c92134; border-color:#c92134; color:#fff;}
+.teknikel-footer .footer-copyright {
+  grid-column:1 / -1; border-block-start:1px solid #3e5265;
+  padding-block-start:20px; font-size:12px; color:#a9bbca; margin-block-start:12px;
+}
+@media (max-width:1180px) and (min-width:761px) {
+  .teknikel-header .header-content {grid-template-columns:250px minmax(0,1fr); row-gap:7px;}
+  .teknikel-header .header-tools {grid-column:2; grid-row:1;}
+  .teknikel-header .main-navigation {grid-column:1 / -1; grid-row:2; justify-content:center; padding-block:0 5px;}
+  .teknikel-footer .footer-grid {grid-template-columns:1fr 1fr 1fr;}
+  .teknikel-footer .footer-extras {grid-column:3;}
+}
+@media (max-width:760px) {
+  .teknikel-header .header-content {grid-template-columns:minmax(0,1fr) auto; min-height:75px; padding-block:10px; gap:6px 8px;}
+  .teknikel-header .brand-logo {width:clamp(152px,40vw,192px);}
+  .teknikel-header .header-tools {grid-column:2; grid-row:1; gap:5px;}
+  .teknikel-header .header-tools > .social-links {display:none;}
+  .teknikel-header .language-picker {width:auto; order:initial; padding-inline-start:5px; gap:1px;}
+  .teknikel-header .language-picker .flag-option {min-width:33px; min-height:41px; padding:3px;}
+  .teknikel-header .flag-pictogram {font-size:21px;}
+  .teknikel-header .language-code {display:none;}
+  .teknikel-header .account-link {min-height:41px; min-width:41px; padding:8px; border-radius:10px;}
+  .teknikel-header .account-link span {display:none;}
+  .teknikel-header .main-navigation {
+    grid-column:1 / -1; grid-row:2; order:initial;
+    width:100%; padding:10px; border:1px solid #e0e7ed;
+    background:#fff; border-radius:12px; box-shadow:0 10px 22px rgba(14,35,52,.09);
+    flex-direction:column; align-items:stretch; gap:3px;
+  }
+  .teknikel-header .main-navigation > a {
+    width:100%; font-size:14px; min-height:45px; padding:12px 14px; border-radius:8px;
+  }
+  .teknikel-header .menu-social {display:block; padding:10px 8px 2px; border-block-start:1px solid #e3e9ee; margin-block-start:5px;}
+  .teknikel-header .menu-social .social-links {display:flex; gap:10px;}
+  .teknikel-header .menu-social .social-link {width:38px; min-width:38px; height:38px; padding:0;}
+  .teknikel-footer .footer-grid {grid-template-columns:repeat(2,minmax(0,1fr)); gap:30px 20px;}
+  .teknikel-footer .footer-extras {grid-column:auto;}
+}
+@media (max-width:480px) {
+  .teknikel-header .brand-logo {width:clamp(140px,40vw,169px);}
+  .teknikel-header .header-tools {gap:4px;}
+  .teknikel-header .language-picker {padding-inline-start:4px;}
+  .teknikel-header .language-picker .flag-option {min-width:31px;}
+  .teknikel-header .menu-toggle {min-width:40px; width:40px; min-height:40px;}
+  .teknikel-footer .footer-grid {grid-template-columns:1fr; gap:27px;}
+  .teknikel-footer .footer-copyright {grid-column:1;}
+}
+@media (prefers-reduced-motion:reduce) {
+  .teknikel-header .main-navigation > a,.social-link,.flag-option,.account-link {transition:none;}
+}

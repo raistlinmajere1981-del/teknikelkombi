@@ -58,6 +58,36 @@ try {
     state.surfaces=['store','directions'];state.business={about_text:'TEST Yayınlanmış işletme açıklaması',phone:'+90 555 000 00 00',email:'test@example.test',address:'TEST Yayın Adresi',whatsapp_enabled:true,whatsapp:'+90 555 000 00 00',google_reviews_enabled:true,dealer_application_enabled:true,requests_enabled:true,request_types:['general_info','dealer_application'],gallery:[{id:'TEST-media-1',kind:'photo',url:'https://images.example.com/TEST-media-1.webp',title:'TEST Logo medya 1'},{id:'TEST-media-2',kind:'photo',url:'https://images.example.com/TEST-media-2.webp',title:'TEST Logo medya 2'}]};
     state.announcements=[{id:'TEST-announcement',published:true,channel:'website',title:'TEST Yayınlanmış Duyuru',text:'TEST yayın metni'}];state.reviews=[{author:'TEST Yorumcu',text:'TEST Yayınlanmış yorum',published:true}];
   };
+  await scenario('published social icons and separate account action at desktop and mobile',async page=>{
+    fullPublication();
+    state.business.social_links=[
+      {platform:'facebook',url:'https://facebook.com/test-teknikel'},
+      {platform:'instagram',url:'https://instagram.com/test-teknikel'},
+      {platform:'test-invalid',url:'javascript:alert(1)'},
+      {platform:'youtube',url:'https://youtube.com/',visible:false}
+    ];
+    await page.setViewportSize({width:1440,height:1000});
+    await page.goto(base+'/');
+    await expect(page.locator('.teknikel-header .social-links--header a')).toHaveCount(2);
+    await expect(page.locator('.teknikel-footer .social-links--footer a')).toHaveCount(2);
+    await expect(page.locator('.teknikel-header .social-links--header a[aria-label="facebook"]')).toHaveAttribute('href','https://facebook.com/test-teknikel');
+    await expect(page.locator('.teknikel-footer .social-links--footer a[aria-label="instagram"]')).toHaveAttribute('href','https://instagram.com/test-teknikel');
+    await expect(page.locator('#main-navigation a[href*="page=account"]')).toHaveCount(0);
+    await expect(page.locator('.account-link')).toBeVisible();
+    await fits(page);
+    await page.screenshot({path:`${artifacts}header-social-1440.png`,fullPage:true});
+    await page.setViewportSize({width:390,height:844});
+    await expect(page.locator('.account-link')).toBeVisible();
+    await expect(page.locator('.social-links--header')).toBeHidden();
+    await page.locator('[data-menu-toggle]').click();
+    await expect(page.locator('.social-links--menu a')).toHaveCount(2);
+    await expect(page.locator('.social-links--menu')).toBeVisible();
+    await fits(page);
+    await page.screenshot({path:`${artifacts}header-social-menu-390.png`,fullPage:true});
+    state.business.social_links=[];
+    await page.reload();
+    await expect(page.locator('.teknikel-header .social-link,.teknikel-footer .social-link')).toHaveCount(0);
+  });
   for(const width of [390,1440])await scenario(`conditional home blocks and gallery media ${width}`,async page=>{
     fullPublication();await page.setViewportSize({width,height:1000});await page.goto(base+'/');
     for(const selector of ['.announcement-strip','.about-preview','.dealer-callout','.review-card','.contact-preview','[aria-labelledby="discover-title"]'])await expect(page.locator(selector)).toBeVisible();
