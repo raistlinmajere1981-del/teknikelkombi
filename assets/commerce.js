@@ -1,13 +1,14 @@
-import {t,locale,localizePublic,language} from './language.js';
+import {t,locale,localizePublic,language,applyLocalization} from './language.js';
 /* Existing Yardımcı Asistan API contract. Device drafts never contain prices, contacts or tokens. */
 export const API_ROOT = '/yardimci-asistan/api/';
 export class ApiError extends Error {
   constructor(message, status = 0, code = '') { super(message); this.status = status; this.code = code; }
 }
-let sessionRefresh;
+let sessionRefresh, businessRead = 0;
 export async function request(endpoint, body, retry = true) {
   if (!/^(business|catalog|menu|tables|rooms|marketing|google-reviews|order|dealer\/(session|catalog|order|orders|receipt|logout)|account\/(config|session|login|register|logout|logout-all|refresh|recover|verify|reset|profile|oauth|orders))$/.test(endpoint)) throw new Error(t('Geçersiz işlem.'));
   const controller = new AbortController();
+  const publicationRead = body === undefined && endpoint === 'business' ? ++businessRead : 0;
   const timeout = setTimeout(() => controller.abort(), 15000);
   try {
     const headers = {Accept:'application/json'};
@@ -22,8 +23,10 @@ export async function request(endpoint, body, retry = true) {
     if (!response.ok) throw new ApiError(typeof value?.message === 'string' && language === 'tr' ? value.message : t('İşlem tamamlanamadı. Lütfen tekrar deneyin.'), response.status, value?.code || '');
     if (endpoint === 'google-reviews' && typeof value?.available !== 'boolean') throw new ApiError(t('Yorum yayını okunamadı.'), 502);
     if (!['dealer/session','google-reviews'].includes(endpoint) && value?.ok !== true) throw new ApiError(t('İşlemin sonucu doğrulanamadı. Aynı siparişi tekrar deneyin.'), 502);
+    if (publicationRead && publicationRead === businessRead) await applyLocalization(value.localization);
     return body === undefined ? localizePublic(value,endpoint) : value;
   } catch (error) {
+    if (publicationRead && publicationRead === businessRead) await applyLocalization(null);
     if (error instanceof ApiError) throw error;
     throw new ApiError(t(endpoint.startsWith('account/') ? 'Hesap hizmetine bağlanılamadı. Lütfen tekrar deneyin.' : 'Bağlantı kurulamadı. Gönderim yapılmış olabilir; aynı siparişi tekrar deneyin.'));
   } finally { clearTimeout(timeout); }

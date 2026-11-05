@@ -120,7 +120,7 @@ export async function experienceScenarios({scenario,base,login,fits,noPersonalSt
     await expect(modal.locator('tr[data-field="name"]')).toContainText(other); await fits(page,390);
   });
   await scenario('publication experience: dealer form preserves canonical fields and retry identity',390,async ({page,backend,context}) => {
-    backend.business = {display_name:'TEST Business',requests_enabled:true,dealer_application_enabled:true};
+    backend.business = {display_name:'TEST Business',requests_enabled:true,request_types:['dealer_application','pension_reservation','restaurant_reservation'],dealer_application_enabled:true};
     const sends = [];
     await context.route('**/yardimci-asistan/api/request.php',async route => {
       const req = route.request(), body = req.postDataBuffer().toString('utf8');
@@ -140,7 +140,7 @@ export async function experienceScenarios({scenario,base,login,fits,noPersonalSt
   for (const width of [390,1440]) await scenario('publication experience: homepage modules, unique nav, widget tabs and original avatar',width,async ({page,backend}) => {
     backend.publicSurfaces = ['store','rooms','restaurant','qr_menu']; backend.roomsEnabled = backend.tablesEnabled = backend.menuEnabled = true;
     backend.public[0].brand = 'TEST Published Brand';
-    backend.business = {display_name:'TEST Published Teknikel',description:'TEST Published description',phone:'+905550000000',email:'test@example.com',address:'TEST Published Address',ai_enabled:true,requests_enabled:true,dealer_application_enabled:true,google_reviews_enabled:true,
+    backend.business = {display_name:'TEST Published Teknikel',description:'TEST Published description',phone:'+905550000000',email:'test@example.com',address:'TEST Published Address',ai_enabled:true,requests_enabled:true,request_types:['dealer_application','pension_reservation','restaurant_reservation'],dealer_application_enabled:true,google_reviews_enabled:true,
       gallery:[{url:'/yardimci-asistan/media/fixture-gallery.jpg',title:'TEST gallery'}]}; backend.campaigns = [campaignPublication];
     await page.goto(base+'/');
     for (const key of ['rooms','restaurant','qr_menu','campaigns','reviews','gallery','contact','dealer']) await expect(page.locator('section[data-section="'+key+'"]')).toBeVisible();

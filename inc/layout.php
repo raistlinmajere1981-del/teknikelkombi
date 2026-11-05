@@ -44,17 +44,13 @@ function te_header(string $page, string $title): void { ?>
 <link rel="stylesheet" href="/assets/compare.css">
 <link rel="stylesheet" href="/assets/assistant/presentation.css">
 <?php if (in_array($page, ['home','announcements'], true)): ?><link rel="stylesheet" href="/assets/marketing.css"><?php endif; ?>
-<script id="teknikel-english" type="application/json"><?= json_encode(te_dictionary(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?></script>
 <script src="/assets/site.js" type="module"></script>
 </head><body data-page="<?= te($page) ?>">
 <a class="skip" href="#main"><?= te_t('İçeriğe geç') ?></a>
 <header class="header"><div class="container header-main">
 <a class="brand" href="/" aria-label="<?= te_t('Teknikel Ana Sayfa') ?>"><img src="/assets/logo.webp" alt="<?= te_t('TEKNİKEL — Kombi Yedek Parça ve Kart Tamiri') ?>" width="250" height="72"></a>
 <form class="header-search" action="/magaza/" method="get" role="search" data-store-only hidden><label class="sr-only" for="global-search"><?= te_t('Ürün veya stok kodu ara') ?></label><input id="global-search" name="q" type="search" placeholder="<?= te_t('Ürün adı, stok kodu veya model ara...') ?>" maxlength="180"><button type="submit" aria-label="<?= te_t('Ara') ?>"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m16 16 5 5"/></svg></button></form>
-<div class="header-actions"><nav class="language-chooser" aria-label="<?= te_t('Dil seçimi') ?>">
-<?php foreach (['tr'=>'Türkçe', 'en'=>'English'] as $language=>$label): ?>
-<a href="<?= te(te_language_url($language)) ?>" data-language="<?= te($language) ?>" lang="<?= te($language) ?>" aria-label="<?= te($label) ?>" <?= te_language() === $language ? 'aria-current="true"' : '' ?>><?= strtoupper($language) ?></a>
-<?php endforeach; ?></nav><a class="basket-link" href="/sepet/" aria-label="<?= te_t('Perakende sepeti') ?>" data-store-only hidden><?= te_t('Sepet') ?> <span data-retail-count>0</span></a>
+<div class="header-actions"><nav class="language-chooser" aria-label="<?= te_t('Dil seçimi') ?>" hidden inert></nav><a class="basket-link" href="/sepet/" aria-label="<?= te_t('Perakende sepeti') ?>" data-store-only hidden><?= te_t('Sepet') ?> <span data-retail-count>0</span></a>
 <a class="account-link" href="/hesabim/" data-account-only hidden><span class="account-icon">↗</span><span><?= te_t('Hesabım') ?><small><?= te_t('Müşteri hesabı') ?></small></span></a></div>
 </div>
 <nav class="nav" aria-label="<?= te_t('Ana menü') ?>"><div class="container nav-inner">
@@ -69,7 +65,7 @@ function te_footer(): void { ?>
 </main>
 <footer class="footer"><div class="container foot-main">
 <div class="footer-identity"><a class="footer-logo" href="/"><img src="/assets/logo.webp" alt="Teknikel" width="220" height="63" loading="lazy"></a><p data-business-description hidden></p></div>
-<div class="footer-navigation"><h3><?= te_t('Keşfedin') ?></h3><?php te_public_links('',false,true); ?></div>
+<div class="footer-navigation"><h3><?= te_t('Keşfedin') ?></h3><?php te_public_links('',false,true); ?><a href="/demo-icerik/"><span><?= te_t('Demo Veri Paketi') ?></span> <span aria-hidden="true">↓</span></a></div>
 <div class="footer-contact" data-business-contact hidden><h3><?= te_t('İletişim') ?></h3><?php te_contact_fields(true); ?></div>
 </div><div class="container footer-bottom"><span>© <?= date('Y') ?> <span data-business-name hidden></span></span></div></footer>
 <script src="/assets/assistant/widget.js" data-publication-managed="true" data-api-base-url="/yardimci-asistan" data-logo-url="/assets/logo.webp" data-primary-color="#12283d" data-accent-color="#e5263c" defer></script>

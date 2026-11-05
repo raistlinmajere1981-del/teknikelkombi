@@ -1,4 +1,3 @@
-<?php
-// Preserve existing sessions and canonical shared account authority.
-header('Location: /hesabim/?panel=dealer', true, 302);
-exit;
+<?php // teknikel-site: transport only; common legacy aliases own query forwarding.
+declare(strict_types=1);
+require __DIR__ . '/../index.php';

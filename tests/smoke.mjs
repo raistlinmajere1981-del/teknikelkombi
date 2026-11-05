@@ -8,6 +8,7 @@ import {FixtureApi,A,B,tokens} from './fixtures/api.mjs';
 import {galleryScenarios} from './gallery.mjs';
 import {storefrontScenarios} from './storefront.mjs';
 import {experienceScenarios} from './experience.mjs';
+import {customerRequestScenarios} from './customer-requests.mjs';
 
 const port = await new Promise(resolve => { const probe = createServer(); probe.listen(0,'127.0.0.1',() => { const port = probe.address().port; probe.close(() => resolve(port)); }); });
 const base = `http://127.0.0.1:${port}`;
@@ -53,6 +54,7 @@ async function scenario(name,width,run,options = {}) {
 try {
   for (let i = 0; i < 100; i++) { try { if ((await fetch(base)).ok) break; } catch {} await new Promise(resolve => setTimeout(resolve,40)); }
   browser = await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || '/usr/bin/brave',args:['--no-sandbox','--disable-gpu']});
+  await customerRequestScenarios({scenario,base,fits,noPersonalStorage});
   await experienceScenarios({scenario,base,login,fits,noPersonalStorage});
   await storefrontScenarios({scenario,base,login,fits});
   await galleryScenarios({scenario,base,login,dealerTab,fits,noPersonalStorage});

@@ -1,0 +1,2280 @@
+{
+  "version": 1,
+  "id": "teknikel-site",
+  "source_language": "tr",
+  "revision": "9eb01fc0aa28b947536e38aa462083aa2dc1ecc10619f1107bcbc8be70a5773c",
+  "entries": {
+    "phrase.00772afee98bc22307d089200a1c012465749aebf9658916054f0f9ac58db101": {
+      "text": "/ Ürün",
+      "hash": "00772afee98bc22307d089200a1c012465749aebf9658916054f0f9ac58db101"
+    },
+    "phrase.00f2eb8f5ca3d6725288ed416a389bbb66a11c0fca0548d500e73184dcb61df8": {
+      "text": "Başvuru notu (isteğe bağlı)",
+      "hash": "00f2eb8f5ca3d6725288ed416a389bbb66a11c0fca0548d500e73184dcb61df8"
+    },
+    "phrase.01654a2fcd31ceb07962745d54fddd3e8f061b14e82798ce3519a2f0d0e96a15": {
+      "text": "Ürün arama",
+      "hash": "01654a2fcd31ceb07962745d54fddd3e8f061b14e82798ce3519a2f0d0e96a15"
+    },
+    "phrase.01a63a0bc8f43be199371f9def8c3694adc4e495ba50bacd87594e99f47e70a6": {
+      "text": "Oda",
+      "hash": "01a63a0bc8f43be199371f9def8c3694adc4e495ba50bacd87594e99f47e70a6"
+    },
+    "phrase.01aa240106ce35824c904e6858c6ad701b70f401bc030243d3367eeb054ad424": {
+      "text": "Sağ görsel inceleme alanı",
+      "hash": "01aa240106ce35824c904e6858c6ad701b70f401bc030243d3367eeb054ad424"
+    },
+    "phrase.01d8769562cc9cd9e6bb928b24fe26717de4dae945112987f3c7b35ab1787831": {
+      "text": "Bu katalogda şu anda yeni sipariş alınamıyor.",
+      "hash": "01d8769562cc9cd9e6bb928b24fe26717de4dae945112987f3c7b35ab1787831"
+    },
+    "phrase.02805cc8ab1110dc3b7791834f339994e861304d62d45e4c32a6996e895c31e1": {
+      "text": "FİRMA HESABI",
+      "hash": "02805cc8ab1110dc3b7791834f339994e861304d62d45e4c32a6996e895c31e1"
+    },
+    "phrase.02da97eec3d3e54a933597769ee2859a295c9d575fb0a99952020ea296e83aef": {
+      "text": "Diğer web sitesi",
+      "hash": "02da97eec3d3e54a933597769ee2859a295c9d575fb0a99952020ea296e83aef"
+    },
+    "phrase.034fe767aac7591e68187d742e7a2c61dc211b206c77851c17ad165de2580c6f": {
+      "text": "Sepet",
+      "hash": "034fe767aac7591e68187d742e7a2c61dc211b206c77851c17ad165de2580c6f"
+    },
+    "phrase.03ebb94fb9067bc3e9e65bffe4373eccebc7fab3ee297c0b20f3379b6a0aaeb3": {
+      "text": "Miktar",
+      "hash": "03ebb94fb9067bc3e9e65bffe4373eccebc7fab3ee297c0b20f3379b6a0aaeb3"
+    },
+    "phrase.0499ada3020cdcf868f993213986ab02d14854cdbb90cd2f3aaee8ca25afb735": {
+      "text": "WhatsApp ile iletişim",
+      "hash": "0499ada3020cdcf868f993213986ab02d14854cdbb90cd2f3aaee8ca25afb735"
+    },
+    "phrase.05c7c7cc5a5d46c8f663b0bdfb1c2d8ba592642538c4bca2a6706888ebced62e": {
+      "text": " Gönderim sonucu doğrulanana kadar aynı kimlikle tekrar deneyin.",
+      "hash": "05c7c7cc5a5d46c8f663b0bdfb1c2d8ba592642538c4bca2a6706888ebced62e"
+    },
+    "phrase.05d3438b51aa192e8087dbcdeacaee4be7ac0b99dce92be6861070d9834bccb2": {
+      "text": "Ürün görseli yok",
+      "hash": "05d3438b51aa192e8087dbcdeacaee4be7ac0b99dce92be6861070d9834bccb2"
+    },
+    "phrase.05d4ee34c4ab595c6cf557a603b3c0ea2711996191c1e6259c3bf95f1f309935": {
+      "text": "Sonraki →",
+      "hash": "05d4ee34c4ab595c6cf557a603b3c0ea2711996191c1e6259c3bf95f1f309935"
+    },
+    "phrase.05f0c22951a2a16077e12771503fea17256cd6f880d7632c5789a474d179a11d": {
+      "text": "Erişim iptali nedeniyle işlenemedi",
+      "hash": "05f0c22951a2a16077e12771503fea17256cd6f880d7632c5789a474d179a11d"
+    },
+    "phrase.070d2295e358a845278b264d26f961bbf8a8ea611fa1f051642ff8352e25a55f": {
+      "text": "Hesap yeniden doğrulanıyor…",
+      "hash": "070d2295e358a845278b264d26f961bbf8a8ea611fa1f051642ff8352e25a55f"
+    },
+    "phrase.0820eb483b1528bc15899d174fc8df256c7a4b7d87eed9aceb76b883133b3667": {
+      "text": "Henüz yayınlanmış menü ürünü bulunmuyor.",
+      "hash": "0820eb483b1528bc15899d174fc8df256c7a4b7d87eed9aceb76b883133b3667"
+    },
+    "phrase.08433104b788201a004ee52d2de75e9b12afa1af4ca6c6438a0b41610a83e3c5": {
+      "text": "Geçerli bir e-posta adresi girin.",
+      "hash": "08433104b788201a004ee52d2de75e9b12afa1af4ca6c6438a0b41610a83e3c5"
+    },
+    "phrase.084bf768e00e514d6779c9b4a9fb2b8ea4ff7a7ed62bf23a2da5fefe1dc47486": {
+      "text": "Şeffaflık",
+      "hash": "084bf768e00e514d6779c9b4a9fb2b8ea4ff7a7ed62bf23a2da5fefe1dc47486"
+    },
+    "phrase.088dac93ae2f192118d8bd12c40d4e4486ba707e61cccf2d3a3f616c570ccfee": {
+      "text": "Bağlantı geçersiz veya süresi dolmuş.",
+      "hash": "088dac93ae2f192118d8bd12c40d4e4486ba707e61cccf2d3a3f616c570ccfee"
+    },
+    "phrase.0893177977a5af98265d7633fe6ec7418e564305f978ab705761fadb4ce96c29": {
+      "text": "Normal müşteri hesabınız açık. Bayi yetkisi için işletmeyle iletişime geçin.",
+      "hash": "0893177977a5af98265d7633fe6ec7418e564305f978ab705761fadb4ce96c29"
+    },
+    "phrase.089dd54bc53d3b76ce52714af909417b85d0ca148de59b585dafac786a2d8db6": {
+      "text": "Sağ ürün",
+      "hash": "089dd54bc53d3b76ce52714af909417b85d0ca148de59b585dafac786a2d8db6"
+    },
+    "phrase.08a8553fa49f4fa4857afd899ddaeed1d6723edfbd88a0ad4c9bdb822a242de6": {
+      "text": "Talebi Gönder",
+      "hash": "08a8553fa49f4fa4857afd899ddaeed1d6723edfbd88a0ad4c9bdb822a242de6"
+    },
+    "phrase.0a56587812d20082099b60919b0c190ee9e94bd787672d8bef7c56e207edb611": {
+      "text": "Talep gönderiliyor…",
+      "hash": "0a56587812d20082099b60919b0c190ee9e94bd787672d8bef7c56e207edb611"
+    },
+    "phrase.0a6bfe3f4b87dbad4396e94a65e325cd96fb60e02e4ca0d6e4581f963c950587": {
+      "text": "Siparişlerimi göster",
+      "hash": "0a6bfe3f4b87dbad4396e94a65e325cd96fb60e02e4ca0d6e4581f963c950587"
+    },
+    "phrase.0ae4c8ec6764db549263e9f7c3927a806a1c0af2b5de7b43148694ff598e9845": {
+      "text": ". Kesin tutarı sipariş geçmişinden takip edin.",
+      "hash": "0ae4c8ec6764db549263e9f7c3927a806a1c0af2b5de7b43148694ff598e9845"
+    },
+    "phrase.0b0e400053ad32252be3a6655301a29d9be611b6df5a26c800176bab8e93047d": {
+      "text": "Hesap işlemleri",
+      "hash": "0b0e400053ad32252be3a6655301a29d9be611b6df5a26c800176bab8e93047d"
+    },
+    "phrase.0b3bb91d47b91b09710562c873b7faa84d0179f92e4c39d54f584af9c6f84171": {
+      "text": "Yayınlanmış görsel yok. Ürün bilgilerini inceleyebilirsiniz.",
+      "hash": "0b3bb91d47b91b09710562c873b7faa84d0179f92e4c39d54f584af9c6f84171"
+    },
+    "phrase.0c41f65c2b10d3648c3c1d6859c4bd5bbb3a59347c49be277b2d71ca601b188d": {
+      "text": "TEKNİK PARÇADA DOĞRU ADRES",
+      "hash": "0c41f65c2b10d3648c3c1d6859c4bd5bbb3a59347c49be277b2d71ca601b188d"
+    },
+    "phrase.0d3e86bb27de1813b49ac8f20180c5c6bdf980e8246b9973b294414f954ef6ed": {
+      "text": "Firma bilgileri",
+      "hash": "0d3e86bb27de1813b49ac8f20180c5c6bdf980e8246b9973b294414f954ef6ed"
+    },
+    "phrase.0d428c3b30a73b56427f102b5d433f706fec43afd5dfb83b19a13b7ed8026e0d": {
+      "text": "Oturumu kapat",
+      "hash": "0d428c3b30a73b56427f102b5d433f706fec43afd5dfb83b19a13b7ed8026e0d"
+    },
+    "phrase.0dd9e58fbdde0d147eb1e440e5283a6fd965f73b08bdaf1065310f36fecaffcf": {
+      "text": "ZIP dosyasını indirin.",
+      "hash": "0dd9e58fbdde0d147eb1e440e5283a6fd965f73b08bdaf1065310f36fecaffcf"
+    },
+    "phrase.0e12ec1d96b7807cb6f9dc22b4dddb68092fe7a8ab3210ce9368aa191bfd1ff1": {
+      "text": "GÜNCEL YAYINLAR",
+      "hash": "0e12ec1d96b7807cb6f9dc22b4dddb68092fe7a8ab3210ce9368aa191bfd1ff1"
+    },
+    "phrase.0e4c1a8c4acb147211e26f302c2e22bb2982e5c74a090f39ac659cd0b0296e58": {
+      "text": "Sepete ekle",
+      "hash": "0e4c1a8c4acb147211e26f302c2e22bb2982e5c74a090f39ac659cd0b0296e58"
+    },
+    "phrase.0e6e3c3d7708c671ad8d250b78b686e3f70b7b163880c2a6ce692db6fae6170e": {
+      "text": " ürününü incele",
+      "hash": "0e6e3c3d7708c671ad8d250b78b686e3f70b7b163880c2a6ce692db6fae6170e"
+    },
+    "phrase.0eef79d369172cfc46f02fc6203777726e9798f529986306e16300f80a254e9d": {
+      "text": "Posta kodu (isteğe bağlı)",
+      "hash": "0eef79d369172cfc46f02fc6203777726e9798f529986306e16300f80a254e9d"
+    },
+    "phrase.0ef988819a8d5825b99d8bfe92c45be811db73694ac8dba4cb53751fbf9d4255": {
+      "text": "Teknik açıklama",
+      "hash": "0ef988819a8d5825b99d8bfe92c45be811db73694ac8dba4cb53751fbf9d4255"
+    },
+    "phrase.0f8f2623d5cf43fd8a818df8019f9e1b21b4fc1a2ef4357c8f3e395711d53363": {
+      "text": "Sorunuz",
+      "hash": "0f8f2623d5cf43fd8a818df8019f9e1b21b4fc1a2ef4357c8f3e395711d53363"
+    },
+    "phrase.0f944ccc44af1b93a6112421c7f9d00922bbee1e2de5c395cfd06b1b0d70bd32": {
+      "text": "Yorum yayını okunamadı.",
+      "hash": "0f944ccc44af1b93a6112421c7f9d00922bbee1e2de5c395cfd06b1b0d70bd32"
+    },
+    "phrase.0fd14826ce64bf723033e3a0d5c8d8ae25373748f1241db1c8b9551b3f4426c6": {
+      "text": "Eşleşen yayınlanmış ürün yok.",
+      "hash": "0fd14826ce64bf723033e3a0d5c8d8ae25373748f1241db1c8b9551b3f4426c6"
+    },
+    "phrase.1124bcd5e988fa9098efb8399b432a7d83cb2ac196a74b491792fc391f273f61": {
+      "text": "Farklı",
+      "hash": "1124bcd5e988fa9098efb8399b432a7d83cb2ac196a74b491792fc391f273f61"
+    },
+    "phrase.1197abca2dd6e3a1237a9be48cbd0730ff78c71c772a5c98c89c1fab13515e94": {
+      "text": "Bağlantı geçersiz, kullanılmış veya süresi dolmuş.",
+      "hash": "1197abca2dd6e3a1237a9be48cbd0730ff78c71c772a5c98c89c1fab13515e94"
+    },
+    "phrase.11fca7863341b2b9e47595a8a2d8d0a3f4869a4fb68ee6a1bea46c980b3a2dac": {
+      "text": "Sipariş talebiniz alındı",
+      "hash": "11fca7863341b2b9e47595a8a2d8d0a3f4869a4fb68ee6a1bea46c980b3a2dac"
+    },
+    "phrase.120f3c5745cf1ad7e72c1484f21423e6ffe9039e2bf3001151eb7c4f554ea0e5": {
+      "text": "İşletmeye aktarım bekliyor",
+      "hash": "120f3c5745cf1ad7e72c1484f21423e6ffe9039e2bf3001151eb7c4f554ea0e5"
+    },
+    "phrase.132dc5224157885507597da8e5dee50d50310233dfda48c42ad36929ea79c3b7": {
+      "text": "Bayi oturumu başka bir sekmede kapatıldı veya sona erdi.",
+      "hash": "132dc5224157885507597da8e5dee50d50310233dfda48c42ad36929ea79c3b7"
+    },
+    "phrase.13b3fb01819ccef1f40b8c2e99ef08e4f2f1eb41bc22c7ea37d20f815fb0fdfa": {
+      "text": "Web sitesi ↗",
+      "hash": "13b3fb01819ccef1f40b8c2e99ef08e4f2f1eb41bc22c7ea37d20f815fb0fdfa"
+    },
+    "phrase.13bea8abde590b02d6e161d6e0ff0df21586e7953e65055c6386c277b9295031": {
+      "text": "Sipariş geçmişi",
+      "hash": "13bea8abde590b02d6e161d6e0ff0df21586e7953e65055c6386c277b9295031"
+    },
+    "phrase.14148b35b8f1a71988c9ac26efdd990a31e80da848bfae06bfe3e5e69f64c3ff": {
+      "text": "Bu test paketindeki telefon ve e-posta alanlarına gerçek ileti göndermeyin.",
+      "hash": "14148b35b8f1a71988c9ac26efdd990a31e80da848bfae06bfe3e5e69f64c3ff"
+    },
+    "phrase.14411176800f9f5090944c889c8bae4be5c63afb2089017edfad24d52223ad27": {
+      "text": "Şifremi unuttum",
+      "hash": "14411176800f9f5090944c889c8bae4be5c63afb2089017edfad24d52223ad27"
+    },
+    "phrase.14a9be46100fbcc89aa24cf8f4701b28e0e3143a17b9bdd4bafa9864adcb8766": {
+      "text": "Henüz sipariş görünmüyor. Yeni taleplerinizi yenileyerek kontrol edebilirsiniz.",
+      "hash": "14a9be46100fbcc89aa24cf8f4701b28e0e3143a17b9bdd4bafa9864adcb8766"
+    },
+    "phrase.1518548e51104b2b9e5621ce0382ab8ccdce40a1bdf0ceb1daea2e1f47d2ac81": {
+      "text": ". görseli göster",
+      "hash": "1518548e51104b2b9e5621ce0382ab8ccdce40a1bdf0ceb1daea2e1f47d2ac81"
+    },
+    "phrase.157f7eda2b7179bdd32b982de7978007e34a0192cd0e4d06977f75407da2a714": {
+      "text": "Ürün artık katalogda bulunmuyor.",
+      "hash": "157f7eda2b7179bdd32b982de7978007e34a0192cd0e4d06977f75407da2a714"
+    },
+    "phrase.15fd150d3692575af70c2d0e13d88b0341339fc78bfc4ecb58b16cb840fb69fb": {
+      "text": "Geçerli bir miktar girin.",
+      "hash": "15fd150d3692575af70c2d0e13d88b0341339fc78bfc4ecb58b16cb840fb69fb"
+    },
+    "phrase.16b4f750542b7a5b2314f2600f43932f3b5c038f1d5802eb24cad344891fa4a7": {
+      "text": "Müşteri profili",
+      "hash": "16b4f750542b7a5b2314f2600f43932f3b5c038f1d5802eb24cad344891fa4a7"
+    },
+    "phrase.16f46aff8dffa4ba5ea0b6b59dd4b5b2253c72d5241300523039e69bc4842cd6": {
+      "text": "tek yerde.",
+      "hash": "16f46aff8dffa4ba5ea0b6b59dd4b5b2253c72d5241300523039e69bc4842cd6"
+    },
+    "phrase.17233932ffda349352b115f22563f01057f7ef28aaef190a9d50d9fc2e266bd6": {
+      "text": "Ara",
+      "hash": "17233932ffda349352b115f22563f01057f7ef28aaef190a9d50d9fc2e266bd6"
+    },
+    "phrase.172ce28a61228150c886cbf636c9ddc05ff59606f4eb34c557e308612365eed3": {
+      "text": "Belge türü",
+      "hash": "172ce28a61228150c886cbf636c9ddc05ff59606f4eb34c557e308612365eed3"
+    },
+    "phrase.17ce13d213b004069cb0fbcf4f7de5fe6986922b58e0772b1ce24e0070b04e66": {
+      "text": "ürünler ve duyurular.",
+      "hash": "17ce13d213b004069cb0fbcf4f7de5fe6986922b58e0772b1ce24e0070b04e66"
+    },
+    "phrase.18b0f91996b60d699e73fea712f7fc582765cda686f357f0243cd4372a49da4e": {
+      "text": "Yayın veya oturum doğrulanamadı. Yenileyerek tekrar deneyin.",
+      "hash": "18b0f91996b60d699e73fea712f7fc582765cda686f357f0243cd4372a49da4e"
+    },
+    "phrase.1a77a9aab08d24d0e8181b9923e54eec8aa222bb2c585874931be87eb3c6643b": {
+      "text": "Yorumlar",
+      "hash": "1a77a9aab08d24d0e8181b9923e54eec8aa222bb2c585874931be87eb3c6643b"
+    },
+    "phrase.1b2c0986aa39ddf39ee98fd536f8c789d8d332fd4756cd333432321ec12532f7": {
+      "text": "Vergi dairesi (isteğe bağlı)",
+      "hash": "1b2c0986aa39ddf39ee98fd536f8c789d8d332fd4756cd333432321ec12532f7"
+    },
+    "phrase.1b62989a95ca65d72f1401159b8533db3c4744f0a937cac4ac639c6e6a1dbd6f": {
+      "text": "KATALOĞUMUZDAKİ MARKALAR",
+      "hash": "1b62989a95ca65d72f1401159b8533db3c4744f0a937cac4ac639c6e6a1dbd6f"
+    },
+    "phrase.1b7c3fd82112d61c26d4db1e13b7d3e07511f1c5e9d518db56e78663082f3b65": {
+      "text": " sepete ekle",
+      "hash": "1b7c3fd82112d61c26d4db1e13b7d3e07511f1c5e9d518db56e78663082f3b65"
+    },
+    "phrase.1bceb5f20271b6ac3c75d09c16ef7ae5960fa157793f9b2435259b3a22aabb9f": {
+      "text": "Güncel yayın ve fiyat yetkisi kontrol ediliyor…",
+      "hash": "1bceb5f20271b6ac3c75d09c16ef7ae5960fa157793f9b2435259b3a22aabb9f"
+    },
+    "phrase.1c116acac83a6fc254e9edb8f9088bfb18979f5665bd1f8cbbcd7dd5a32395ca": {
+      "text": "Yatay çevir",
+      "hash": "1c116acac83a6fc254e9edb8f9088bfb18979f5665bd1f8cbbcd7dd5a32395ca"
+    },
+    "phrase.1c1b7168e72c3ba3960606e14c9a39cb9099769efa13176ed9bdbe7688440fb0": {
+      "text": "Ürün ve görsel karşılaştırma",
+      "hash": "1c1b7168e72c3ba3960606e14c9a39cb9099769efa13176ed9bdbe7688440fb0"
+    },
+    "phrase.1c58e0c512b143b5c036f51c08b4bcc4b849aa9d61d2ff144dbcc5d058024e61": {
+      "text": "Katalog",
+      "hash": "1c58e0c512b143b5c036f51c08b4bcc4b849aa9d61d2ff144dbcc5d058024e61"
+    },
+    "phrase.1cabd8a2dc3019b8a3ac0e858adfcb4558899ffc33f18b3f9eab89d72615cd08": {
+      "text": "Marka",
+      "hash": "1cabd8a2dc3019b8a3ac0e858adfcb4558899ffc33f18b3f9eab89d72615cd08"
+    },
+    "phrase.1cae9843d949cba7226196cc6557a48aec9895951f769887851e9491f64b02d9": {
+      "text": "Yakınlaştırma",
+      "hash": "1cae9843d949cba7226196cc6557a48aec9895951f769887851e9491f64b02d9"
+    },
+    "phrase.1d1efc464bcbede569f2f3ad22da56c59ace8c169a47038d39d46c17de7ca4ac": {
+      "text": "İçeriğe geç",
+      "hash": "1d1efc464bcbede569f2f3ad22da56c59ace8c169a47038d39d46c17de7ca4ac"
+    },
+    "phrase.1dbee67b49ec45304f94e7f1ce5dd2ac4823c16853bfb6999b432bb51957a030": {
+      "text": "Kataloğa dön →",
+      "hash": "1dbee67b49ec45304f94e7f1ce5dd2ac4823c16853bfb6999b432bb51957a030"
+    },
+    "phrase.1de00d4b9c18ce6d61352d6d94a99577d91e939ac797e4ca59bf5bd4bc56297e": {
+      "text": "Bayi katalog filtresi",
+      "hash": "1de00d4b9c18ce6d61352d6d94a99577d91e939ac797e4ca59bf5bd4bc56297e"
+    },
+    "phrase.1e2164b775d17c31ba8f602c74996c9955a057b3f658fb3c15f7e3df41c3dcec": {
+      "text": "Mesajınızı hazırlayın",
+      "hash": "1e2164b775d17c31ba8f602c74996c9955a057b3f658fb3c15f7e3df41c3dcec"
+    },
+    "phrase.1f5cb787c0505892413f71f015ec3eee64b34cf6b1ab46cc8666f688993c040d": {
+      "text": "Ürün görseli seçimi (ok tuşları, Home ve End)",
+      "hash": "1f5cb787c0505892413f71f015ec3eee64b34cf6b1ab46cc8666f688993c040d"
+    },
+    "phrase.1f7511e1b3fd983a3bcf899ed0d12fa9b26bef8d09c542fa56a05901fc2e759c": {
+      "text": "Bilgilere ulaşılamadı. Lütfen tekrar deneyin.",
+      "hash": "1f7511e1b3fd983a3bcf899ed0d12fa9b26bef8d09c542fa56a05901fc2e759c"
+    },
+    "phrase.1fc0f242f155c3ca7dbb3c75b184d8c09c8e809ab09f6b52beba3f6503c713bf": {
+      "text": "Parça kodu ve teknik bilgi",
+      "hash": "1fc0f242f155c3ca7dbb3c75b184d8c09c8e809ab09f6b52beba3f6503c713bf"
+    },
+    "phrase.1ff7161624beac79b9fb5f08ec99ccd3fa6d5652cbb0f57461d61a0bb42a3f7b": {
+      "text": "Bayi alanını incele",
+      "hash": "1ff7161624beac79b9fb5f08ec99ccd3fa6d5652cbb0f57461d61a0bb42a3f7b"
+    },
+    "phrase.2027fa7e9dcba58e62274ed164a13d45cdc3d00d7e04e15b79cec652cbbb3621": {
+      "text": "E-posta veya şifre hatalı.",
+      "hash": "2027fa7e9dcba58e62274ed164a13d45cdc3d00d7e04e15b79cec652cbbb3621"
+    },
+    "phrase.206dced5f44582d24985bc213e780c89bc2ad664ce731a0762a07bbfaadaaa54": {
+      "text": "Restoran yayını okunamadı.",
+      "hash": "206dced5f44582d24985bc213e780c89bc2ad664ce731a0762a07bbfaadaaa54"
+    },
+    "phrase.2097aea0eda94507e68c4b16745a01d779fa5aeba8ae541d954eddcf0ae4bf85": {
+      "text": "Lütfen ürünleri ve teslimat bilgilerini kontrol edin.",
+      "hash": "2097aea0eda94507e68c4b16745a01d779fa5aeba8ae541d954eddcf0ae4bf85"
+    },
+    "phrase.20c47f39498bb061f786e8fd1a21026514e6c7d877709bb892ffa80e6e9a1bd9": {
+      "text": "İletişim bilgileri",
+      "hash": "20c47f39498bb061f786e8fd1a21026514e6c7d877709bb892ffa80e6e9a1bd9"
+    },
+    "phrase.216b6b141eaf636654ea181828bd64aa0f4ab58917059bec2c73cf4471899741": {
+      "text": " büyük görsel",
+      "hash": "216b6b141eaf636654ea181828bd64aa0f4ab58917059bec2c73cf4471899741"
+    },
+    "phrase.219514443cddc6ad5060d0acdb9ef0d1409219b161f084cf6c969ea7e5e5cf15": {
+      "text": "Müşteri hesabı",
+      "hash": "219514443cddc6ad5060d0acdb9ef0d1409219b161f084cf6c969ea7e5e5cf15"
+    },
+    "phrase.2275c69fd48a72a8cf8d31dbc0e2f97508e9bc240c9315e52a084228746450e1": {
+      "text": "Ürün görseli; yakınlaştırıldığında kaydırılabilir",
+      "hash": "2275c69fd48a72a8cf8d31dbc0e2f97508e9bc240c9315e52a084228746450e1"
+    },
+    "phrase.22ae0cc71dfc170f5da34cc7faa23a794b7f2d1d2038f8aa2d40efd5754f7da2": {
+      "text": "Tüm kategoriler",
+      "hash": "22ae0cc71dfc170f5da34cc7faa23a794b7f2d1d2038f8aa2d40efd5754f7da2"
+    },
+    "phrase.23768cd39c711be6d9a8926fe628644d145e435a25879255b9b069c7d7a1efd2": {
+      "text": "Sağ görsel kontrastı",
+      "hash": "23768cd39c711be6d9a8926fe628644d145e435a25879255b9b069c7d7a1efd2"
+    },
+    "phrase.23be00e7c39e62f1a937e02b4f519dafd4aba545a65820aa3b6bb1f32375fb83": {
+      "text": "İlçe",
+      "hash": "23be00e7c39e62f1a937e02b4f519dafd4aba545a65820aa3b6bb1f32375fb83"
+    },
+    "phrase.2487a181457508d6dc87ee4a2d9d35b3f58fd04d3f592c8fc0af269f30c786c8": {
+      "text": "Üretici parça kodu",
+      "hash": "2487a181457508d6dc87ee4a2d9d35b3f58fd04d3f592c8fc0af269f30c786c8"
+    },
+    "phrase.2488c9843cd79d86363e456619d8005e21b5515ad3efe73608cbc2e90d600efd": {
+      "text": "Sepetiniz boş",
+      "hash": "2488c9843cd79d86363e456619d8005e21b5515ad3efe73608cbc2e90d600efd"
+    },
+    "phrase.252925ef45c201b966e1fde3c2aff42eabda0d47b8cbe474b7e6353bd17ec114": {
+      "text": "Bu sayfa şu anda yayında değil.",
+      "hash": "252925ef45c201b966e1fde3c2aff42eabda0d47b8cbe474b7e6353bd17ec114"
+    },
+    "phrase.252990d5c41f999bdb399e20ffe5431a65c000febb87ee05ef667ca4e51ddb62": {
+      "text": "Sosyal medya",
+      "hash": "252990d5c41f999bdb399e20ffe5431a65c000febb87ee05ef667ca4e51ddb62"
+    },
+    "phrase.25a4f3d46f4406c49c8ecf3d084a70749a7c1e46a2c6f1c7fb261dc4952e54bb": {
+      "text": "Hesap e-postası",
+      "hash": "25a4f3d46f4406c49c8ecf3d084a70749a7c1e46a2c6f1c7fb261dc4952e54bb"
+    },
+    "phrase.25dba49a4ffcc785161e4e92e5ebb660a8a0c2c8eb5c02d75267e9cde8cdcde4": {
+      "text": "Ülke kodu",
+      "hash": "25dba49a4ffcc785161e4e92e5ebb660a8a0c2c8eb5c02d75267e9cde8cdcde4"
+    },
+    "phrase.2682d6cb6365a46a48299c239b67dd1b4d7874f44fa63fcc134bdee51fc3fbf0": {
+      "text": "Ürünleri göster →",
+      "hash": "2682d6cb6365a46a48299c239b67dd1b4d7874f44fa63fcc134bdee51fc3fbf0"
+    },
+    "phrase.2706ba9072e432bc2fb328e9bb2bd7b7deb0498c09d1574185086ae7bd5019f8": {
+      "text": "TEKNİKEL / BAYİ ÜRÜNÜ",
+      "hash": "2706ba9072e432bc2fb328e9bb2bd7b7deb0498c09d1574185086ae7bd5019f8"
+    },
+    "phrase.274e6ba473ef3c943d43dd79bbf05e1340e6064828ce9043f1b3068c7a925c47": {
+      "text": "Hesabınıza yeniden giriş yapın.",
+      "hash": "274e6ba473ef3c943d43dd79bbf05e1340e6064828ce9043f1b3068c7a925c47"
+    },
+    "phrase.275c6ddbb351b57c9f0536f3d24ba4184d72181e4d81b4cc38475a195f693b5a": {
+      "text": "Hakkımızda",
+      "hash": "275c6ddbb351b57c9f0536f3d24ba4184d72181e4d81b4cc38475a195f693b5a"
+    },
+    "phrase.276d6168752719336bb2d1c880eac0054e78d6a0fb1b72b9ec93b1b6977ddeac": {
+      "text": "Bayi İşlemleri",
+      "hash": "276d6168752719336bb2d1c880eac0054e78d6a0fb1b72b9ec93b1b6977ddeac"
+    },
+    "phrase.278a7988291a1e0908e25504774f086b866c80f4af36fc463185500667cdeb57": {
+      "text": "İşlemin sonucu doğrulanamadı. Aynı siparişi tekrar deneyin.",
+      "hash": "278a7988291a1e0908e25504774f086b866c80f4af36fc463185500667cdeb57"
+    },
+    "phrase.28583dbe7b5f9647820cd34498a90f5a3dc296d9caec96be73a6c68b3020eead": {
+      "text": "Orijinal",
+      "hash": "28583dbe7b5f9647820cd34498a90f5a3dc296d9caec96be73a6c68b3020eead"
+    },
+    "phrase.2860065c0a5e04acd0f737fcb482d4e79d1b625d548ddd4222dde6cad463902d": {
+      "text": "Teknikel örnek içerikleri",
+      "hash": "2860065c0a5e04acd0f737fcb482d4e79d1b625d548ddd4222dde6cad463902d"
+    },
+    "phrase.29802c078d82ff3393b861f1a14653748102f14cb2f4a9a6607426801d75ebce": {
+      "text": "Katalog yükleniyor...",
+      "hash": "29802c078d82ff3393b861f1a14653748102f14cb2f4a9a6607426801d75ebce"
+    },
+    "phrase.29f8d322f3311ce8ae0ca3ae041d32785db63bde9253d743399d887bf2c05cc5": {
+      "text": "Birlikte bulalım.",
+      "hash": "29f8d322f3311ce8ae0ca3ae041d32785db63bde9253d743399d887bf2c05cc5"
+    },
+    "phrase.2a428e0c19180f5fed6c18ae0ba33a509dd2def0530d3c2ef44d1637c2c084f3": {
+      "text": "Görsel seçin",
+      "hash": "2a428e0c19180f5fed6c18ae0ba33a509dd2def0530d3c2ef44d1637c2c084f3"
+    },
+    "phrase.2bc01810c2b45f6efd9d3dbf48cbacaa405cb2e50cacae33f47b825fccddf9f0": {
+      "text": "Geçerli bir telefon numarası girin. Yurt dışı numaralarında ülke kodunu ekleyin.",
+      "hash": "2bc01810c2b45f6efd9d3dbf48cbacaa405cb2e50cacae33f47b825fccddf9f0"
+    },
+    "phrase.2da7300bb9aa4a6e6ae339578e5b47adbb5941d3b32b8f99787a6aa066585410": {
+      "text": "Kat: ",
+      "hash": "2da7300bb9aa4a6e6ae339578e5b47adbb5941d3b32b8f99787a6aa066585410"
+    },
+    "phrase.2e5588818de78f11fe38f57e00f7fdf774c3ef17b1538f43714238cc5c74ac30": {
+      "text": "E-posta hizmeti henüz yapılandırılmadı. İşletmeyle iletişime geçin.",
+      "hash": "2e5588818de78f11fe38f57e00f7fdf774c3ef17b1538f43714238cc5c74ac30"
+    },
+    "phrase.2eb77c6d5c46debe424600f34b6e9c57b05d339b02ff39af3043acabfcbbaa43": {
+      "text": "Bu giriş sağlayıcısı henüz yapılandırılmadı.",
+      "hash": "2eb77c6d5c46debe424600f34b6e9c57b05d339b02ff39af3043acabfcbbaa43"
+    },
+    "phrase.2f2aba2467e084cdfc3566d8a1f1e370fd08a64ba123d14b6554c62f90d0e44b": {
+      "text": "Fotoğraf cihazınızda hazır. Sunucuya yüklenmedi.",
+      "hash": "2f2aba2467e084cdfc3566d8a1f1e370fd08a64ba123d14b6554c62f90d0e44b"
+    },
+    "phrase.3132f52304de3bccaa1d80aa42ba03dd8ad98d7dec59264d87898fa3d920447e": {
+      "text": "Ödeme alınmaz. Siparişiniz işletmenin onayını bekler.",
+      "hash": "3132f52304de3bccaa1d80aa42ba03dd8ad98d7dec59264d87898fa3d920447e"
+    },
+    "phrase.3196501ad0b254080c0e50ca3655abaf4ace1120013d2a1a7c22e7b38aaeb728": {
+      "text": "Sorunuzu işletmeye iletin",
+      "hash": "3196501ad0b254080c0e50ca3655abaf4ace1120013d2a1a7c22e7b38aaeb728"
+    },
+    "phrase.32b7325228635c71891abb81a3c97ce30ec2c76ffb88b4d1e10ec454d6f0b3b0": {
+      "text": "Ürün",
+      "hash": "32b7325228635c71891abb81a3c97ce30ec2c76ffb88b4d1e10ec454d6f0b3b0"
+    },
+    "phrase.32db81550facc311e2cc765884ac06cbb87beca8d3c5311bbe1311612d930e01": {
+      "text": "Görsel yüklenemedi. Başka bir fotoğraf seçin.",
+      "hash": "32db81550facc311e2cc765884ac06cbb87beca8d3c5311bbe1311612d930e01"
+    },
+    "phrase.338e8839cb3cacba6d8b6d3d7230f58cec32d0e7fe69f2cb2c4cc74579be16a4": {
+      "text": "TEKNİKEL — Kombi Yedek Parça ve Kart Tamiri",
+      "hash": "338e8839cb3cacba6d8b6d3d7230f58cec32d0e7fe69f2cb2c4cc74579be16a4"
+    },
+    "phrase.339c6500c8cf6fea2468a7dd19f055410a6c7e4f259a3dfef4eaa73ee25f4436": {
+      "text": "Belgeler (isteğe bağlı)",
+      "hash": "339c6500c8cf6fea2468a7dd19f055410a6c7e4f259a3dfef4eaa73ee25f4436"
+    },
+    "phrase.34a0ea3f50b04c5914f11db23f8cebb0e23acfc32926e126539aaacd06e78dd3": {
+      "text": "Sağlayıcı girişi iptal edildi.",
+      "hash": "34a0ea3f50b04c5914f11db23f8cebb0e23acfc32926e126539aaacd06e78dd3"
+    },
+    "phrase.35228938c349f5bda4d5d0984a3ab43af8fdcd9b9d35541d4d3e9f3a3d9b77b8": {
+      "text": "SKU / stok kodu",
+      "hash": "35228938c349f5bda4d5d0984a3ab43af8fdcd9b9d35541d4d3e9f3a3d9b77b8"
+    },
+    "phrase.3646e946436a3c0648bcab7d82a46938125eee0f7b3c04749afc697fe90f17ca": {
+      "text": "Google ile giriş",
+      "hash": "3646e946436a3c0648bcab7d82a46938125eee0f7b3c04749afc697fe90f17ca"
+    },
+    "phrase.366a41db292589903b4e6cbb27b0148fc55a4291f04eb1d12c9c0855f1a559c7": {
+      "text": "Oturumunuz sona erdi veya hesap başka bir sekmede değişti.",
+      "hash": "366a41db292589903b4e6cbb27b0148fc55a4291f04eb1d12c9c0855f1a559c7"
+    },
+    "phrase.3692c040a8609d9f6d7c32c06228e08cc479ef5b38e921b2e70ff82c46dfed59": {
+      "text": "Keşfedin",
+      "hash": "3692c040a8609d9f6d7c32c06228e08cc479ef5b38e921b2e70ff82c46dfed59"
+    },
+    "phrase.36e4a89ef6a19c6df01ff7c07f5cecad3c263f67f66426bcaf20abae2adf2635": {
+      "text": "Talebinizi işletme değerlendirecek ve sizinle iletişime geçecek.",
+      "hash": "36e4a89ef6a19c6df01ff7c07f5cecad3c263f67f66426bcaf20abae2adf2635"
+    },
+    "phrase.3767220764ec2e9c4e7e97c18b2fe7b94ecb7f566054d4205a5d677dafb513a1": {
+      "text": "Tümünü gör →",
+      "hash": "3767220764ec2e9c4e7e97c18b2fe7b94ecb7f566054d4205a5d677dafb513a1"
+    },
+    "phrase.37eca90d5c06b8e8df1234e13fb88a240dcb9811644ef0b36d8516a465a42c70": {
+      "text": "Sipariş bilgileri",
+      "hash": "37eca90d5c06b8e8df1234e13fb88a240dcb9811644ef0b36d8516a465a42c70"
+    },
+    "phrase.37ed18efac22493d4e3f8559e088976ce0bfc572dfe8ad8c9fbecc092a9ba10e": {
+      "text": "Fotoğraf yalnız bu tarayıcıda işlenir. Sunucuya yüklenmez. JPEG, PNG, WebP veya AVIF; en fazla 20 MB.",
+      "hash": "37ed18efac22493d4e3f8559e088976ce0bfc572dfe8ad8c9fbecc092a9ba10e"
+    },
+    "phrase.382a81958c949292def87afe0d6b1d5d9840bd05ddd2dacfc32c77179ea3b9a3": {
+      "text": "Gönderim sonucunu kontrol edin",
+      "hash": "382a81958c949292def87afe0d6b1d5d9840bd05ddd2dacfc32c77179ea3b9a3"
+    },
+    "phrase.3850b955c14b1aff970304a6ef1410d1446db50f9a4ad6b303514ea8a05ffd69": {
+      "text": "İletişime geç",
+      "hash": "3850b955c14b1aff970304a6ef1410d1446db50f9a4ad6b303514ea8a05ffd69"
+    },
+    "phrase.3921fea5a0bf267d2a9aa50052c9797e430f38e2b67e7f4a2f56ded906ccef47": {
+      "text": "Ödeme alınmaz. Sipariş talebiniz işletmenin onayını bekler. Kesin tutar masaüstündeki yetkili fiyatlarla belirlenir.",
+      "hash": "3921fea5a0bf267d2a9aa50052c9797e430f38e2b67e7f4a2f56ded906ccef47"
+    },
+    "phrase.3a2f12c95750411aa27920d7be5ca30172cb1d3c5665730336e7e93434fc9839": {
+      "text": "DUYURU ",
+      "hash": "3a2f12c95750411aa27920d7be5ca30172cb1d3c5665730336e7e93434fc9839"
+    },
+    "phrase.3a9c117f1254a28a08982c14ec3ff21d9ceb72d5c8367dc3cebd2de18ba66f7d": {
+      "text": "Hizala",
+      "hash": "3a9c117f1254a28a08982c14ec3ff21d9ceb72d5c8367dc3cebd2de18ba66f7d"
+    },
+    "phrase.3ac4033a5f125b5f2b9ef1201ce196256c5404d7272d451aa0450d8b33b5fdad": {
+      "text": "Marka ve kategori filtreleri",
+      "hash": "3ac4033a5f125b5f2b9ef1201ce196256c5404d7272d451aa0450d8b33b5fdad"
+    },
+    "phrase.3b047c0a42e6485a802ba51f498afa300b90a222de8975a6dba1c40ae25dc36b": {
+      "text": "Görsel ve ürün karşılaştır",
+      "hash": "3b047c0a42e6485a802ba51f498afa300b90a222de8975a6dba1c40ae25dc36b"
+    },
+    "phrase.3b7c19fe3859c0e3b801cec8df17d038b343656a592f830eb5553ab8cde299c4": {
+      "text": "Teknik bilgiler ve görseller",
+      "hash": "3b7c19fe3859c0e3b801cec8df17d038b343656a592f830eb5553ab8cde299c4"
+    },
+    "phrase.3b84af1211aae257dab3dbd83aa4a45778c5d7cebfd5961ee3364987432d8796": {
+      "text": "Favorilerime ekle",
+      "hash": "3b84af1211aae257dab3dbd83aa4a45778c5d7cebfd5961ee3364987432d8796"
+    },
+    "phrase.3c1006566b2928297744a843fe87a06550d67f0c20511ae1d84298532adae3cc": {
+      "text": "İşiniz için",
+      "hash": "3c1006566b2928297744a843fe87a06550d67f0c20511ae1d84298532adae3cc"
+    },
+    "phrase.3c1af57a802c0ad888dda304bacaa63a61be57dc6600f5d285cb36b2e52f58ea": {
+      "text": "Sepette artık sunulmayan ürün var. Devam etmek için ürünü çıkarın.",
+      "hash": "3c1af57a802c0ad888dda304bacaa63a61be57dc6600f5d285cb36b2e52f58ea"
+    },
+    "phrase.3d0bab86dd9ce4dcb5b484bc1c9d6369920cd5039b3f21d07d5f3a4603dea9da": {
+      "text": "İşletmeye e-posta gönder",
+      "hash": "3d0bab86dd9ce4dcb5b484bc1c9d6369920cd5039b3f21d07d5f3a4603dea9da"
+    },
+    "phrase.3d0ed78550334334e6ed9a58f0761c68f35c3c2a19b7075cf56eb8e997cd48a7": {
+      "text": "Alışverişe devam et →",
+      "hash": "3d0ed78550334334e6ed9a58f0761c68f35c3c2a19b7075cf56eb8e997cd48a7"
+    },
+    "phrase.3dfecacb59333afdd610dc10dabc7e8e67734f75fd0ebc8bac4fa5a7c97508b7": {
+      "text": "İletişime geç →",
+      "hash": "3dfecacb59333afdd610dc10dabc7e8e67734f75fd0ebc8bac4fa5a7c97508b7"
+    },
+    "phrase.3f177020ba2e44363d087163642119de98d5d3cf968fa80d984af2f495151203": {
+      "text": "Ürünü incele →",
+      "hash": "3f177020ba2e44363d087163642119de98d5d3cf968fa80d984af2f495151203"
+    },
+    "phrase.3f7032d603d5911d7d595e22fbd21537e1557bc7ead8d833de80e909ce5aeffe": {
+      "text": "Ürün listesi",
+      "hash": "3f7032d603d5911d7d595e22fbd21537e1557bc7ead8d833de80e909ce5aeffe"
+    },
+    "phrase.3f753c4d23c761870e907982f1b7a86ca14a1768293417175370731081bb0326": {
+      "text": "çok daha kolay.",
+      "hash": "3f753c4d23c761870e907982f1b7a86ca14a1768293417175370731081bb0326"
+    },
+    "phrase.3f8658431b0010a77a7bfbb3510c9041c956672dadf41d13ccf5bad690ab2829": {
+      "text": "Müşteri hesabı işletmeyle eşitleniyor. Lütfen daha sonra tekrar deneyin.",
+      "hash": "3f8658431b0010a77a7bfbb3510c9041c956672dadf41d13ccf5bad690ab2829"
+    },
+    "phrase.40bde9c157b42ecf840aa9f03744d9b3e7225fb843296757c46a8435e4effb7d": {
+      "text": "QR Menü",
+      "hash": "40bde9c157b42ecf840aa9f03744d9b3e7225fb843296757c46a8435e4effb7d"
+    },
+    "phrase.41533b6d0d098341d7c50d7d561c0a877f64a7e7a19180bb2b36d955c9c9c4db": {
+      "text": "Galeri",
+      "hash": "41533b6d0d098341d7c50d7d561c0a877f64a7e7a19180bb2b36d955c9c9c4db"
+    },
+    "phrase.4270d98db8a3af3d19a1afaf733717cb359c3cfebd089ab772cf00cdb746700c": {
+      "text": " Yalnız favorilerim",
+      "hash": "4270d98db8a3af3d19a1afaf733717cb359c3cfebd089ab772cf00cdb746700c"
+    },
+    "phrase.42f446a868cd404d6a79b21ca214f0b4256e7010b5471386a696ce3994c1cb36": {
+      "text": "Sağlayıcı e-posta paylaşmadı. E-posta/şifre hesabınıza giriş yapıp sağlayıcıyı bağlayın.",
+      "hash": "42f446a868cd404d6a79b21ca214f0b4256e7010b5471386a696ce3994c1cb36"
+    },
+    "phrase.43472c61ece44a5a0d3ad21eea49dbbfe4c239d12259a4863337fbdd4b1e412a": {
+      "text": "Ürün adı, stok kodu veya model ara...",
+      "hash": "43472c61ece44a5a0d3ad21eea49dbbfe4c239d12259a4863337fbdd4b1e412a"
+    },
+    "phrase.435a1741bc3c381f03542c6d6cfb8118bbc650e770d392ac27d4005b500ecc44": {
+      "text": "Yerel oturumu temizle",
+      "hash": "435a1741bc3c381f03542c6d6cfb8118bbc650e770d392ac27d4005b500ecc44"
+    },
+    "phrase.43aacc207d96b69b6208a06b882f685249618c90ef6c735c4883032ddb9d7819": {
+      "text": "Teknikel kampanya görseli",
+      "hash": "43aacc207d96b69b6208a06b882f685249618c90ef6c735c4883032ddb9d7819"
+    },
+    "phrase.43ba7790ee609624dba32f42bbcb97d6e3dbc61126692499522f32318457bcde": {
+      "text": "YARDIMCI ASİSTAN",
+      "hash": "43ba7790ee609624dba32f42bbcb97d6e3dbc61126692499522f32318457bcde"
+    },
+    "phrase.4410b3d762fcb04e5040b52de6065a609f143e5bb748eb7af27db2c147219533": {
+      "text": "Gönderim doğrulanamadı. Bilgileri değiştirmeden tekrar deneyebilirsiniz.",
+      "hash": "4410b3d762fcb04e5040b52de6065a609f143e5bb748eb7af27db2c147219533"
+    },
+    "phrase.442707ac4ef2ab0b3a77c32a9f31e0563894995c9a9ab0a3291abb05c90de59b": {
+      "text": "Sipariş sürecine geçin",
+      "hash": "442707ac4ef2ab0b3a77c32a9f31e0563894995c9a9ab0a3291abb05c90de59b"
+    },
+    "phrase.4644ecba7c48bc11ef8479b0e3f519cea5f3a9f69a4a54613be87c74fd518fee": {
+      "text": "Bu alanda perakende fiyatları gösterilir. Sipariş sırasında ödeme alınmaz; işletmenin onayı beklenir.",
+      "hash": "4644ecba7c48bc11ef8479b0e3f519cea5f3a9f69a4a54613be87c74fd518fee"
+    },
+    "phrase.46ded09ee77f756b4b828384d75a9382ef7c3c9166a9803640125d8e7ebed75f": {
+      "text": " yüklenemedi.",
+      "hash": "46ded09ee77f756b4b828384d75a9382ef7c3c9166a9803640125d8e7ebed75f"
+    },
+    "phrase.4818b22d150c49ac2a213d02a4b139adf8986c2979768c6c6cdd70b9ee5a50fc": {
+      "text": "Sepet verisi okunamadı.",
+      "hash": "4818b22d150c49ac2a213d02a4b139adf8986c2979768c6c6cdd70b9ee5a50fc"
+    },
+    "phrase.487f4b61b2611e5c8fe179a69b059e789e4d05e308bd3f48fed86b17e90656ff": {
+      "text": "Yayını yenile",
+      "hash": "487f4b61b2611e5c8fe179a69b059e789e4d05e308bd3f48fed86b17e90656ff"
+    },
+    "phrase.489a38bb4ae9f8f64390e139434f09d698b0d6bef9fd770cd1fae66efb94f93e": {
+      "text": "Ana menü",
+      "hash": "489a38bb4ae9f8f64390e139434f09d698b0d6bef9fd770cd1fae66efb94f93e"
+    },
+    "phrase.48fa4210474711a80f797cbb1969b73d604f8048bbabd26ddde040bf4957da13": {
+      "text": "Geçerli bir JPEG, PNG, WebP veya AVIF seçin (en fazla 20 MB).",
+      "hash": "48fa4210474711a80f797cbb1969b73d604f8048bbabd26ddde040bf4957da13"
+    },
+    "phrase.493aa7bc49d5504158955575a1bba7acc70c65818f1eda2a3a71d98198d2f0d5": {
+      "text": "Detayları görün.",
+      "hash": "493aa7bc49d5504158955575a1bba7acc70c65818f1eda2a3a71d98198d2f0d5"
+    },
+    "phrase.493debc269facd6470de37995cfec7c48e1330208ad643e42b610c75e214de92": {
+      "text": "Sipariş geçmişi okunamadı.",
+      "hash": "493debc269facd6470de37995cfec7c48e1330208ad643e42b610c75e214de92"
+    },
+    "phrase.4acf14ce07738775e12690b786387ddcc7441a83971002cbbdc2af39091adda8": {
+      "text": "Cihaz fotoğrafı",
+      "hash": "4acf14ce07738775e12690b786387ddcc7441a83971002cbbdc2af39091adda8"
+    },
+    "phrase.4b57ee286be2be4894735275e5fc0cac4deba8112d393d2b0343c2ed26518d44": {
+      "text": "Demo başlangıcında işletmeden teslim açıktır. Kargo ile gönderim, Aras Kargo hesabı yapılandırılıp test edilene kadar kapalıdır.",
+      "hash": "4b57ee286be2be4894735275e5fc0cac4deba8112d393d2b0343c2ed26518d44"
+    },
+    "phrase.4b7c27bc30aa935c47af2f44fc96383cb1036c88ae3ad08a3df19f6de28f432b": {
+      "text": "Ödeme bilgileri",
+      "hash": "4b7c27bc30aa935c47af2f44fc96383cb1036c88ae3ad08a3df19f6de28f432b"
+    },
+    "phrase.4b9be979c06b05e89c3ae4db988ed83d764444c6ae72c19273518a143d5ab75f": {
+      "text": "Bilgiler yükleniyor…",
+      "hash": "4b9be979c06b05e89c3ae4db988ed83d764444c6ae72c19273518a143d5ab75f"
+    },
+    "phrase.4c4346b999831a67cfb613182bac85546bb8eb1eb1429a49a2e04d0088794cdb": {
+      "text": "Dosya seç · PDF, JPG, PNG · En fazla 5 dosya, dosya başına 10 MB",
+      "hash": "4c4346b999831a67cfb613182bac85546bb8eb1eb1429a49a2e04d0088794cdb"
+    },
+    "phrase.4c7d409afa4444d3aa20e773f7fa2a90b583d0d264ab5b2e5096c44db51ddfbf": {
+      "text": "Parça hakkında sor",
+      "hash": "4c7d409afa4444d3aa20e773f7fa2a90b583d0d264ab5b2e5096c44db51ddfbf"
+    },
+    "phrase.4cc233b868488f6f4eb129b6a6027a19b74259b339777e9f4d87b8670251ce04": {
+      "text": "Başvuruyu Gönder",
+      "hash": "4cc233b868488f6f4eb129b6a6027a19b74259b339777e9f4d87b8670251ce04"
+    },
+    "phrase.4cf05ce3b75ca32957ac2c78ffc2ee868f3c559540a41c7dcf811ddb6af45a1f": {
+      "text": "/ Katalog",
+      "hash": "4cf05ce3b75ca32957ac2c78ffc2ee868f3c559540a41c7dcf811ddb6af45a1f"
+    },
+    "phrase.4d79ade7a042fdeb4a81461768b02a7f46c38c8961eb8c9b983b8cbdbf9eaca3": {
+      "text": "TEKNİKEL / BAYİ",
+      "hash": "4d79ade7a042fdeb4a81461768b02a7f46c38c8961eb8c9b983b8cbdbf9eaca3"
+    },
+    "phrase.4d8b0ea9a45802ca2ffff8af6cd3b87d80ab2dba7a0f8c3f0a289c6959fc2540": {
+      "text": "Ürün adı",
+      "hash": "4d8b0ea9a45802ca2ffff8af6cd3b87d80ab2dba7a0f8c3f0a289c6959fc2540"
+    },
+    "phrase.4e8bbfd0af96127f50b00ea0929745e8a940d4d8747cf6bf1bcd8d479d575420": {
+      "text": "Odayı incele →",
+      "hash": "4e8bbfd0af96127f50b00ea0929745e8a940d4d8747cf6bf1bcd8d479d575420"
+    },
+    "phrase.4ed4da611e4eb7bb58c565b6ba3f6087aca6a581f2cc3f7359fb28f376b6a1ce": {
+      "text": " · ikinci ürün veya fotoğraf seçin",
+      "hash": "4ed4da611e4eb7bb58c565b6ba3f6087aca6a581f2cc3f7359fb28f376b6a1ce"
+    },
+    "phrase.4f808e927905d2a5c9da6f231e1a42010121b142a6033d69696e98ab9fbb20e9": {
+      "text": "Bu ürün için açıklama yayınlanmamış.",
+      "hash": "4f808e927905d2a5c9da6f231e1a42010121b142a6033d69696e98ab9fbb20e9"
+    },
+    "phrase.50aed86b77c204be3b72b3009ce98abc165b3447ee6d805ade1696cd148fbb99": {
+      "text": "Son gönderiminizin sonucu belirsiz. Sepet’ten aynı siparişi kontrol edin.",
+      "hash": "50aed86b77c204be3b72b3009ce98abc165b3447ee6d805ade1696cd148fbb99"
+    },
+    "phrase.51b00ed081643358b5ea5b1a4b83bdd52338a802e650bdd64edd5de4cce1a229": {
+      "text": "Güncel duyuru",
+      "hash": "51b00ed081643358b5ea5b1a4b83bdd52338a802e650bdd64edd5de4cce1a229"
+    },
+    "phrase.51eb3498d3a3fc6a39cd3a09b0c41415ceb5dd3513041489df09857b9c409a19": {
+      "text": " / gece",
+      "hash": "51eb3498d3a3fc6a39cd3a09b0c41415ceb5dd3513041489df09857b9c409a19"
+    },
+    "phrase.51f462e4b13858b95d045f9424fbcfc28bf5c89119d41c1cc98eb1b23ac04866": {
+      "text": " ürünlerini yeniden sepete ekle",
+      "hash": "51f462e4b13858b95d045f9424fbcfc28bf5c89119d41c1cc98eb1b23ac04866"
+    },
+    "phrase.52237d36ef57fb69c92ded5f2d45194f0b74d97880397d532e3511a7111879f6": {
+      "text": "Google yorumları",
+      "hash": "52237d36ef57fb69c92ded5f2d45194f0b74d97880397d532e3511a7111879f6"
+    },
+    "phrase.524578cc0f395e7e8213a73f11281b030dd4bfe2154165238564d949885f7a2c": {
+      "text": "/ Sepet",
+      "hash": "524578cc0f395e7e8213a73f11281b030dd4bfe2154165238564d949885f7a2c"
+    },
+    "phrase.52baf8e65c77d2afed7a2eab04400a67f07a590cce9726f1e25d114a49f09321": {
+      "text": "İstek işlenemedi. Lütfen bilgileri kontrol edip tekrar deneyin.",
+      "hash": "52baf8e65c77d2afed7a2eab04400a67f07a590cce9726f1e25d114a49f09321"
+    },
+    "phrase.52fd9ef61d7d233c212b016aba7a09651e72156af525b051401a10b86bbbcd4e": {
+      "text": "Favoriler ve sepet yalnız bu tarayıcıdaki bayi hesabınıza aittir. Özel fiyatlar tarayıcı depolamasına kaydedilmez.",
+      "hash": "52fd9ef61d7d233c212b016aba7a09651e72156af525b051401a10b86bbbcd4e"
+    },
+    "phrase.532972d2479a6e5b13602f490f55487c4165e0fa8c5296c34061287b84ae9b1e": {
+      "text": "Demo içerik ZIP indir",
+      "hash": "532972d2479a6e5b13602f490f55487c4165e0fa8c5296c34061287b84ae9b1e"
+    },
+    "phrase.535a2439f8ca25b668822fa0dbfd5d2c0765a6a89dc7e0da44659d1cb0ad30ea": {
+      "text": "İşletmeye sorun",
+      "hash": "535a2439f8ca25b668822fa0dbfd5d2c0765a6a89dc7e0da44659d1cb0ad30ea"
+    },
+    "phrase.560a7546a619cbd9302a3955cc0f30957d38414ce27be6ef5e5c73fb7ab4f930": {
+      "text": " ürün",
+      "hash": "560a7546a619cbd9302a3955cc0f30957d38414ce27be6ef5e5c73fb7ab4f930"
+    },
+    "phrase.57309f60c253cc1affc2761bc7cf02d9ac2a41ec5078f4d2491eaa5a38b8893a": {
+      "text": " miktarı",
+      "hash": "57309f60c253cc1affc2761bc7cf02d9ac2a41ec5078f4d2491eaa5a38b8893a"
+    },
+    "phrase.57c528c2b0eb4c047063adf18bebb1bd994648f886d5fbcae03d8db4fa855b96": {
+      "text": "Çok fazla deneme yapıldı. Bir süre sonra yeniden deneyin.",
+      "hash": "57c528c2b0eb4c047063adf18bebb1bd994648f886d5fbcae03d8db4fa855b96"
+    },
+    "phrase.5847120a2e916707c405df91f8d2290d90cd5d9bc9aacb70717237905b48ee7c": {
+      "text": "Henüz yayınlanmış masa bulunmuyor.",
+      "hash": "5847120a2e916707c405df91f8d2290d90cd5d9bc9aacb70717237905b48ee7c"
+    },
+    "phrase.5984ef02c5338af9c009376aba9ceca30bac88db34c24bc40e1a0aa071d1c617": {
+      "text": "Bayi Başvurusu",
+      "hash": "5984ef02c5338af9c009376aba9ceca30bac88db34c24bc40e1a0aa071d1c617"
+    },
+    "phrase.5a34d906d58a619269b89a66bb75824711dc4431cf84fbe800af548dcea60469": {
+      "text": "Sol ürün",
+      "hash": "5a34d906d58a619269b89a66bb75824711dc4431cf84fbe800af548dcea60469"
+    },
+    "phrase.5aee5a6fb2e00e8b6209b4c8dab8accd44f200bbbe66a616e39adc1244ad4ba0": {
+      "text": "Oturumunuz kapatıldı.",
+      "hash": "5aee5a6fb2e00e8b6209b4c8dab8accd44f200bbbe66a616e39adc1244ad4ba0"
+    },
+    "phrase.5c339f089334625125a65b419c00263e2bbd08a5cb5300aad425cbc64ae3e4f7": {
+      "text": "Dikey çevir",
+      "hash": "5c339f089334625125a65b419c00263e2bbd08a5cb5300aad425cbc64ae3e4f7"
+    },
+    "phrase.5c4ca3c773a7622286d04b163ee578c5404e27d16ce8e29a418e2bdd340ef13b": {
+      "text": "Sol görsel",
+      "hash": "5c4ca3c773a7622286d04b163ee578c5404e27d16ce8e29a418e2bdd340ef13b"
+    },
+    "phrase.5d0c6a6d0cb2cac157bea02f4c5950394cf2939c3c7c7f715d4ea3b170efa336": {
+      "text": "Talep bilgileri",
+      "hash": "5d0c6a6d0cb2cac157bea02f4c5950394cf2939c3c7c7f715d4ea3b170efa336"
+    },
+    "phrase.5d1791224ce1de137051f7c5524743810e507205e66697e032fcf0004e2311a4": {
+      "text": "Hesabınız kontrol ediliyor…",
+      "hash": "5d1791224ce1de137051f7c5524743810e507205e66697e032fcf0004e2311a4"
+    },
+    "phrase.5d1f0cce70215962cdaa31b970e2d745a379745148bb003030717c8c1d894681": {
+      "text": "Sepet bu tarayıcıda kaydedilemiyor. Gönderim yapılmadı; tarayıcı depolamasını kontrol edin.",
+      "hash": "5d1f0cce70215962cdaa31b970e2d745a379745148bb003030717c8c1d894681"
+    },
+    "phrase.5d232c6d52684f81fcbe12e6133748ce5a105be4274343d05bd3ec3e2b3c6e89": {
+      "text": "Kolay ürün arama",
+      "hash": "5d232c6d52684f81fcbe12e6133748ce5a105be4274343d05bd3ec3e2b3c6e89"
+    },
+    "phrase.5d83203de1e32f581e68b25f7eed3ac97b5c4e604a1aa707b902725b73a4a40c": {
+      "text": "Bayi Girişi",
+      "hash": "5d83203de1e32f581e68b25f7eed3ac97b5c4e604a1aa707b902725b73a4a40c"
+    },
+    "phrase.5da33f98d40132c2d5f4d5d1f1b2aa549ed56ffbca9075dfa276ef305c9d4702": {
+      "text": "İnceleyin.",
+      "hash": "5da33f98d40132c2d5f4d5d1f1b2aa549ed56ffbca9075dfa276ef305c9d4702"
+    },
+    "phrase.5e2c614c23f02239bc03c6c04fcb681950f9e72bf8fdff6be79c79841cbb10c0": {
+      "text": "Model",
+      "hash": "5e2c614c23f02239bc03c6c04fcb681950f9e72bf8fdff6be79c79841cbb10c0"
+    },
+    "phrase.5e948ad2e2df851508c1b16733932524cee84352a534f5f0ed84b588e338e74a": {
+      "text": "İletişim",
+      "hash": "5e948ad2e2df851508c1b16733932524cee84352a534f5f0ed84b588e338e74a"
+    },
+    "phrase.5fc92054927c7b1a94eff41dea6d89a5f71bd1e7cd57fb65670cb17c13e32195": {
+      "text": "Diller",
+      "hash": "5fc92054927c7b1a94eff41dea6d89a5f71bd1e7cd57fb65670cb17c13e32195"
+    },
+    "phrase.5fd94567402021a12befe99d515d0211cd7bc77151a2abd52f596a518b892205": {
+      "text": "adet",
+      "hash": "5fd94567402021a12befe99d515d0211cd7bc77151a2abd52f596a518b892205"
+    },
+    "phrase.600b3f4198f0f07c84ee3a8bbd7f6f961d4d95c0a938220697857b093ce239c0": {
+      "text": "Elden teslim",
+      "hash": "600b3f4198f0f07c84ee3a8bbd7f6f961d4d95c0a938220697857b093ce239c0"
+    },
+    "phrase.6066e6d70967ef075c634e026d4e561e4b4082b42923740435a5fa4c24a58d8b": {
+      "text": "Odalar şu anda yayında değil.",
+      "hash": "6066e6d70967ef075c634e026d4e561e4b4082b42923740435a5fa4c24a58d8b"
+    },
+    "phrase.61495be3e971e174b25cab04363277d839c06b9b335ddb1faae75d0ca68f1bb3": {
+      "text": "Giriş denemesi geçersiz veya süresi dolmuş. Yeniden deneyin.",
+      "hash": "61495be3e971e174b25cab04363277d839c06b9b335ddb1faae75d0ca68f1bb3"
+    },
+    "phrase.6192c009acd6fbf947fc575173e0ea4c682769da0d7ab541a518dad5bd830a2f": {
+      "text": "Açık adres",
+      "hash": "6192c009acd6fbf947fc575173e0ea4c682769da0d7ab541a518dad5bd830a2f"
+    },
+    "phrase.61a35a7100456c686a6a14b09a7093334cc0ce5f591aaa870b260fa4b37f94f6": {
+      "text": "Bir sipariş kaydı okunamadı.",
+      "hash": "61a35a7100456c686a6a14b09a7093334cc0ce5f591aaa870b260fa4b37f94f6"
+    },
+    "phrase.61eac0d5071652ad44d773b2064b6b214b3f3d6ccbb707ccae0ec871e06e57a6": {
+      "text": "Sağ ürün / cihaz fotoğrafı",
+      "hash": "61eac0d5071652ad44d773b2064b6b214b3f3d6ccbb707ccae0ec871e06e57a6"
+    },
+    "phrase.6207bdbecc0442ecb5a3751eea57ecac956d1216a1e2437382524225ea5ec14f": {
+      "text": "Sepetiniz",
+      "hash": "6207bdbecc0442ecb5a3751eea57ecac956d1216a1e2437382524225ea5ec14f"
+    },
+    "phrase.625c61972b1b63f5b3df4ef3d773cf8d519ea9138b1b0d9858abf86c55ca89be": {
+      "text": "Yayınlanan menüyü inceleyin",
+      "hash": "625c61972b1b63f5b3df4ef3d773cf8d519ea9138b1b0d9858abf86c55ca89be"
+    },
+    "phrase.6286105ee4a53967a206f8b5028e8c0a7717f862fd2ed13dca4baa6cacbe14c8": {
+      "text": "Özel görünüm kapatıldı; sunucudaki çıkış doğrulanamadı. Oturumu kapatmayı tekrar deneyin.",
+      "hash": "6286105ee4a53967a206f8b5028e8c0a7717f862fd2ed13dca4baa6cacbe14c8"
+    },
+    "phrase.62b7acbabd6e2dd9f7951931fc13aa0eebfa800013e302d02be4304df850331d": {
+      "text": " Sepetiniz korunuyor.",
+      "hash": "62b7acbabd6e2dd9f7951931fc13aa0eebfa800013e302d02be4304df850331d"
+    },
+    "phrase.63ee6780cfd8326ee9455c5a9758be12f01fbea5522c837a9066b399f87e6d08": {
+      "text": "Ürün bilgileri",
+      "hash": "63ee6780cfd8326ee9455c5a9758be12f01fbea5522c837a9066b399f87e6d08"
+    },
+    "phrase.64b601698c104c33395d003df1daa7e906c614ea66dc8d4ae094fb6b4c9393a4": {
+      "text": "DOĞRU ÇÖZÜM.",
+      "hash": "64b601698c104c33395d003df1daa7e906c614ea66dc8d4ae094fb6b4c9393a4"
+    },
+    "phrase.64ebd96a7e4e9199f53e9dd24a691bc4d100b2d1d27dcdf73de69c7e31d61ce7": {
+      "text": "En fazla 50 ürün; ürün başına 1000, toplamda 10000 birim eklenebilir. Miktarda en fazla dört ondalık basamak kullanın.",
+      "hash": "64ebd96a7e4e9199f53e9dd24a691bc4d100b2d1d27dcdf73de69c7e31d61ce7"
+    },
+    "phrase.6526011786c11e213c9da1629aebd7244572c2ef2467be370d57b73cb0bd3394": {
+      "text": "Tahmini toplam: ",
+      "hash": "6526011786c11e213c9da1629aebd7244572c2ef2467be370d57b73cb0bd3394"
+    },
+    "phrase.6551867a16b749272ff6eb209eba701e0aa097edc126fe1b1cd5af90db28f96a": {
+      "text": "Kombi yedek parçaları ve elektronik kart tamiri için uzman çözüm ortağınız.",
+      "hash": "6551867a16b749272ff6eb209eba701e0aa097edc126fe1b1cd5af90db28f96a"
+    },
+    "phrase.665fbfeebcd12e3224832eea26fd4c2453efd9350da7f57205a7dcf97dd44471": {
+      "text": " ürün bulundu",
+      "hash": "665fbfeebcd12e3224832eea26fd4c2453efd9350da7f57205a7dcf97dd44471"
+    },
+    "phrase.6680f375ca4265ecf47ee91e0b97f450bbe8545863f20f2dabe50713a25214ef": {
+      "text": "Ürün seçip sorunuzu iletin",
+      "hash": "6680f375ca4265ecf47ee91e0b97f450bbe8545863f20f2dabe50713a25214ef"
+    },
+    "phrase.66e1299eeb7f2130338345a8089c46102487cef56beeab7fb23ec080f181fc26": {
+      "text": "Ürün Kataloğu",
+      "hash": "66e1299eeb7f2130338345a8089c46102487cef56beeab7fb23ec080f181fc26"
+    },
+    "phrase.66e6995ace45c12e718ea5a081e9a64a99aa9d69f4c535b1e097d82ec0ebc059": {
+      "text": "Sipariş notu (isteğe bağlı)",
+      "hash": "66e6995ace45c12e718ea5a081e9a64a99aa9d69f4c535b1e097d82ec0ebc059"
+    },
+    "phrase.67268a6f9d821c6f8be0522e69e0f7ad61b4be6a06f3c7534e6e94b286698835": {
+      "text": "Onaylandı",
+      "hash": "67268a6f9d821c6f8be0522e69e0f7ad61b4be6a06f3c7534e6e94b286698835"
+    },
+    "phrase.67df87f4389bd73be5409296180092987173a713ef77e659a9020e5580cdbfc3": {
+      "text": "Geçersiz işlem.",
+      "hash": "67df87f4389bd73be5409296180092987173a713ef77e659a9020e5580cdbfc3"
+    },
+    "phrase.6861ebfe7d4be2a29adc07775ba8c15fb701fab318ed8b3fa83889533e4455cf": {
+      "text": "Karşılaştırmayı aç",
+      "hash": "6861ebfe7d4be2a29adc07775ba8c15fb701fab318ed8b3fa83889533e4455cf"
+    },
+    "phrase.68ea7f093f0c5c503f8d9e8bccb94e6e8ff57aec989e880d380f8c975666e546": {
+      "text": "Ürünle ilgili teknik destek almak istiyorum.",
+      "hash": "68ea7f093f0c5c503f8d9e8bccb94e6e8ff57aec989e880d380f8c975666e546"
+    },
+    "phrase.6a07299082ba5bf7e0eb3b3e216204dfac1aebe6d1708094d0d61fb49f4f698c": {
+      "text": "İletişim ve konum →",
+      "hash": "6a07299082ba5bf7e0eb3b3e216204dfac1aebe6d1708094d0d61fb49f4f698c"
+    },
+    "phrase.6a0c11d0f1a29d3591cd739a191f8416b7aed5eac521008f58802e8c6dbd691c": {
+      "text": "Görsel benzerlik teknik uyumluluk kanıtı değildir. Parça kodunu ve üretici bilgilerini doğrulayın.",
+      "hash": "6a0c11d0f1a29d3591cd739a191f8416b7aed5eac521008f58802e8c6dbd691c"
+    },
+    "phrase.6a3faaa6cc1c8e9e74d41e9512baaae57795912ebf1d32a9ab2974b82e22ee75": {
+      "text": "Sipariş talebini gönder",
+      "hash": "6a3faaa6cc1c8e9e74d41e9512baaae57795912ebf1d32a9ab2974b82e22ee75"
+    },
+    "phrase.6a491ef921d04e36b1b0af5265c338aa17270744273995e9a1424fc428223296": {
+      "text": "Bağlantı kurulamadı. Gönderim yapılmış olabilir; aynı siparişi tekrar deneyin.",
+      "hash": "6a491ef921d04e36b1b0af5265c338aa17270744273995e9a1424fc428223296"
+    },
+    "phrase.6aa5018dff9dee4ae1ca62f2f9de3c01a3298fd6e6834e6d7bc1288072fb5dd7": {
+      "text": "Kaydedilmiş sepet okunamadı. Veriler silinmedi; tarayıcı depolamasını kontrol edin.",
+      "hash": "6aa5018dff9dee4ae1ca62f2f9de3c01a3298fd6e6834e6d7bc1288072fb5dd7"
+    },
+    "phrase.6ab4c3e8b268f42b087a9c58e54bb60b2cf8b74f675a41ab5c3f536791da0030": {
+      "text": "Görseli sığdır",
+      "hash": "6ab4c3e8b268f42b087a9c58e54bb60b2cf8b74f675a41ab5c3f536791da0030"
+    },
+    "phrase.6ab6dc7ec62e4d84ebe17f18da5902acb3dfb8dc046915f68b7bd29464d5b2c5": {
+      "text": "Reddedildi",
+      "hash": "6ab6dc7ec62e4d84ebe17f18da5902acb3dfb8dc046915f68b7bd29464d5b2c5"
+    },
+    "phrase.6afc8d12a4a19279bd7a63acd1d115a6916851d0279e95358dcdd82db3c5067f": {
+      "text": "Sepet başka bir sekmede değişti. Güncel sepeti kontrol edip tekrar deneyin.",
+      "hash": "6afc8d12a4a19279bd7a63acd1d115a6916851d0279e95358dcdd82db3c5067f"
+    },
+    "phrase.6c016c753beb5a6b5f247efa2d93927dc134953795fbcade3e21c961607dccca": {
+      "text": "Önce sonucu belirsiz siparişinizi kontrol edin.",
+      "hash": "6c016c753beb5a6b5f247efa2d93927dc134953795fbcade3e21c961607dccca"
+    },
+    "phrase.6c0d0a9592bfdc0576800c07114a6c624964987c8f6afc060f0b6324e6e289e7": {
+      "text": "Yeni web sitesi — önizleme sürümü",
+      "hash": "6c0d0a9592bfdc0576800c07114a6c624964987c8f6afc060f0b6324e6e289e7"
+    },
+    "phrase.6c162ec1331dde95ab6ec37918d7e21617c3bb8f40623af68844782611d036ef": {
+      "text": "Bayi erişimi gerekli.",
+      "hash": "6c162ec1331dde95ab6ec37918d7e21617c3bb8f40623af68844782611d036ef"
+    },
+    "phrase.6c86bedcb8163571fd6eaaa82dbabc0c502cb495ee06f46ead715ab0807960b1": {
+      "text": " sepetten çıkar",
+      "hash": "6c86bedcb8163571fd6eaaa82dbabc0c502cb495ee06f46ead715ab0807960b1"
+    },
+    "phrase.6cd27271b79a702a9f0eeb556282e27e288a27400ae65600cc332649740ac2e9": {
+      "text": "Sol görsel kontrastı",
+      "hash": "6cd27271b79a702a9f0eeb556282e27e288a27400ae65600cc332649740ac2e9"
+    },
+    "phrase.6d954bc9c82525a09176e841859a9870c846e7edb167e59acfa876dd14da0f7b": {
+      "text": "Talep alındı · Masaüstüne aktarım bekleniyor",
+      "hash": "6d954bc9c82525a09176e841859a9870c846e7edb167e59acfa876dd14da0f7b"
+    },
+    "phrase.6ec8d332d430ae740d63326fc1d3dcbbd895e19df64bd4a9d9127b33bc26fa80": {
+      "text": "Kombi Yedek Parça ve Kart Tamiri",
+      "hash": "6ec8d332d430ae740d63326fc1d3dcbbd895e19df64bd4a9d9127b33bc26fa80"
+    },
+    "phrase.6eeae5ced6f92675edd0b39f7b1b25e34fbf71e51d3b7767ec7c2f3dc8d79f4f": {
+      "text": "Firma bilgilerinizi ve iletişim bilgilerinizi iletin. Başvurunuzu işletme değerlendirecek.",
+      "hash": "6eeae5ced6f92675edd0b39f7b1b25e34fbf71e51d3b7767ec7c2f3dc8d79f4f"
+    },
+    "phrase.6f08277817bec6bb67bc94fe8250290dcbdf761e0b9cbc38c6e62604c49fb487": {
+      "text": "Harita",
+      "hash": "6f08277817bec6bb67bc94fe8250290dcbdf761e0b9cbc38c6e62604c49fb487"
+    },
+    "phrase.6f774c1666f8b65bcd4a6ae05bac941d607347f6a52544635b48a169f20934b6": {
+      "text": "Siparişinizin sonucu kontrol ediliyor…",
+      "hash": "6f774c1666f8b65bcd4a6ae05bac941d607347f6a52544635b48a169f20934b6"
+    },
+    "phrase.7017879e2ab02c5ace415c19db5052850001e1442ab2e2ee0dab65217cf86e08": {
+      "text": "Aynı siparişi tekrar dene",
+      "hash": "7017879e2ab02c5ace415c19db5052850001e1442ab2e2ee0dab65217cf86e08"
+    },
+    "phrase.70658b4266896a380d323bb341df2b562419b0db0a72a65309771eabdac8e035": {
+      "text": "Sol görsel filtresi",
+      "hash": "70658b4266896a380d323bb341df2b562419b0db0a72a65309771eabdac8e035"
+    },
+    "phrase.7099ed17f0b3ad530cc14a02800d2a527d4adc55e311d03c32f1ca85b387fbf7": {
+      "text": "Siparişler",
+      "hash": "7099ed17f0b3ad530cc14a02800d2a527d4adc55e311d03c32f1ca85b387fbf7"
+    },
+    "phrase.720fe351f0cbbc3f25f2aced801fdaef676c7c9de2cb8f5b1eaf730e76eaf63e": {
+      "text": "Görsel ",
+      "hash": "720fe351f0cbbc3f25f2aced801fdaef676c7c9de2cb8f5b1eaf730e76eaf63e"
+    },
+    "phrase.72278748133ac996ce08434c37b3e51221d7cc6b1417944494484be57b9eb6f7": {
+      "text": "İptal",
+      "hash": "72278748133ac996ce08434c37b3e51221d7cc6b1417944494484be57b9eb6f7"
+    },
+    "phrase.734ae274c106a8da17020b40c82c2e004798df86b57ffafd2c7e39442a952ab4": {
+      "text": "Sol ürün fotoğrafları",
+      "hash": "734ae274c106a8da17020b40c82c2e004798df86b57ffafd2c7e39442a952ab4"
+    },
+    "phrase.73d2d59b9b3ab615ee97803ca0d3665c29f7810ea14ee1d36a80c797a4c7f239": {
+      "text": "E-posta (isteğe bağlı)",
+      "hash": "73d2d59b9b3ab615ee97803ca0d3665c29f7810ea14ee1d36a80c797a4c7f239"
+    },
+    "phrase.74df005325f1a82979e19c243b97a4d62762e1bf132f690fe347c343ce9e174f": {
+      "text": "Firma ve iletişim bilgilerinizi iletin",
+      "hash": "74df005325f1a82979e19c243b97a4d62762e1bf132f690fe347c343ce9e174f"
+    },
+    "phrase.75a3bc9bcc25fb69916faa37e2b53dce520f2dca55688f1a58e4a20943729136": {
+      "text": "Parçalar,",
+      "hash": "75a3bc9bcc25fb69916faa37e2b53dce520f2dca55688f1a58e4a20943729136"
+    },
+    "phrase.7639a5e5c34374ac0100471a1d654c66bc799700c976dafb6edcf0e5863c1dcc": {
+      "text": "Bayi başvurusu",
+      "hash": "7639a5e5c34374ac0100471a1d654c66bc799700c976dafb6edcf0e5863c1dcc"
+    },
+    "phrase.769314e8f00c38ebca48c224abc14675213ad443f765ee3cd087244fdb2bae91": {
+      "text": "Teslimat tercihi",
+      "hash": "769314e8f00c38ebca48c224abc14675213ad443f765ee3cd087244fdb2bae91"
+    },
+    "phrase.7755d70c2970a14b8a6fbdb768dadf252ab813990c112ba47d2b368410603f84": {
+      "text": "paket",
+      "hash": "7755d70c2970a14b8a6fbdb768dadf252ab813990c112ba47d2b368410603f84"
+    },
+    "phrase.77a4a4c78729f6d2fab0821a712ff9e14302433a6606ad8bb6f9db32070731d5": {
+      "text": " Siparişleri yenileyerek tekrar deneyin.",
+      "hash": "77a4a4c78729f6d2fab0821a712ff9e14302433a6606ad8bb6f9db32070731d5"
+    },
+    "phrase.77ca22d04150ced2a91de82ad7bd7ca61958b4b1312c747c41fe03c59ce2ed18": {
+      "text": "Aradığınız parçaya",
+      "hash": "77ca22d04150ced2a91de82ad7bd7ca61958b4b1312c747c41fe03c59ce2ed18"
+    },
+    "phrase.77dfef75737c0b8cd140760c47558547e632ccf1985724281661f1aad93c901f": {
+      "text": "Ödeme alınmaz. Sipariş talebiniz işletmenin onayını bekler.",
+      "hash": "77dfef75737c0b8cd140760c47558547e632ccf1985724281661f1aad93c901f"
+    },
+    "phrase.784c0dd2d1c7b8f0248f03f398ed4949437a55b92878f28a05cdf83894300346": {
+      "text": "Hesap ayarları",
+      "hash": "784c0dd2d1c7b8f0248f03f398ed4949437a55b92878f28a05cdf83894300346"
+    },
+    "phrase.78700795405038108a6cbe3bb5c2aba383f446cba340a3858861f3807593d9a0": {
+      "text": "Adrese gönderim",
+      "hash": "78700795405038108a6cbe3bb5c2aba383f446cba340a3858861f3807593d9a0"
+    },
+    "phrase.78c21406781043df02ec8050c38e6fe075e41c4e4f632fd545d2b8f3f815ac68": {
+      "text": "PROFESYONELLERE ÖZEL",
+      "hash": "78c21406781043df02ec8050c38e6fe075e41c4e4f632fd545d2b8f3f815ac68"
+    },
+    "phrase.78fcc71b9006408740f9ddbfde219f7a7cab4a5dd0a232c76c06ea2950c9678f": {
+      "text": "Bilgi talebi oluştur",
+      "hash": "78fcc71b9006408740f9ddbfde219f7a7cab4a5dd0a232c76c06ea2950c9678f"
+    },
+    "phrase.79c4b04b6ee8f31966908d9a8dde2be1560176cd8ae8f7f45d1360fcadb51452": {
+      "text": "Tamam",
+      "hash": "79c4b04b6ee8f31966908d9a8dde2be1560176cd8ae8f7f45d1360fcadb51452"
+    },
+    "phrase.7a2be8337fcf0d6b2fcd4a8ffb60fbd6150fdbe078b244961fc403af0c85b5f0": {
+      "text": "Bu kategoride yayınlanmış ürün bulunmuyor.",
+      "hash": "7a2be8337fcf0d6b2fcd4a8ffb60fbd6150fdbe078b244961fc403af0c85b5f0"
+    },
+    "phrase.7ad6d99a845b1cca79d232ecec9f9f5b79ef41f638db9ffd95cce8a1d4ca1c0a": {
+      "text": "Ürün adları ve mevcut fotoğraflar Teknikel örnek arşivinden alınmıştır. Eksik fiyat, stok ve işlem bilgileri yalnızca deneme amacıyla oluşturulmuştur.",
+      "hash": "7ad6d99a845b1cca79d232ecec9f9f5b79ef41f638db9ffd95cce8a1d4ca1c0a"
+    },
+    "phrase.7b159bd439143c0e30c816274df43e0f2b40b915de473e49a9bef948d60e5bb9": {
+      "text": "Son alınan talep: ",
+      "hash": "7b159bd439143c0e30c816274df43e0f2b40b915de473e49a9bef948d60e5bb9"
+    },
+    "phrase.7b31a9fc4816824bb502e30e5a8d4dc254a50110d875a1ef01c29e587efa4713": {
+      "text": "Kapat",
+      "hash": "7b31a9fc4816824bb502e30e5a8d4dc254a50110d875a1ef01c29e587efa4713"
+    },
+    "phrase.7b3318a0cef7f4be6f01d15083a4705dd69c353d615620afac8373d0fce2af83": {
+      "text": "Bayi hesabına giriş →",
+      "hash": "7b3318a0cef7f4be6f01d15083a4705dd69c353d615620afac8373d0fce2af83"
+    },
+    "phrase.7b50c47fb227831107d4374f91f46186f9e81194611719b664ec4a4d03b1ca07": {
+      "text": "Detayları inceleyin",
+      "hash": "7b50c47fb227831107d4374f91f46186f9e81194611719b664ec4a4d03b1ca07"
+    },
+    "phrase.7c4e843e2232e2055d015748bfcf9bb0a3d4e250b86dc1dbed551dc79d5217e2": {
+      "text": "İşletme talebinizi inceleyip sizinle iletişime geçecek.",
+      "hash": "7c4e843e2232e2055d015748bfcf9bb0a3d4e250b86dc1dbed551dc79d5217e2"
+    },
+    "phrase.7c6f3f5f37bcb676c6c3b7c06735e6b581cbd34bb77a9c6944e0da1f021fb019": {
+      "text": "Tamamlandı",
+      "hash": "7c6f3f5f37bcb676c6c3b7c06735e6b581cbd34bb77a9c6944e0da1f021fb019"
+    },
+    "phrase.7ce449793d041f796c0f3639fdad24f62ed61f0de2434a70713a7f446a55ac2c": {
+      "text": "Kurumsal müşteriler",
+      "hash": "7ce449793d041f796c0f3639fdad24f62ed61f0de2434a70713a7f446a55ac2c"
+    },
+    "phrase.7cea0c031b38e7612962b7be509e2f22a1840bde505ad43c712a1d47d9394228": {
+      "text": "Sunucudaki çıkışı tekrar dene",
+      "hash": "7cea0c031b38e7612962b7be509e2f22a1840bde505ad43c712a1d47d9394228"
+    },
+    "phrase.7ceda6bf501267d0db0aba5a2a55ab9dc22f0425aaf03cf851c2edacdf41fb24": {
+      "text": "Tüm ürünler →",
+      "hash": "7ceda6bf501267d0db0aba5a2a55ab9dc22f0425aaf03cf851c2edacdf41fb24"
+    },
+    "phrase.7d3ccd9956597d81770323341827123deaee90bd3bc48f43cd3965a0b9e9ae81": {
+      "text": "Bir katalog ürünü seçin.",
+      "hash": "7d3ccd9956597d81770323341827123deaee90bd3bc48f43cd3965a0b9e9ae81"
+    },
+    "phrase.7d603b701165c5f3c4824a05145d31b3787d76dfac724d8cf769e4c104824646": {
+      "text": "PERAKENDE SİPARİŞ",
+      "hash": "7d603b701165c5f3c4824a05145d31b3787d76dfac724d8cf769e4c104824646"
+    },
+    "phrase.7d96d68d4dfa87bbe6f90becb811dfc1b8e8feb4e3573c5b32c6a88f754c9e1f": {
+      "text": "Geçerli bir iletişim telefonu girin.",
+      "hash": "7d96d68d4dfa87bbe6f90becb811dfc1b8e8feb4e3573c5b32c6a88f754c9e1f"
+    },
+    "phrase.7de6641bbde74bc78e95ab344350e63097f75eb1d1b8c93d2aef37a2b7992e3e": {
+      "text": "Ürün kataloğu şu anda yayında değil. Yeni sipariş alınamıyor.",
+      "hash": "7de6641bbde74bc78e95ab344350e63097f75eb1d1b8c93d2aef37a2b7992e3e"
+    },
+    "phrase.7e24104978b6a5d74a9fb554c2b96ba76f82a31c242ee4def5c201e61d462658": {
+      "text": "Bayi fiyatlarınız ve siparişleriniz yalnız geçerli bayi oturumunuzla gösterilir. Web ve Android aynı sunucu hesabını kullanır.",
+      "hash": "7e24104978b6a5d74a9fb554c2b96ba76f82a31c242ee4def5c201e61d462658"
+    },
+    "phrase.7e70189e9d83d8ea0e23142b8f81799f2d09be3929e4b886672dcdb9d489636e": {
+      "text": "Bu işlem için yeniden giriş yapın.",
+      "hash": "7e70189e9d83d8ea0e23142b8f81799f2d09be3929e4b886672dcdb9d489636e"
+    },
+    "phrase.7e7933ac400ac270b4455488a2e51c28829bf1e4eab4721f68ca2817fc316f02": {
+      "text": "Size gönderilen bağlantıyı yapıştırın",
+      "hash": "7e7933ac400ac270b4455488a2e51c28829bf1e4eab4721f68ca2817fc316f02"
+    },
+    "phrase.7e7bbb79092607ba464b3725331ae51aa7c57e9e89f6193ebec7e28a33e2a1b2": {
+      "text": "birim",
+      "hash": "7e7bbb79092607ba464b3725331ae51aa7c57e9e89f6193ebec7e28a33e2a1b2"
+    },
+    "phrase.7e9391a83d405a92cfd03ca954b783ab9f60704b186deccafdff601e22fe1ead": {
+      "text": "Anasayfa",
+      "hash": "7e9391a83d405a92cfd03ca954b783ab9f60704b186deccafdff601e22fe1ead"
+    },
+    "phrase.7ea3c75f8c0d0cbdb4629528f0d522f9cca8345611cc82e1908c6dfb82c3c061": {
+      "text": "Menü yükleniyor…",
+      "hash": "7ea3c75f8c0d0cbdb4629528f0d522f9cca8345611cc82e1908c6dfb82c3c061"
+    },
+    "phrase.7ea6fdbc96b49cb9449971ec8ee38c6f1f04fc7e45abc041ce226c6e46f29a23": {
+      "text": "Bayi hesabınıza giriş",
+      "hash": "7ea6fdbc96b49cb9449971ec8ee38c6f1f04fc7e45abc041ce226c6e46f29a23"
+    },
+    "phrase.7ed893f8bcc795931766413490a1c811b31beb8c30dd79b5f5317825454d94d7": {
+      "text": "Bu giriş yöntemi başka bir hesaba bağlı.",
+      "hash": "7ed893f8bcc795931766413490a1c811b31beb8c30dd79b5f5317825454d94d7"
+    },
+    "phrase.80556d50fcb13ba458110dfd058fcc4de867548eebfb63ca0d49cbc3af8780e6": {
+      "text": "Filtrelerinize uygun ürün bulunamadı.",
+      "hash": "80556d50fcb13ba458110dfd058fcc4de867548eebfb63ca0d49cbc3af8780e6"
+    },
+    "phrase.80a1d6dae8e2dafabaedeea4c9b00af06ffdc02b9f648bd54bae779f5410e75d": {
+      "text": "Talebiniz işletmeye iletildi.",
+      "hash": "80a1d6dae8e2dafabaedeea4c9b00af06ffdc02b9f648bd54bae779f5410e75d"
+    },
+    "phrase.80bf4f3e57ecf98a4eff4b818039b6b27784bb9bfd0fec9098dc7ed9dd588521": {
+      "text": "Sipariş geçmişi yükleniyor…",
+      "hash": "80bf4f3e57ecf98a4eff4b818039b6b27784bb9bfd0fec9098dc7ed9dd588521"
+    },
+    "phrase.80c4a96cbedcf12c12df5db69ffeb5f9d06976dc692bb0e90742c094b1044ca9": {
+      "text": "Ürünler güncel bayi kataloğunuzla sepete eklendi.",
+      "hash": "80c4a96cbedcf12c12df5db69ffeb5f9d06976dc692bb0e90742c094b1044ca9"
+    },
+    "phrase.8157ae0c10c88e130a29fbfb783c2ef18ae30329166e64c45d8c5b0877558a4f": {
+      "text": "Sağ görseli yakınlaştır",
+      "hash": "8157ae0c10c88e130a29fbfb783c2ef18ae30329166e64c45d8c5b0877558a4f"
+    },
+    "phrase.8197c0ac02d29e323d9b8c11f34feae5a15c3ce77942c9c0bf4c4994563dcedd": {
+      "text": "kutu",
+      "hash": "8197c0ac02d29e323d9b8c11f34feae5a15c3ce77942c9c0bf4c4994563dcedd"
+    },
+    "phrase.81ba09bb70d5b2255833215c549bce4f878feeb9599e13e188b8d6b854175507": {
+      "text": "Karşılaştırarak seçin.",
+      "hash": "81ba09bb70d5b2255833215c549bce4f878feeb9599e13e188b8d6b854175507"
+    },
+    "phrase.83a55d4a95bcc46b163ae69eab231eeb1e4279086698b77cfe4061a9a9eacb8f": {
+      "text": "Teslimat adresi",
+      "hash": "83a55d4a95bcc46b163ae69eab231eeb1e4279086698b77cfe4061a9a9eacb8f"
+    },
+    "phrase.859ece08ddf226732d4da95232659cd47defcc5a928e098468201a32800ae43c": {
+      "text": "Yeni sipariş alınamıyor.",
+      "hash": "859ece08ddf226732d4da95232659cd47defcc5a928e098468201a32800ae43c"
+    },
+    "phrase.8635d038deafc5f047165887c74c7360fe18e74cebf99f45cb21e5abd846b4ac": {
+      "text": "Bağlantı gönder",
+      "hash": "8635d038deafc5f047165887c74c7360fe18e74cebf99f45cb21e5abd846b4ac"
+    },
+    "phrase.86a463ae83131f0b09af346a56f9958799fadb9b904a3e06e565c03ef12707d1": {
+      "text": "Hesap mevcutsa e-posta gönderildi. E-posta kutunuzu kontrol edin.",
+      "hash": "86a463ae83131f0b09af346a56f9958799fadb9b904a3e06e565c03ef12707d1"
+    },
+    "phrase.873bbb063b9763b401274317e08fdfb3fa0b0f3e9e9a9e3ade5f96f9cb2f8e75": {
+      "text": "Menü yayını okunamadı.",
+      "hash": "873bbb063b9763b401274317e08fdfb3fa0b0f3e9e9a9e3ade5f96f9cb2f8e75"
+    },
+    "phrase.876e2b409d5fa200da0a132deea4ab383d6f10fc8f8349e01064f0d78f6e4287": {
+      "text": "Sipariş numarası: ",
+      "hash": "876e2b409d5fa200da0a132deea4ab383d6f10fc8f8349e01064f0d78f6e4287"
+    },
+    "phrase.87999a409c2abdb86fef0aacc70e4897283c13d30e304d3f77789ed2aeec23a2": {
+      "text": "Firma bilgilerinizi iletin",
+      "hash": "87999a409c2abdb86fef0aacc70e4897283c13d30e304d3f77789ed2aeec23a2"
+    },
+    "phrase.88955f7c21431bd72855c1d825e606d0005f7c9ab9882909cc9aca1cbbaf0141": {
+      "text": " ürün · Bayi fiyatlarınız · Son kontrol: ",
+      "hash": "88955f7c21431bd72855c1d825e606d0005f7c9ab9882909cc9aca1cbbaf0141"
+    },
+    "phrase.89e4e91dfe43da02709f4e3e7b457c94ed31bf0df0183e79d27335035f85fe6e": {
+      "text": ". Ödeme alınmadı; işletmenin onayı bekleniyor.",
+      "hash": "89e4e91dfe43da02709f4e3e7b457c94ed31bf0df0183e79d27335035f85fe6e"
+    },
+    "phrase.8b2c13cd5d3d5a51fb2e1339fc6b95d315c8fdf522661adad0043ad7b94e27e4": {
+      "text": "Destek seçenekleri",
+      "hash": "8b2c13cd5d3d5a51fb2e1339fc6b95d315c8fdf522661adad0043ad7b94e27e4"
+    },
+    "phrase.8bf4d1356c69691d456e070526331c64535d8cde69ca987399b57db4ed07b9ef": {
+      "text": "Sürükleyerek kaydırın; tekerlek veya iki parmakla yakınlaştırın. Çift dokunma görünümü sıfırlar. Ok tuşları kaydırır, +/− yakınlaştırır.",
+      "hash": "8bf4d1356c69691d456e070526331c64535d8cde69ca987399b57db4ed07b9ef"
+    },
+    "phrase.8bff2c192851799fb754546cc18e29abd60492e4d36834fad8f3df1e5c1d60a5": {
+      "text": "İşletmeniz için",
+      "hash": "8bff2c192851799fb754546cc18e29abd60492e4d36834fad8f3df1e5c1d60a5"
+    },
+    "phrase.8d0b2e06da87f1aab180ee5e119b7eccc0d4656279ce2e5fef4252d0f40cd8ff": {
+      "text": "Alındı",
+      "hash": "8d0b2e06da87f1aab180ee5e119b7eccc0d4656279ce2e5fef4252d0f40cd8ff"
+    },
+    "phrase.8d2390d51ff577f6e7394a8da5bb3b1dac14647503ced4a0ee897fc0a35d5747": {
+      "text": "İşletmenin haritadaki konumu",
+      "hash": "8d2390d51ff577f6e7394a8da5bb3b1dac14647503ced4a0ee897fc0a35d5747"
+    },
+    "phrase.8d6c20e4101ae3e5c4107f241994134dde3164599515b9a0ff836a6a19b0661c": {
+      "text": "Bayilere özel alan",
+      "hash": "8d6c20e4101ae3e5c4107f241994134dde3164599515b9a0ff836a6a19b0661c"
+    },
+    "phrase.8d905d0a9c4dafd221f6c2f93830893f3664a221622eb751506af87defef6408": {
+      "text": " karşılaştır",
+      "hash": "8d905d0a9c4dafd221f6c2f93830893f3664a221622eb751506af87defef6408"
+    },
+    "phrase.8ef9a8633479cacbb7395b9d0a0ba59d479d0bdc085da51cb38c6561bd3f3239": {
+      "text": "İşletme koşulları",
+      "hash": "8ef9a8633479cacbb7395b9d0a0ba59d479d0bdc085da51cb38c6561bd3f3239"
+    },
+    "phrase.8fa2e917e5f3846a086775dd818f09dbbe2757851011f80ec333eb95d85b79b9": {
+      "text": "Hesap hizmetine bağlanılamadı. Lütfen tekrar deneyin.",
+      "hash": "8fa2e917e5f3846a086775dd818f09dbbe2757851011f80ec333eb95d85b79b9"
+    },
+    "phrase.901973a32f2788f45bfa8c7682d58c22b5bf8ce8dbff18e8a8ff908b23d35ffc": {
+      "text": "Ürün yayını geçersiz.",
+      "hash": "901973a32f2788f45bfa8c7682d58c22b5bf8ce8dbff18e8a8ff908b23d35ffc"
+    },
+    "phrase.906690e4bddcd0d8926cf17e91c5a98e5c7fba9db3781e92ac10e8db2b15b814": {
+      "text": "Çıkar",
+      "hash": "906690e4bddcd0d8926cf17e91c5a98e5c7fba9db3781e92ac10e8db2b15b814"
+    },
+    "phrase.906a98635661733cf6181158253df8d37bfd64102c8e9d4051f536906f54f202": {
+      "text": "← Önceki",
+      "hash": "906a98635661733cf6181158253df8d37bfd64102c8e9d4051f536906f54f202"
+    },
+    "phrase.9082aadf56c11e19db21a29deb50dae38f723e5c126b873ceaea46c6910f16ea": {
+      "text": "İşlem tamamlanamadı. Lütfen tekrar deneyin.",
+      "hash": "9082aadf56c11e19db21a29deb50dae38f723e5c126b873ceaea46c6910f16ea"
+    },
+    "phrase.914207a9f84e650068bd87d724ff50be5fc451431e3a3c1ce98c1959fff06419": {
+      "text": "WhatsApp ile yaz",
+      "hash": "914207a9f84e650068bd87d724ff50be5fc451431e3a3c1ce98c1959fff06419"
+    },
+    "phrase.944f52b6a7123c939ef6f921b9da66f474aab9d1a5bba00f5279bb20eb3d6190": {
+      "text": "Henüz gösterilebilecek yorum bulunmuyor.",
+      "hash": "944f52b6a7123c939ef6f921b9da66f474aab9d1a5bba00f5279bb20eb3d6190"
+    },
+    "phrase.9471e97fcb25199b967850d300db7a61b5c3f2f2aaebad28b3c2d54a1cdeef3f": {
+      "text": "Negatif",
+      "hash": "9471e97fcb25199b967850d300db7a61b5c3f2f2aaebad28b3c2d54a1cdeef3f"
+    },
+    "phrase.959f4dffead3c7cd00ffb5d63d2e358d099cfbf36285ae0d46110d944d97abc2": {
+      "text": "TEKNİKEL ÜRÜNLERİ",
+      "hash": "959f4dffead3c7cd00ffb5d63d2e358d099cfbf36285ae0d46110d944d97abc2"
+    },
+    "phrase.95ff3bba16aff658a2773a618953d8496246086d8b72062b75b4708bcb40ab0a": {
+      "text": "Hesabınız ve siparişleriniz",
+      "hash": "95ff3bba16aff658a2773a618953d8496246086d8b72062b75b4708bcb40ab0a"
+    },
+    "phrase.966df85150480695a710db5b880fbf496b0276827cfb8b5f454eadd7a13c9a45": {
+      "text": "Bayi Sipariş Sistemi",
+      "hash": "966df85150480695a710db5b880fbf496b0276827cfb8b5f454eadd7a13c9a45"
+    },
+    "phrase.9720743006f7a8946087bac49bcf63ca0d6302b9f87dc28602a3a51fb20dc750": {
+      "text": "daha hızlı sipariş.",
+      "hash": "9720743006f7a8946087bac49bcf63ca0d6302b9f87dc28602a3a51fb20dc750"
+    },
+    "phrase.981e1a9a55b47060a94cfea598e7e7b47eac4126a943e580eabce1b3813e6116": {
+      "text": "Fiyat",
+      "hash": "981e1a9a55b47060a94cfea598e7e7b47eac4126a943e580eabce1b3813e6116"
+    },
+    "phrase.9968e407b961a9857e37c78ab2af9f72c1876b0dc819f409ce439b52f962a5ae": {
+      "text": "Sipariş desteği",
+      "hash": "9968e407b961a9857e37c78ab2af9f72c1876b0dc819f409ce439b52f962a5ae"
+    },
+    "phrase.9a9c35f6c9488b454cbb29904eebbb6f93e4b3082d9a2c96d082c44197bc0527": {
+      "text": "ÜRÜN GRUPLARI",
+      "hash": "9a9c35f6c9488b454cbb29904eebbb6f93e4b3082d9a2c96d082c44197bc0527"
+    },
+    "phrase.9ae2a0e5d859d66070de7cacd4c3dbf44bdd14dc76feb61984696133f1f80a25": {
+      "text": "E-postayı doğrula",
+      "hash": "9ae2a0e5d859d66070de7cacd4c3dbf44bdd14dc76feb61984696133f1f80a25"
+    },
+    "phrase.9b4cdee4b1ccd15d2746715783382bdecb4e2247356fd77f1679bc9b31874944": {
+      "text": "Yayında olmayan ürün",
+      "hash": "9b4cdee4b1ccd15d2746715783382bdecb4e2247356fd77f1679bc9b31874944"
+    },
+    "phrase.9ba01e990863a5c48043e2fa2ac42cf89686a52eb3dbbbc197c7fe98b7f66e88": {
+      "text": "Bayi ürünü",
+      "hash": "9ba01e990863a5c48043e2fa2ac42cf89686a52eb3dbbbc197c7fe98b7f66e88"
+    },
+    "phrase.9bb65c9b1fb994d0cea979d392404220190a61cb3651e2c527a6fabc91d3ad42": {
+      "text": "Sunucudan geçerli yanıt alınamadı. Gönderim yapılmış olabilir; aynı siparişi tekrar deneyin.",
+      "hash": "9bb65c9b1fb994d0cea979d392404220190a61cb3651e2c527a6fabc91d3ad42"
+    },
+    "phrase.9c7a458fd81bcb38c230c6ade5e75f834c5ab50d7238bee83497fe63d4546e1c": {
+      "text": "İletişim ve konum",
+      "hash": "9c7a458fd81bcb38c230c6ade5e75f834c5ab50d7238bee83497fe63d4546e1c"
+    },
+    "phrase.9d89b1daa5fb55885701734715bc13d36ead31973add3b312a7acfb8134b1b72": {
+      "text": "Fotoğraf açılamadı veya bu cihaz için fazla büyük. Daha küçük bir görsel seçin.",
+      "hash": "9d89b1daa5fb55885701734715bc13d36ead31973add3b312a7acfb8134b1b72"
+    },
+    "phrase.9e03976dfec4189970d10025a05c8e618d156925e928754058fe91e3a143a1ca": {
+      "text": "Kombi yedek parça, teknik ekipman ve kart tamiri için aradığınız çözümler tek bir yerde. Ürün koduyla arayın, hızlıca inceleyin.",
+      "hash": "9e03976dfec4189970d10025a05c8e618d156925e928754058fe91e3a143a1ca"
+    },
+    "phrase.9f03acb21595512b2c68bb655c15df73c9aba94e18e5b74343324ba4ae69c7e8": {
+      "text": "Ürün adı, marka veya stok kodu",
+      "hash": "9f03acb21595512b2c68bb655c15df73c9aba94e18e5b74343324ba4ae69c7e8"
+    },
+    "phrase.9f5223e3a5e6641dfd5e4b27ee96f4ac2c5e34dffc41c1c2fa0d8b62609f73af": {
+      "text": "Gönderim sonucu belirsiz. Önce aynı siparişi tekrar deneyin.",
+      "hash": "9f5223e3a5e6641dfd5e4b27ee96f4ac2c5e34dffc41c1c2fa0d8b62609f73af"
+    },
+    "phrase.9f70ebb7aee8ac40cc9c71a491e0ed65a6ba7ff2ecb90d696f50d78706bce4b2": {
+      "text": "Sağ görsel",
+      "hash": "9f70ebb7aee8ac40cc9c71a491e0ed65a6ba7ff2ecb90d696f50d78706bce4b2"
+    },
+    "phrase.a14c652d07fbef590be10f2af1ca7ede6e44a7c962208e95c89a032a6cf90019": {
+      "text": "Bayi girişi ve sipariş için JavaScript etkin olmalı.",
+      "hash": "a14c652d07fbef590be10f2af1ca7ede6e44a7c962208e95c89a032a6cf90019"
+    },
+    "phrase.a17ed8e858896c3d92a4969446925477b2aae03e7d70322c4d995ef76177c622": {
+      "text": "Ürün bulunamadı veya artık yayında değil.",
+      "hash": "a17ed8e858896c3d92a4969446925477b2aae03e7d70322c4d995ef76177c622"
+    },
+    "phrase.a1b745e3738aded89b46c8a842344ff573ebb4415148611497ad273d0160b51d": {
+      "text": "Katalog bilgileri okunamadı.",
+      "hash": "a1b745e3738aded89b46c8a842344ff573ebb4415148611497ad273d0160b51d"
+    },
+    "phrase.a1ffb45a5e3aa7bb8f5110f8e980f6f34cae1694e3315f9656eed952ab3dda1d": {
+      "text": "Adınızı ve soyadınızı girin.",
+      "hash": "a1ffb45a5e3aa7bb8f5110f8e980f6f34cae1694e3315f9656eed952ab3dda1d"
+    },
+    "phrase.a263abe5f375fdacb6bbba7626e79eb3c94a8e308470637a94a34cc1bc5c88d7": {
+      "text": "Perakende Sepeti",
+      "hash": "a263abe5f375fdacb6bbba7626e79eb3c94a8e308470637a94a34cc1bc5c88d7"
+    },
+    "phrase.a26f81b577fae434ab872d2bd3f884a4c488b265e46d0832a654e160442f6df5": {
+      "text": "Bayi kataloğunun hesabı doğrulanamadı.",
+      "hash": "a26f81b577fae434ab872d2bd3f884a4c488b265e46d0832a654e160442f6df5"
+    },
+    "phrase.a290388961f76b7b3232a5497a81a722a8fe43305f7775690d1cdf015acd0eaa": {
+      "text": " kişi",
+      "hash": "a290388961f76b7b3232a5497a81a722a8fe43305f7775690d1cdf015acd0eaa"
+    },
+    "phrase.a2c5378b871293722240e6a16498a65218b6e8c09d933fe8b3f34ed1155e44cb": {
+      "text": "İsim, stok kodu veya model",
+      "hash": "a2c5378b871293722240e6a16498a65218b6e8c09d933fe8b3f34ed1155e44cb"
+    },
+    "phrase.a2f1a97b55b70a51e829a4c1a6a3e1ec1c03ac190f36167113b3bc6f1b2fa8b4": {
+      "text": "İşlemler",
+      "hash": "a2f1a97b55b70a51e829a4c1a6a3e1ec1c03ac190f36167113b3bc6f1b2fa8b4"
+    },
+    "phrase.a314bd0b56a3158ca808014aa64343289582b8a9f599b9e9be83dd33912c1e91": {
+      "text": "Menü",
+      "hash": "a314bd0b56a3158ca808014aa64343289582b8a9f599b9e9be83dd33912c1e91"
+    },
+    "phrase.a35eeecc4b46cd485bf27d129e7a9a29b6868d28ff4626945c4bf08dea2c5046": {
+      "text": "Bayi kataloğu henüz hazır değil.",
+      "hash": "a35eeecc4b46cd485bf27d129e7a9a29b6868d28ff4626945c4bf08dea2c5046"
+    },
+    "phrase.a39cbdcd5f36a9c9822a2aa3fe7ea0f3a4570c414d89e58b05b17bc7cfa37c71": {
+      "text": "Teknikel kombi yedek parça ve kart tamiri. Parçaları hızlıca bulun, ürün koduyla arayın ve bayi işlemlerine ulaşın.",
+      "hash": "a39cbdcd5f36a9c9822a2aa3fe7ea0f3a4570c414d89e58b05b17bc7cfa37c71"
+    },
+    "phrase.a4048eb9c94e511fb62c3106768daa594aaf8cd487e377b77109bc9dd4433224": {
+      "text": "Müşteri hesabınızla giriş yapın; bayi yetkiniz varsa özel kataloğunuza, fiyatlarınıza ve siparişlerinize ulaşın.",
+      "hash": "a4048eb9c94e511fb62c3106768daa594aaf8cd487e377b77109bc9dd4433224"
+    },
+    "phrase.a498b0aa832e3b7b701e421eccf6f3e43b822b8e279fa82e8d4c150589cc06e4": {
+      "text": "İşletme iletişim bilgileri",
+      "hash": "a498b0aa832e3b7b701e421eccf6f3e43b822b8e279fa82e8d4c150589cc06e4"
+    },
+    "phrase.a4f52be3abf319c1e78cbba312857dc9e21e7c7658709652138c5556dc57c2c0": {
+      "text": "Dil seçimi",
+      "hash": "a4f52be3abf319c1e78cbba312857dc9e21e7c7658709652138c5556dc57c2c0"
+    },
+    "phrase.a538ee56d30bdeccd663349fcb440add325b5e552bfdf3cc083b6f38f2e0fc4c": {
+      "text": "TALEBİNİZ ULAŞTI",
+      "hash": "a538ee56d30bdeccd663349fcb440add325b5e552bfdf3cc083b6f38f2e0fc4c"
+    },
+    "phrase.a56bfc27f056462afa448b4319112a054d5ae9f8a7d2b3c323719abe71b34234": {
+      "text": "Siparişleri yenile",
+      "hash": "a56bfc27f056462afa448b4319112a054d5ae9f8a7d2b3c323719abe71b34234"
+    },
+    "phrase.a5d4e4d322279a27d4b6ace9f147170f04199bcc0502f052a64e0ed12a947c98": {
+      "text": "Sipariş kabulü doğrulanamadı. Aynı siparişi tekrar deneyin.",
+      "hash": "a5d4e4d322279a27d4b6ace9f147170f04199bcc0502f052a64e0ed12a947c98"
+    },
+    "phrase.a60a51d9f19fd1a44c6e5c4ca39d07d999af8c16c6a0ead940e89bdbb097de23": {
+      "text": "Geri yükleme yerel uygulama verilerini değiştirir. Web sitesi verileri ve kullanıcı giriş hesapları otomatik oluşturulmaz; web bağlantısı ve bayi erişimi ayrıca yapılandırılır.",
+      "hash": "a60a51d9f19fd1a44c6e5c4ca39d07d999af8c16c6a0ead940e89bdbb097de23"
+    },
+    "phrase.a658d9c8820f14b2d34657d99eb6e53a1ed544b294f3fcf4cb95baf3f6319fbe": {
+      "text": "Sorunuz çok uzun. Lütfen kısaltın.",
+      "hash": "a658d9c8820f14b2d34657d99eb6e53a1ed544b294f3fcf4cb95baf3f6319fbe"
+    },
+    "phrase.a7037a1792406232a4ed049a91d7c6da72daa43b940ee677304a4941b13ea425": {
+      "text": "Ürün adı veya stok koduyla arayın",
+      "hash": "a7037a1792406232a4ed049a91d7c6da72daa43b940ee677304a4941b13ea425"
+    },
+    "phrase.a7229717cff4ba6a793cafe67c7d35ab0c41310204607f46847aa4e1d72a19c3": {
+      "text": "Duyurular",
+      "hash": "a7229717cff4ba6a793cafe67c7d35ab0c41310204607f46847aa4e1d72a19c3"
+    },
+    "phrase.a78fd2bba53dc9e7e3cfc13e3184512c08f8c64e8f457dbf2361562aeb09ad16": {
+      "text": "DOĞRU PARÇA.",
+      "hash": "a78fd2bba53dc9e7e3cfc13e3184512c08f8c64e8f457dbf2361562aeb09ad16"
+    },
+    "phrase.a7e63fbc547874a167eb724dc865f21944a2de9ecec749fb365c50385853a434": {
+      "text": "Lütfen yayınlanmış bir ürün seçin.",
+      "hash": "a7e63fbc547874a167eb724dc865f21944a2de9ecec749fb365c50385853a434"
+    },
+    "phrase.a81092488a527f4eb462f5884702912bcf9347c9c3442861432a19f2567a3e4b": {
+      "text": "Oturum kontrol ediliyor...",
+      "hash": "a81092488a527f4eb462f5884702912bcf9347c9c3442861432a19f2567a3e4b"
+    },
+    "phrase.a87b60c9d9b9637d289bcc67620ebd7ef0c57c4a2022ac7a1b268569763ec980": {
+      "text": "İkinci ürünü katalogda ara",
+      "hash": "a87b60c9d9b9637d289bcc67620ebd7ef0c57c4a2022ac7a1b268569763ec980"
+    },
+    "phrase.a8ee2b2b5c9a1c4e26ca0898b4d164af9e7e126d10c0eb8ae431c5acffb8f5f4": {
+      "text": "Öne çıkan",
+      "hash": "a8ee2b2b5c9a1c4e26ca0898b4d164af9e7e126d10c0eb8ae431c5acffb8f5f4"
+    },
+    "phrase.a9797bcac9655e36c860bb6cc7c712583a46f3f20db656bcfcd28b6036359c5f": {
+      "text": "E-posta adresinizi doğrulayın. Doğrulama e-postasını yeniden almak için Şifremi unuttum alanını kullanın.",
+      "hash": "a9797bcac9655e36c860bb6cc7c712583a46f3f20db656bcfcd28b6036359c5f"
+    },
+    "phrase.a97c85313107be2a6a495425717e059e75f5c7fe677bc09658ece4cc501049c0": {
+      "text": "Henüz siparişiniz yok.",
+      "hash": "a97c85313107be2a6a495425717e059e75f5c7fe677bc09658ece4cc501049c0"
+    },
+    "phrase.a98c690ee0319f6753d8f50e640398c1f0981dcfd23cad496f42fc05f3d6bae9": {
+      "text": "Hesap durumu kontrol ediliyor…",
+      "hash": "a98c690ee0319f6753d8f50e640398c1f0981dcfd23cad496f42fc05f3d6bae9"
+    },
+    "phrase.a9968bc7eb0dd42829861648bee877e5da27db1e9e096ec092bf7dd77df2668d": {
+      "text": "Görseli incele",
+      "hash": "a9968bc7eb0dd42829861648bee877e5da27db1e9e096ec092bf7dd77df2668d"
+    },
+    "phrase.a997910d0ace0ac050cf03bdd3d9af12926fc7c90cbbf5a3dfd4188571b7b289": {
+      "text": "Tekrar deneme kimliği farklı bir sipariş için kullanılmış.",
+      "hash": "a997910d0ace0ac050cf03bdd3d9af12926fc7c90cbbf5a3dfd4188571b7b289"
+    },
+    "phrase.aaadc0285c68c8b735fa62999064492472385a331d10416a86d5bf5a02db1857": {
+      "text": "Bayi oturumu doğrulanamadı.",
+      "hash": "aaadc0285c68c8b735fa62999064492472385a331d10416a86d5bf5a02db1857"
+    },
+    "phrase.aaedcbae2fad8eb3c7ab7a739baad6d7664bac78244f3f66beac445af1960d68": {
+      "text": "Perakende veya bayi hesabıyla",
+      "hash": "aaedcbae2fad8eb3c7ab7a739baad6d7664bac78244f3f66beac445af1960d68"
+    },
+    "phrase.ab84a134c8cc7d8b9e395292306fc917e871842063c88a48af820d352c59ac87": {
+      "text": "Restoran bilgileri yükleniyor…",
+      "hash": "ab84a134c8cc7d8b9e395292306fc917e871842063c88a48af820d352c59ac87"
+    },
+    "phrase.ab9aec24df463f04f10121052b86115756c2340a0b1e775dfd43d8c77fd7c43b": {
+      "text": " Eş zamanlı zoom",
+      "hash": "ab9aec24df463f04f10121052b86115756c2340a0b1e775dfd43d8c77fd7c43b"
+    },
+    "phrase.abbbdafe41fa5b1beb4dfef5c4cd337caaa27cfc22c17d1470b69817c1499c2e": {
+      "text": "Bilgi",
+      "hash": "abbbdafe41fa5b1beb4dfef5c4cd337caaa27cfc22c17d1470b69817c1499c2e"
+    },
+    "phrase.abc81c688ea41be4623ca470b10a993396754eec79e60bfa3d6bfe649eb65bac": {
+      "text": " Hizalama çizgileri",
+      "hash": "abc81c688ea41be4623ca470b10a993396754eec79e60bfa3d6bfe649eb65bac"
+    },
+    "phrase.ac90807d35fef3441dd29640cb0623abf720b2b22222dd529e0deceb7f027638": {
+      "text": "Yetkili adı soyadı",
+      "hash": "ac90807d35fef3441dd29640cb0623abf720b2b22222dd529e0deceb7f027638"
+    },
+    "phrase.ad0fcbcc7996b405abdd79c565223293017661a517f89c445aba6fbc1fdfae4b": {
+      "text": "Ad soyad",
+      "hash": "ad0fcbcc7996b405abdd79c565223293017661a517f89c445aba6fbc1fdfae4b"
+    },
+    "phrase.ada0a988d8d116b488a814844c87e266758b20ad049dd4fc522c2b8f1f0eb885": {
+      "text": "Son alınan değerlendirmeler",
+      "hash": "ada0a988d8d116b488a814844c87e266758b20ad049dd4fc522c2b8f1f0eb885"
+    },
+    "phrase.af0b5aa1d5e7c9c57cdb70c6e13e1a5388278ba2801f7a1da128862900bb8228": {
+      "text": " Google değerlendirmesi",
+      "hash": "af0b5aa1d5e7c9c57cdb70c6e13e1a5388278ba2801f7a1da128862900bb8228"
+    },
+    "phrase.af56a195e286494b2f0d90e21dd4cdff218087abd476abf8ef2aa6a85b796402": {
+      "text": "Kampanyalar",
+      "hash": "af56a195e286494b2f0d90e21dd4cdff218087abd476abf8ef2aa6a85b796402"
+    },
+    "phrase.af5793d7da0cc6b1fa16ae3579d313eda40778bcbb3c4676346eb16a425fb4af": {
+      "text": "Kampanya görseli",
+      "hash": "af5793d7da0cc6b1fa16ae3579d313eda40778bcbb3c4676346eb16a425fb4af"
+    },
+    "phrase.af8a9415713236035f7e515d43526e9703c08ff8d0b2dc7f70567214e7241087": {
+      "text": "Gönderim sonucu belirsiz bir talebiniz var. Sepet’ten aynı siparişi kontrol edebilirsiniz.",
+      "hash": "af8a9415713236035f7e515d43526e9703c08ff8d0b2dc7f70567214e7241087"
+    },
+    "phrase.afb2a22c17eec6b8df4b2123026cf926f5c973a3ad855abe03329f0526e3e278": {
+      "text": "Gri tonlama",
+      "hash": "afb2a22c17eec6b8df4b2123026cf926f5c973a3ad855abe03329f0526e3e278"
+    },
+    "phrase.afd4957dfbd330c58e709cd60fc58739918e09b6835a891244d0714f95b2286e": {
+      "text": "Büyük görsel: mobil cihazlarda yakınlaştırma yavaş olabilir.",
+      "hash": "afd4957dfbd330c58e709cd60fc58739918e09b6835a891244d0714f95b2286e"
+    },
+    "phrase.afd9e524381838aedca671c4eacce09778845a10bd7f15a7fa64c3896eced705": {
+      "text": "Ödeme alınmadı. Talebiniz işletmenin onayını bekliyor.",
+      "hash": "afd9e524381838aedca671c4eacce09778845a10bd7f15a7fa64c3896eced705"
+    },
+    "phrase.b00ba3432b68587dbd974ea89909001af13b1501740eb3f2c6a9d2f54a68fa79": {
+      "text": "Ürün bilgileri yükleniyor...",
+      "hash": "b00ba3432b68587dbd974ea89909001af13b1501740eb3f2c6a9d2f54a68fa79"
+    },
+    "phrase.b05fbe06785a614671735773fe0f1e26ad5d99d7f6f77327adf2975134f5d103": {
+      "text": "Doğru parçayı bulmak artık",
+      "hash": "b05fbe06785a614671735773fe0f1e26ad5d99d7f6f77327adf2975134f5d103"
+    },
+    "phrase.b11a5cbfbff90cdc36956253bd52921896109b3a34f3e43e8a0bbefcc2ac557c": {
+      "text": "Büyük görüntüle",
+      "hash": "b11a5cbfbff90cdc36956253bd52921896109b3a34f3e43e8a0bbefcc2ac557c"
+    },
+    "phrase.b2903272b1c6530cfd1bb058c57ec031526ef93d6045190a407dbd3d15c09643": {
+      "text": "Kaydedildi. Hesabınıza giriş yapabilirsiniz.",
+      "hash": "b2903272b1c6530cfd1bb058c57ec031526ef93d6045190a407dbd3d15c09643"
+    },
+    "phrase.b30f465921b119c992cb56ab4d68e13e61de28010e3c995faf1dc834204ad380": {
+      "text": "Çok fazla istek gönderildi. Biraz sonra aynı talebi tekrar deneyin.",
+      "hash": "b30f465921b119c992cb56ab4d68e13e61de28010e3c995faf1dc834204ad380"
+    },
+    "phrase.b35ce4fd7c8fbe7027e51dae0f12fbbab0648530013a7cd553fa60f7d986bbd6": {
+      "text": "metre",
+      "hash": "b35ce4fd7c8fbe7027e51dae0f12fbbab0648530013a7cd553fa60f7d986bbd6"
+    },
+    "phrase.b3a5ea71a094b327750cb4e7766f265d5caeb4d24e85716f603d8af124880ee5": {
+      "text": "Henüz yayınlanmış oda bulunmuyor.",
+      "hash": "b3a5ea71a094b327750cb4e7766f265d5caeb4d24e85716f603d8af124880ee5"
+    },
+    "phrase.b3a9cd14235625fae1dfeb98115b845b81ef0c2db94b86f0036d3f34de4ac3be": {
+      "text": "Cihazımdan fotoğraf seç",
+      "hash": "b3a9cd14235625fae1dfeb98115b845b81ef0c2db94b86f0036d3f34de4ac3be"
+    },
+    "phrase.b49b6fa0477a1c5a13c40b00af50bf424896605b7d47ec29e065e85b098f53f3": {
+      "text": "Katalog ve siparişler yükleniyor…",
+      "hash": "b49b6fa0477a1c5a13c40b00af50bf424896605b7d47ec29e065e85b098f53f3"
+    },
+    "phrase.b4cae196c97e6979fc5ddecddba6930591b60620bb293bec4eae2268536aee1d": {
+      "text": "Masa talebi",
+      "hash": "b4cae196c97e6979fc5ddecddba6930591b60620bb293bec4eae2268536aee1d"
+    },
+    "phrase.b4e4f18e7a4593905b9e9b32a24b0a38be8fc91c47d1c21669e00b530bfd7ba5": {
+      "text": "Oturumu kapatmayı tekrar dene",
+      "hash": "b4e4f18e7a4593905b9e9b32a24b0a38be8fc91c47d1c21669e00b530bfd7ba5"
+    },
+    "phrase.b65df4c432e994c8d9215ec355821e14685c3fa8c8be447f891abe112a019528": {
+      "text": "Ürün adı, stok kodu veya sorunuz…",
+      "hash": "b65df4c432e994c8d9215ec355821e14685c3fa8c8be447f891abe112a019528"
+    },
+    "phrase.b68a3150ea85d32cdd905f10393710dd4d8c89bc4f84aaeba534f2465958699f": {
+      "text": "Geri",
+      "hash": "b68a3150ea85d32cdd905f10393710dd4d8c89bc4f84aaeba534f2465958699f"
+    },
+    "phrase.b697bcdf5d49bf9519dace66650ede87cbd6f34f18c9c4e8c3a4464498825ccd": {
+      "text": "Seçimi temizle",
+      "hash": "b697bcdf5d49bf9519dace66650ede87cbd6f34f18c9c4e8c3a4464498825ccd"
+    },
+    "phrase.b6b7dec1dfdcd754b4ae3dc4d61515fef4590fe635df76ff97e233e5ca569d80": {
+      "text": "Siparişlerim",
+      "hash": "b6b7dec1dfdcd754b4ae3dc4d61515fef4590fe635df76ff97e233e5ca569d80"
+    },
+    "phrase.b6f2412d631cc10b4b3d9f1cd7c2298aca72b29aaf49d88fd93375db61332baf": {
+      "text": "Görselleri karşılaştırın",
+      "hash": "b6f2412d631cc10b4b3d9f1cd7c2298aca72b29aaf49d88fd93375db61332baf"
+    },
+    "phrase.b7672ee2a068995840677e28ad8b46a58f607b9c0ce63eb92af953f72313ae75": {
+      "text": "Yenile ↻",
+      "hash": "b7672ee2a068995840677e28ad8b46a58f607b9c0ce63eb92af953f72313ae75"
+    },
+    "phrase.b7b08d29895ac909330800aee4dc1870e7a2e90e5393926fb6060ac6ebedc7be": {
+      "text": "Döndür",
+      "hash": "b7b08d29895ac909330800aee4dc1870e7a2e90e5393926fb6060ac6ebedc7be"
+    },
+    "phrase.b7de68d0e6f84dfe721f03eccaa6a675bd08764f567f8e04efb847b7618c702e": {
+      "text": "Parçaları isim, stok kodu veya kategoriye göre bulun; sepetinize ekleyin.",
+      "hash": "b7de68d0e6f84dfe721f03eccaa6a675bd08764f567f8e04efb847b7618c702e"
+    },
+    "phrase.b7edc33e6f016fb83f0d4b3e9615db9a05aea9dd2b9d1cbaec29be5f4f5c50f5": {
+      "text": "Google yorumlarını görüntüle ↗",
+      "hash": "b7edc33e6f016fb83f0d4b3e9615db9a05aea9dd2b9d1cbaec29be5f4f5c50f5"
+    },
+    "phrase.b81acd31ac568f1cffde4d9fa001177bceaafa5e694d8c1378224da366f3b089": {
+      "text": "Teslim alacak kişi",
+      "hash": "b81acd31ac568f1cffde4d9fa001177bceaafa5e694d8c1378224da366f3b089"
+    },
+    "phrase.b84921d169bcd5d3c37a1b8524de0e69ee90e6ebf6c5a87296642541caa64ac6": {
+      "text": "Teknik servisiniz için",
+      "hash": "b84921d169bcd5d3c37a1b8524de0e69ee90e6ebf6c5a87296642541caa64ac6"
+    },
+    "phrase.b872b116e8f60434a4e2b2a619f67db07ce85b4526e04cbbd6603908f7b98171": {
+      "text": "Giriş yap",
+      "hash": "b872b116e8f60434a4e2b2a619f67db07ce85b4526e04cbbd6603908f7b98171"
+    },
+    "phrase.b8a81100f8ed8150c67dd2917d7cfe50b5a047f7c46234ca852032f8dc2b2034": {
+      "text": "Teknik destek",
+      "hash": "b8a81100f8ed8150c67dd2917d7cfe50b5a047f7c46234ca852032f8dc2b2034"
+    },
+    "phrase.b93af3e9509623e7c5d7e3aa1ae56ade9c400c50dd32e83ef8c9949a3218ea65": {
+      "text": "TEKNİKEL / PARÇA KATALOĞU",
+      "hash": "b93af3e9509623e7c5d7e3aa1ae56ade9c400c50dd32e83ef8c9949a3218ea65"
+    },
+    "phrase.b94408fdaeec8b6db1177042132e189033d1700b5a47f6b9da1041a50d40f68d": {
+      "text": "Karşılaştırma seçimi",
+      "hash": "b94408fdaeec8b6db1177042132e189033d1700b5a47f6b9da1041a50d40f68d"
+    },
+    "phrase.b9cf01c3210927540e17b29b2fff029199c9d5282cc75381226803e099920656": {
+      "text": "Perakende sepeti",
+      "hash": "b9cf01c3210927540e17b29b2fff029199c9d5282cc75381226803e099920656"
+    },
+    "phrase.ba4637526be176909cd8c781032c4aaa1603621adfb18c539260b7f1a2ada702": {
+      "text": "Düzenlenen katman",
+      "hash": "ba4637526be176909cd8c781032c4aaa1603621adfb18c539260b7f1a2ada702"
+    },
+    "phrase.ba70a17f71990510376fb8f4da79a5b8b31aba5906edb8ffcf77cc196e7d77a1": {
+      "text": "Sunucudaki oturumunuz kapatıldı.",
+      "hash": "ba70a17f71990510376fb8f4da79a5b8b31aba5906edb8ffcf77cc196e7d77a1"
+    },
+    "phrase.bb2660a853a52c627985ad88ebb851e0f54266bdca6ba8f1229d0fccdd2334d5": {
+      "text": "Firma / unvan",
+      "hash": "bb2660a853a52c627985ad88ebb851e0f54266bdca6ba8f1229d0fccdd2334d5"
+    },
+    "phrase.bb26d6731b0bd278f37a890e184e20458049008b5802bb59fd3dedd0b2b6a017": {
+      "text": "Bu işletmede Online Satış kapalı. Hesap erişimi şu anda kullanılamıyor.",
+      "hash": "bb26d6731b0bd278f37a890e184e20458049008b5802bb59fd3dedd0b2b6a017"
+    },
+    "phrase.bb3c144d15b58c3d2d87bdb582423fcb08b3425de1fc57983535a7712f6bc452": {
+      "text": "Google hesabını bağla",
+      "hash": "bb3c144d15b58c3d2d87bdb582423fcb08b3425de1fc57983535a7712f6bc452"
+    },
+    "phrase.bb51bb24b4a09dee47a60e2d79bda9a4ceb7de85b8da48403a8a250dbc2d1cb0": {
+      "text": "TEKNİKEL / ÜRÜN",
+      "hash": "bb51bb24b4a09dee47a60e2d79bda9a4ceb7de85b8da48403a8a250dbc2d1cb0"
+    },
+    "phrase.bbd882bf0af538d2dfffc8a468f02f803f162102608fb83e1f2373bf16d01641": {
+      "text": "E-posta kutunuzu kontrol edin. Doğrulama bağlantısı gönderildi.",
+      "hash": "bbd882bf0af538d2dfffc8a468f02f803f162102608fb83e1f2373bf16d01641"
+    },
+    "phrase.bbf877aad65d66fdc0a0eadc2119560a2306565af4a932d7f9808884782fc5dd": {
+      "text": "Tarih, saat ve kişi sayısını seçin",
+      "hash": "bbf877aad65d66fdc0a0eadc2119560a2306565af4a932d7f9808884782fc5dd"
+    },
+    "phrase.bbfb2b1972f5dc9bea6b396aeb19eba3a0cabed564bbae8d75bb9b9bbe50d3a0": {
+      "text": "Yayınlanmamış",
+      "hash": "bbfb2b1972f5dc9bea6b396aeb19eba3a0cabed564bbae8d75bb9b9bbe50d3a0"
+    },
+    "phrase.bc5c818f2f4600b73813e9c45bffec95775a724796c82c46dee3b36184186de1": {
+      "text": "Hesap oluştur",
+      "hash": "bc5c818f2f4600b73813e9c45bffec95775a724796c82c46dee3b36184186de1"
+    },
+    "phrase.bccddc3468e759afac9a4d42d1fae9993d4df503fd0d847317cc2c40a767c37a": {
+      "text": "Stok kodu: ",
+      "hash": "bccddc3468e759afac9a4d42d1fae9993d4df503fd0d847317cc2c40a767c37a"
+    },
+    "phrase.bd043e49a3c1e68d8a8bdf9a31c9f3e535b186bbd1b8955c70355ee4312bc078": {
+      "text": "Bayi paneline geç →",
+      "hash": "bd043e49a3c1e68d8a8bdf9a31c9f3e535b186bbd1b8955c70355ee4312bc078"
+    },
+    "phrase.bdf25ef422ea8578e464deb6e9957f94015067a668b22b1a3c9e698396b90f0d": {
+      "text": "Bu talep türü artık yayında değil. Sayfayı yenileyin.",
+      "hash": "bdf25ef422ea8578e464deb6e9957f94015067a668b22b1a3c9e698396b90f0d"
+    },
+    "phrase.be26076b7eb1ebcd5ee88771431d4f931816b6f4a534e3404ea086bbd1a4b48a": {
+      "text": " (kapak)",
+      "hash": "be26076b7eb1ebcd5ee88771431d4f931816b6f4a534e3404ea086bbd1a4b48a"
+    },
+    "phrase.be49bff4931b35662d0c270a76a8189f8f29b4cbaa22e141e0261e8f536fd891": {
+      "text": "Rezervasyon",
+      "hash": "be49bff4931b35662d0c270a76a8189f8f29b4cbaa22e141e0261e8f536fd891"
+    },
+    "phrase.bf50dc3c66dac5e3f40e0bdcfb85478b498f048c0c5287288ae7fbc64f5eaf70": {
+      "text": "Profiliniz kaydedildi.",
+      "hash": "bf50dc3c66dac5e3f40e0bdcfb85478b498f048c0c5287288ae7fbc64f5eaf70"
+    },
+    "phrase.c02c23a68c2cdf758092b039ff1e97590432d63951c27a1d2cd3b0863f8e3e98": {
+      "text": "Ürün kataloğunu keşfet",
+      "hash": "c02c23a68c2cdf758092b039ff1e97590432d63951c27a1d2cd3b0863f8e3e98"
+    },
+    "phrase.c03188f498d5071557b48cb0ae3323d90de7df3216b10fdfbfde1eee6d3a5d78": {
+      "text": "Bu e-posta ile bir hesap var. Önce o hesaba giriş yapın, sonra giriş yöntemini bağlayın.",
+      "hash": "c03188f498d5071557b48cb0ae3323d90de7df3216b10fdfbfde1eee6d3a5d78"
+    },
+    "phrase.c0bc01a8cd69bccd76401e25be79868df5c14f1800e1086169aac3cc451b4c4f": {
+      "text": "Teknikel Ana Sayfa",
+      "hash": "c0bc01a8cd69bccd76401e25be79868df5c14f1800e1086169aac3cc451b4c4f"
+    },
+    "phrase.c0e78c1dd7a726ed29cbd3c677831155aab15606a7c50d4213e047d1e42616ba": {
+      "text": "Bayi fiyatınız sunucunun size özel kataloğundan alınır. Sipariş tutarı masaüstünde güncel fiyatlarla kesinleşir.",
+      "hash": "c0e78c1dd7a726ed29cbd3c677831155aab15606a7c50d4213e047d1e42616ba"
+    },
+    "phrase.c1358b88ec7006225e80689118dd0d73c708eaeedc86fee0c65dabcf7e1b5278": {
+      "text": "TEKNİKEL / KAMPANYALAR",
+      "hash": "c1358b88ec7006225e80689118dd0d73c708eaeedc86fee0c65dabcf7e1b5278"
+    },
+    "phrase.c176e048c508132aafee99607d7abdc6a39de8094d0eecfbfb9103ad5ca045db": {
+      "text": "Sağ ürün fotoğrafları",
+      "hash": "c176e048c508132aafee99607d7abdc6a39de8094d0eecfbfb9103ad5ca045db"
+    },
+    "phrase.c1baa1f7ff61c4d34fdc7e0f631fa353874065ad5d15dd14aff878abe1dadb94": {
+      "text": "doğrudan ulaşın.",
+      "hash": "c1baa1f7ff61c4d34fdc7e0f631fa353874065ad5d15dd14aff878abe1dadb94"
+    },
+    "phrase.c1bffa09a991da58ce7fc3e31b158a6b7a63c23a49f7edbb85c9747d1b462cb9": {
+      "text": "İl",
+      "hash": "c1bffa09a991da58ce7fc3e31b158a6b7a63c23a49f7edbb85c9747d1b462cb9"
+    },
+    "phrase.c1f63cfa16d32b7ffce42db464c036b36cefa87a3a2096137e2ec55a9398f5fc": {
+      "text": "Henüz yayınlanmış duyuru bulunmuyor.",
+      "hash": "c1f63cfa16d32b7ffce42db464c036b36cefa87a3a2096137e2ec55a9398f5fc"
+    },
+    "phrase.c1fe2ecdff02ec1d91e53fbd137be03f8e833b142e69c5d63d15928aaf9bad62": {
+      "text": "Kaydet",
+      "hash": "c1fe2ecdff02ec1d91e53fbd137be03f8e833b142e69c5d63d15928aaf9bad62"
+    },
+    "phrase.c229b8fead11fbca5b492c78f78fb3cb2509e3d9a03ee95b88b0e301ddc6e43a": {
+      "text": "/ Restoran",
+      "hash": "c229b8fead11fbca5b492c78f78fb3cb2509e3d9a03ee95b88b0e301ddc6e43a"
+    },
+    "phrase.c2430f9191d468ee64d2b8c7558d3cb5b4de8717410019be912e535ffdb94639": {
+      "text": "Bayi işlemleri",
+      "hash": "c2430f9191d468ee64d2b8c7558d3cb5b4de8717410019be912e535ffdb94639"
+    },
+    "phrase.c2655422772b4b7314c3c666f11ba0a761261845a95cc69c29936961fdb775db": {
+      "text": "Yakınlaştır",
+      "hash": "c2655422772b4b7314c3c666f11ba0a761261845a95cc69c29936961fdb775db"
+    },
+    "phrase.c40c742eca2200d0fc9e0d7140a3f50e23ec0e4127faa3c2e3f74c315c4c91a4": {
+      "text": "Yol tarifi",
+      "hash": "c40c742eca2200d0fc9e0d7140a3f50e23ec0e4127faa3c2e3f74c315c4c91a4"
+    },
+    "phrase.c4150e56eb06db65fabfbf740a25ee6f7e1cd6c80d1d144d3a058d693e61eef6": {
+      "text": " şu anda yayında değil.",
+      "hash": "c4150e56eb06db65fabfbf740a25ee6f7e1cd6c80d1d144d3a058d693e61eef6"
+    },
+    "phrase.c47954a4e542078fa9229a46258e87d43fe2afb7e455bc766c43ac6b63e164aa": {
+      "text": "Bekleyen gönderim bilgisi okunamadı. Veriler silinmedi.",
+      "hash": "c47954a4e542078fa9229a46258e87d43fe2afb7e455bc766c43ac6b63e164aa"
+    },
+    "phrase.c4d2a0db4895ea368949cee1cef07b8948c2715e6405459f161b7a4e2a08e498": {
+      "text": "Web siparişleri şu anda kapalı.",
+      "hash": "c4d2a0db4895ea368949cee1cef07b8948c2715e6405459f161b7a4e2a08e498"
+    },
+    "phrase.c4df567c9b1d938543197cd0e41738a9766cd05043a57e62dcd9ae123a7def41": {
+      "text": "Restoran",
+      "hash": "c4df567c9b1d938543197cd0e41738a9766cd05043a57e62dcd9ae123a7def41"
+    },
+    "phrase.c56c86cbdd98047d0a6e39413b4535aff981879c3cd28e0d717f1dd3a0ae70ae": {
+      "text": "Ürün, sipariş ve teknik sorularınız için bize ulaşabilirsiniz.",
+      "hash": "c56c86cbdd98047d0a6e39413b4535aff981879c3cd28e0d717f1dd3a0ae70ae"
+    },
+    "phrase.c6cb8f4923da93218343f6c5e24329499c3b7668aa91178b1a1b056aab25077d": {
+      "text": "Ürünü bulun",
+      "hash": "c6cb8f4923da93218343f6c5e24329499c3b7668aa91178b1a1b056aab25077d"
+    },
+    "phrase.c7109082778e1f9880470b5f0354c605aa3e033eb54fc11d493aaa30f488e73e": {
+      "text": "Sağlayıcı girişi tamamlanamadı. Yeniden deneyin.",
+      "hash": "c7109082778e1f9880470b5f0354c605aa3e033eb54fc11d493aaa30f488e73e"
+    },
+    "phrase.c71f4365fe6fc923c68a9f7a6ffbf4eb4fc8fafe3eae3e836170e4e2c57b77b5": {
+      "text": "Bayi kataloğu doğrulanamadı.",
+      "hash": "c71f4365fe6fc923c68a9f7a6ffbf4eb4fc8fafe3eae3e836170e4e2c57b77b5"
+    },
+    "phrase.c8817bd1859fcc326631740320609b448a3a27c5d32e63ef0a4f26aa59154a04": {
+      "text": "İçe alınan yedeği seçerek Geri Yükle işlemini tamamlayın.",
+      "hash": "c8817bd1859fcc326631740320609b448a3a27c5d32e63ef0a4f26aa59154a04"
+    },
+    "phrase.c9948748960a718b29fb90a6367876de2640fe046d9369cd5eed9c7f26cec507": {
+      "text": "Hesabım",
+      "hash": "c9948748960a718b29fb90a6367876de2640fe046d9369cd5eed9c7f26cec507"
+    },
+    "phrase.c9e1d3ec22ddf3107f19730ae59777a78cf3fa366859af2225071db7f4f13836": {
+      "text": "Sipariş tutarı doğrulanamadı. Aynı siparişi tekrar deneyin.",
+      "hash": "c9e1d3ec22ddf3107f19730ae59777a78cf3fa366859af2225071db7f4f13836"
+    },
+    "phrase.c9e6ed9c46bbe80e1a8c1b2ae7d8b7568653a65bbe28cf608cfa4a0a279f7507": {
+      "text": "Lütfen adınızı ve soyadınızı kontrol edin.",
+      "hash": "c9e6ed9c46bbe80e1a8c1b2ae7d8b7568653a65bbe28cf608cfa4a0a279f7507"
+    },
+    "phrase.cae017dfab2fb64a99933746dfa8bf365a0b703cb6f3bde5916e0ab9020d7436": {
+      "text": "Bayi sepeti",
+      "hash": "cae017dfab2fb64a99933746dfa8bf365a0b703cb6f3bde5916e0ab9020d7436"
+    },
+    "phrase.cc8b7c8aadf02bff89b70cb0a1a0a41a0c200a80e7e9fb417ee37db23dd18084": {
+      "text": "Konum",
+      "hash": "cc8b7c8aadf02bff89b70cb0a1a0a41a0c200a80e7e9fb417ee37db23dd18084"
+    },
+    "phrase.cd0632fc7f243590a367999816dba90d58003e633ef6318b028ea8f8580fe3ce": {
+      "text": "Konum bilgilerini inceleyin",
+      "hash": "cd0632fc7f243590a367999816dba90d58003e633ef6318b028ea8f8580fe3ce"
+    },
+    "phrase.cd084f722f89fe7a0388977d5833f81e668819202288d95eb889d48cdcba3e9b": {
+      "text": "Facebook hesabını bağla",
+      "hash": "cd084f722f89fe7a0388977d5833f81e668819202288d95eb889d48cdcba3e9b"
+    },
+    "phrase.cd341dc9f748e96fc2defb7cbdb975502e8df34ed262bd5eb6a4d9ecc995c96d": {
+      "text": "SERVİSİN İHTİYACI OLAN HER PARÇA",
+      "hash": "cd341dc9f748e96fc2defb7cbdb975502e8df34ed262bd5eb6a4d9ecc995c96d"
+    },
+    "phrase.cd43e73661b187e14287f56776cc57d4736b36d6e8539b78b80289fc31b65b7d": {
+      "text": "Orijinale dön",
+      "hash": "cd43e73661b187e14287f56776cc57d4736b36d6e8539b78b80289fc31b65b7d"
+    },
+    "phrase.cd613d82a1a6621e00f0a8e43f59d1028f6db7cbadbb21af1e349cbe5e82c95b": {
+      "text": "Kategori",
+      "hash": "cd613d82a1a6621e00f0a8e43f59d1028f6db7cbadbb21af1e349cbe5e82c95b"
+    },
+    "phrase.cd7b479f45f9f6f61d6b53be9738ecbec30f2795e39565e4945214111a2f46cb": {
+      "text": "Halka açık katalog fiyatları gösteriliyor.",
+      "hash": "cd7b479f45f9f6f61d6b53be9738ecbec30f2795e39565e4945214111a2f46cb"
+    },
+    "phrase.ceae242445f42a337547d4a21a1c84af48a34010515e9593b866d095b4fe140b": {
+      "text": "Katalog görüntülenebilir; şu anda yeni sipariş alınamıyor.",
+      "hash": "ceae242445f42a337547d4a21a1c84af48a34010515e9593b866d095b4fe140b"
+    },
+    "phrase.ced2e76c64012ab53a6d218d0b97b7ea0be8e0f08a75633f898c962b0baf05e1": {
+      "text": "İlgili ürün",
+      "hash": "ced2e76c64012ab53a6d218d0b97b7ea0be8e0f08a75633f898c962b0baf05e1"
+    },
+    "phrase.cf90365349cade9156612912e77dc4bc74c48e1a8a198433ef1a96af96c07629": {
+      "text": "BAYİ SİSTEMİ",
+      "hash": "cf90365349cade9156612912e77dc4bc74c48e1a8a198433ef1a96af96c07629"
+    },
+    "phrase.cfd196c77ba065c1e8e421d27a1663f0c0677c3f2e0d98c35229775dbb65154e": {
+      "text": "Yetkili bayi kataloğunuzdaki fiyatlar gösteriliyor.",
+      "hash": "cfd196c77ba065c1e8e421d27a1663f0c0677c3f2e0d98c35229775dbb65154e"
+    },
+    "phrase.cfdbc8782c67b42ca18b69645dacb3324890eba6c95074ebbc939909b5932522": {
+      "text": "E-posta gönderilemedi. Daha sonra yeniden deneyin.",
+      "hash": "cfdbc8782c67b42ca18b69645dacb3324890eba6c95074ebbc939909b5932522"
+    },
+    "phrase.d064e9f6d4a72507f49d3d9707790d3d6b804969c9b394be7e46863523f710b6": {
+      "text": "Gönderim kontrol ediliyor…",
+      "hash": "d064e9f6d4a72507f49d3d9707790d3d6b804969c9b394be7e46863523f710b6"
+    },
+    "phrase.d0756ef7d2775cba7ed3f8a90d6af0f40ff74c9b21009682be415023298e4393": {
+      "text": "Sağ görseli uzaklaştır",
+      "hash": "d0756ef7d2775cba7ed3f8a90d6af0f40ff74c9b21009682be415023298e4393"
+    },
+    "phrase.d0d1962b69dca4462a0a09aebd2741695f9b602d4beb2f289cb88b4dfe881689": {
+      "text": "Ürün, marka veya stok kodu",
+      "hash": "d0d1962b69dca4462a0a09aebd2741695f9b602d4beb2f289cb88b4dfe881689"
+    },
+    "phrase.d1bb45ab6f2c9422b05d0a091fe2ec3a7c4fec1925b3bac589fa02abc8bfa28d": {
+      "text": "Favorilerimden çıkar",
+      "hash": "d1bb45ab6f2c9422b05d0a091fe2ec3a7c4fec1925b3bac589fa02abc8bfa28d"
+    },
+    "phrase.d1fd5dad7b1963acbe95e8a9173159be8f1566ee2de8348f54723425cd5b9976": {
+      "text": "/ QR Menü",
+      "hash": "d1fd5dad7b1963acbe95e8a9173159be8f1566ee2de8348f54723425cd5b9976"
+    },
+    "phrase.d356deedac55b56270fce1f5911f43a0f24befee0792f3a12e806a4de7d6ed26": {
+      "text": "Karşılaştır",
+      "hash": "d356deedac55b56270fce1f5911f43a0f24befee0792f3a12e806a4de7d6ed26"
+    },
+    "phrase.d39b06cf6d8b174bbb776e2a18b5955b3357838483b5199bd1dd11281fad3852": {
+      "text": "Durum henüz doğrulanamadı",
+      "hash": "d39b06cf6d8b174bbb776e2a18b5955b3357838483b5199bd1dd11281fad3852"
+    },
+    "phrase.d4ac418632e35beeee57635e841487c031ab4b104a17408c94748bacc0c76c88": {
+      "text": "Oda bilgilerine ulaşılamadı. Lütfen tekrar deneyin.",
+      "hash": "d4ac418632e35beeee57635e841487c031ab4b104a17408c94748bacc0c76c88"
+    },
+    "phrase.d4b2ed35f5d0a2380086ad45ef9d390c2fd4483d71d218005f8de3e81866eba1": {
+      "text": "Henüz yayınlanmış ürün bulunmuyor.",
+      "hash": "d4b2ed35f5d0a2380086ad45ef9d390c2fd4483d71d218005f8de3e81866eba1"
+    },
+    "phrase.d4f6ba73b08de334b1aa8c69f27218f3ac5fbe47893fec944126b60c2b5f118e": {
+      "text": ". görsel",
+      "hash": "d4f6ba73b08de334b1aa8c69f27218f3ac5fbe47893fec944126b60c2b5f118e"
+    },
+    "phrase.d5718b5ee36524473a53ab32e2278ace151cb9400a5e8c391dbf5b4199a46cb2": {
+      "text": "Ürün veya stok kodu",
+      "hash": "d5718b5ee36524473a53ab32e2278ace151cb9400a5e8c391dbf5b4199a46cb2"
+    },
+    "phrase.d5eacc078f3e6f381cebc1e0212609261b6b9c3e5f440e69dc8ea90bb4e93068": {
+      "text": "Ürün bilgilerini ve görsellerini inceleyin",
+      "hash": "d5eacc078f3e6f381cebc1e0212609261b6b9c3e5f440e69dc8ea90bb4e93068"
+    },
+    "phrase.d62ca5f6210a2b7898bcbf25d1d77fcfed72d20b49e59d1371b824e4fbc1322b": {
+      "text": "Karşılaştırma ürün sonuçları",
+      "hash": "d62ca5f6210a2b7898bcbf25d1d77fcfed72d20b49e59d1371b824e4fbc1322b"
+    },
+    "phrase.d698169b6f2d5d45d2bb9f584a3d15fb08befd6416349940e6884a87a8d9e222": {
+      "text": "Kampanyalar ve duyurular",
+      "hash": "d698169b6f2d5d45d2bb9f584a3d15fb08befd6416349940e6884a87a8d9e222"
+    },
+    "phrase.d74e27bdd32f441db40eee7b062a0a308e6d9f03224f867987a3985ea2ca749e": {
+      "text": " bilgilerine ulaşılamadı. Lütfen tekrar deneyin.",
+      "hash": "d74e27bdd32f441db40eee7b062a0a308e6d9f03224f867987a3985ea2ca749e"
+    },
+    "phrase.d7e69fc1c4fdf041cb86d51e0654eac1d2b02c0e86717636e8b249c6126fdca6": {
+      "text": "Oturum kapatılıyor…",
+      "hash": "d7e69fc1c4fdf041cb86d51e0654eac1d2b02c0e86717636e8b249c6126fdca6"
+    },
+    "phrase.d7fcd6124a57e4fc511fc2705cb37dd4fecdf57f100f25f8b0488c6208085cc5": {
+      "text": "← Bayi kataloğuna dön",
+      "hash": "d7fcd6124a57e4fc511fc2705cb37dd4fecdf57f100f25f8b0488c6208085cc5"
+    },
+    "phrase.d90f2cc86fd44fd4525194c91b4a6b6e30902e4ee6d3d66a60e8ec419a71ee59": {
+      "text": "Bayi kataloğunu filtrele",
+      "hash": "d90f2cc86fd44fd4525194c91b4a6b6e30902e4ee6d3d66a60e8ec419a71ee59"
+    },
+    "phrase.d94fcbdbdda4691b98fe9abe76c1f020d7ced2edd5833c90009e3117ff49aefd": {
+      "text": "Şifre oluştur veya değiştir",
+      "hash": "d94fcbdbdda4691b98fe9abe76c1f020d7ced2edd5833c90009e3117ff49aefd"
+    },
+    "phrase.d9a914e5c48e3790fefd2595365a9aa19a08644bafd81a9d82cea6caf8667493": {
+      "text": "İşletmeyi ara",
+      "hash": "d9a914e5c48e3790fefd2595365a9aa19a08644bafd81a9d82cea6caf8667493"
+    },
+    "phrase.d9ae48d36079c342a8c784710cc045de27faa454bde4debfa16ce71aec894965": {
+      "text": "Bayi misiniz?",
+      "hash": "d9ae48d36079c342a8c784710cc045de27faa454bde4debfa16ce71aec894965"
+    },
+    "phrase.d9c36bea98604d85eda7bffd27a1a125693e678d08132d7b64eb9df9088876f9": {
+      "text": "Demo Veri Paketi",
+      "hash": "d9c36bea98604d85eda7bffd27a1a125693e678d08132d7b64eb9df9088876f9"
+    },
+    "phrase.dbd417da03e1f50cf1c017280bdc73bfc741e6d4fb3da7b5fbe92e633f454d8e": {
+      "text": "İptal edildi",
+      "hash": "dbd417da03e1f50cf1c017280bdc73bfc741e6d4fb3da7b5fbe92e633f454d8e"
+    },
+    "phrase.dbdc7ca4739fc4d5d615f969c1cffb78ea2938640eea1bd8825111353ef8d96e": {
+      "text": "Yol tarifi ↗",
+      "hash": "dbdc7ca4739fc4d5d615f969c1cffb78ea2938640eea1bd8825111353ef8d96e"
+    },
+    "phrase.dbed5709c40b690fc5f52958d2485fd5028b723fa33eebd5538a79e819867b09": {
+      "text": "Odalar",
+      "hash": "dbed5709c40b690fc5f52958d2485fd5028b723fa33eebd5538a79e819867b09"
+    },
+    "phrase.dc19b3f4478e23942b94dcf6611fa67885521aca6be223eb8c237c87cf38d31e": {
+      "text": "Katalog bağlantısı kurulamadı. Yenile ile tekrar deneyin.",
+      "hash": "dc19b3f4478e23942b94dcf6611fa67885521aca6be223eb8c237c87cf38d31e"
+    },
+    "phrase.dc97d80584c1e4d4d59419cd229080c88188ae99fe0e9592e73927af001f7b5d": {
+      "text": "Google’da görüntüle ↗",
+      "hash": "dc97d80584c1e4d4d59419cd229080c88188ae99fe0e9592e73927af001f7b5d"
+    },
+    "phrase.dcd2f7f89bdc791d4ab80f26dc233e3fa4b00c92533419e7261ff72b65729e1f": {
+      "text": "Ana Sayfa",
+      "hash": "dcd2f7f89bdc791d4ab80f26dc233e3fa4b00c92533419e7261ff72b65729e1f"
+    },
+    "phrase.dd056e04549313e40b2817a4b0f4f30ef75a90a351b9946006936ac99c91ffb5": {
+      "text": "Ürün bilgileri karşılaştırması",
+      "hash": "dd056e04549313e40b2817a4b0f4f30ef75a90a351b9946006936ac99c91ffb5"
+    },
+    "phrase.dd0b6f695603ccad22d33a29b0d4b8a33931b099a1fa1763cda789fbb7de029a": {
+      "text": "TEKNİKEL / BAYİ HESABI",
+      "hash": "dd0b6f695603ccad22d33a29b0d4b8a33931b099a1fa1763cda789fbb7de029a"
+    },
+    "phrase.dd5b4492bae723c6106aa0f649a765ec411f4dda2da856aa36971706c32dcef4": {
+      "text": "Konaklama talebinizi iletin",
+      "hash": "dd5b4492bae723c6106aa0f649a765ec411f4dda2da856aa36971706c32dcef4"
+    },
+    "phrase.ddc0e302c002e0c08aca9cc93cbb14f66384f84b04110c28aee947bfa800f8eb": {
+      "text": "Yardımcı Asistan masaüstü uygulamasında deneme yapmak için hazırlanmış örnek veri paketidir. Gerçek müşteri, bayi hesabı, satış veya tahsilat bilgisi içermez.",
+      "hash": "ddc0e302c002e0c08aca9cc93cbb14f66384f84b04110c28aee947bfa800f8eb"
+    },
+    "phrase.ddc44cac4fe0ff5c99fa5771396d7943f7c4c33020fa3a796a90c29fa6dfa89a": {
+      "text": "Menü kategorileri",
+      "hash": "ddc44cac4fe0ff5c99fa5771396d7943f7c4c33020fa3a796a90c29fa6dfa89a"
+    },
+    "phrase.df115500233fa534174b76ec3f4d670a23eb819bdc6717ef327be665a846450a": {
+      "text": "Sohbet",
+      "hash": "df115500233fa534174b76ec3f4d670a23eb819bdc6717ef327be665a846450a"
+    },
+    "phrase.df1dd45cbb8165d94e3eddacccbff716ff3412cbe2ac07a0b1fb68c8332933ad": {
+      "text": "Mağaza",
+      "hash": "df1dd45cbb8165d94e3eddacccbff716ff3412cbe2ac07a0b1fb68c8332933ad"
+    },
+    "phrase.e1081b69d80ace5da2ce6de22003485eb8e3cdcc4e4cb9c1af91abbae629e475": {
+      "text": "E-posta",
+      "hash": "e1081b69d80ace5da2ce6de22003485eb8e3cdcc4e4cb9c1af91abbae629e475"
+    },
+    "phrase.e19617dbaa191d84cfc6d026cd8bf41c2e12ac52f127e0d466486c2a51be9e63": {
+      "text": "Firmanıza özel katalog ve siparişler",
+      "hash": "e19617dbaa191d84cfc6d026cd8bf41c2e12ac52f127e0d466486c2a51be9e63"
+    },
+    "phrase.e19e25e8c643ae57a932115cb4f684d8c6bafb872de7a6e5845664f7425395db": {
+      "text": "Olanaklar",
+      "hash": "e19e25e8c643ae57a932115cb4f684d8c6bafb872de7a6e5845664f7425395db"
+    },
+    "phrase.e1ac97fff826898667139164b6ccbf8a6dd677d1de78635be9de1f0f1fee5f63": {
+      "text": "Şifre",
+      "hash": "e1ac97fff826898667139164b6ccbf8a6dd677d1de78635be9de1f0f1fee5f63"
+    },
+    "phrase.e1b946c3b2f060c9d635cbfda384f566c409f875d8181c46159676ed434b12a0": {
+      "text": "Önceki gönderimin sonucu belirsiz. İletişim, teslimat ve not bilgileri tarayıcıda saklanmaz. Gerekirse aynı bilgileri yeniden girin; yeni sipariş kimliği oluşturulmaz.",
+      "hash": "e1b946c3b2f060c9d635cbfda384f566c409f875d8181c46159676ed434b12a0"
+    },
+    "phrase.e2899f86d56f2c2b3384e181baf64fcdf67cdb488597ff49525df4affb55f133": {
+      "text": "TEKNİKEL · DUYURU ",
+      "hash": "e2899f86d56f2c2b3384e181baf64fcdf67cdb488597ff49525df4affb55f133"
+    },
+    "phrase.e3a103f5b1d46e1f1cccfbf7b561ad010c1fa42e7c33a468dd546b04dfbf5b87": {
+      "text": "Gönderim sonucu belirsiz. Sepet korunuyor; aynı siparişi tekrar deneyin.",
+      "hash": "e3a103f5b1d46e1f1cccfbf7b561ad010c1fa42e7c33a468dd546b04dfbf5b87"
+    },
+    "phrase.e4082085aae19341a7ae2b3359adb2bea4add783f83838a6c3c634ab22bfa597": {
+      "text": "Vergi numarası (isteğe bağlı)",
+      "hash": "e4082085aae19341a7ae2b3359adb2bea4add783f83838a6c3c634ab22bfa597"
+    },
+    "phrase.e4cd114782b28cb81ae6bf242fd95b2518b4dc1ad33c711964b3b9cb37d1f8bd": {
+      "text": "Farklı para birimleri aynı siparişte kullanılamaz.",
+      "hash": "e4cd114782b28cb81ae6bf242fd95b2518b4dc1ad33c711964b3b9cb37d1f8bd"
+    },
+    "phrase.e4d3069c7060dc38d8f0f969ddd60e7b8ede5f436c11de8d4603deb569e63775": {
+      "text": "Şifreniz 12–72 bayt uzunluğunda olmalı.",
+      "hash": "e4d3069c7060dc38d8f0f969ddd60e7b8ede5f436c11de8d4603deb569e63775"
+    },
+    "phrase.e4d323880b8088749178599d4592df032a43df17c535f377f0c15871366adcba": {
+      "text": "Tarih ve kişi bilgilerinizi iletin",
+      "hash": "e4d323880b8088749178599d4592df032a43df17c535f377f0c15871366adcba"
+    },
+    "phrase.e4f4cf456403cef30be55c0e1cbe810ac0e337f35c1081dafa06aecdb5b539b9": {
+      "text": "Sol görseli uzaklaştır",
+      "hash": "e4f4cf456403cef30be55c0e1cbe810ac0e337f35c1081dafa06aecdb5b539b9"
+    },
+    "phrase.e5521fe367697ee87f77efe299bd96554d7978d6c6cd83ff80e418d56b011e4c": {
+      "text": "Tüm markalar",
+      "hash": "e5521fe367697ee87f77efe299bd96554d7978d6c6cd83ff80e418d56b011e4c"
+    },
+    "phrase.e75748d5a3b479aa51a049e4d64a1c63382016ba58c04d355470f18a132d1af9": {
+      "text": " görselleri",
+      "hash": "e75748d5a3b479aa51a049e4d64a1c63382016ba58c04d355470f18a132d1af9"
+    },
+    "phrase.e81935790fc65c7492030097bd1558490d60fb462889054adbb7eeb21dcc74ae": {
+      "text": "Bu oda bulunamadı veya artık yayında değil.",
+      "hash": "e81935790fc65c7492030097bd1558490d60fb462889054adbb7eeb21dcc74ae"
+    },
+    "phrase.e9191c49cb061b4d4bb89af2c42d6a3e3c330d89a87bf70eed5cbad5c3bab54c": {
+      "text": "İçe aktarma",
+      "hash": "e9191c49cb061b4d4bb89af2c42d6a3e3c330d89a87bf70eed5cbad5c3bab54c"
+    },
+    "phrase.e9790e66cb289140d1b24786c5b6c3eb1e1d0cd26e2164531fcaac83f5016a17": {
+      "text": "tek bir çalışma alanı.",
+      "hash": "e9790e66cb289140d1b24786c5b6c3eb1e1d0cd26e2164531fcaac83f5016a17"
+    },
+    "phrase.e99c5c5585a75bca1a62eb503ad419aeaec91d1f922e71ab8d97fac6b6608f8a": {
+      "text": "Oturumu kontrol et ↻",
+      "hash": "e99c5c5585a75bca1a62eb503ad419aeaec91d1f922e71ab8d97fac6b6608f8a"
+    },
+    "phrase.e9aa1f265ccc2d714c49beb0a5360eea78a2c25894eb317259857645d2977608": {
+      "text": "Bize ulaşın",
+      "hash": "e9aa1f265ccc2d714c49beb0a5360eea78a2c25894eb317259857645d2977608"
+    },
+    "phrase.ea605613ffd4f89327129a5a35b14d60c329c8c228ed23ce09b39ca514fcaf3e": {
+      "text": "Destek",
+      "hash": "ea605613ffd4f89327129a5a35b14d60c329c8c228ed23ce09b39ca514fcaf3e"
+    },
+    "phrase.eb26374c7c1d2d1a7e68cc1f6720cd815504117ca2b927197e45d9bbf03aebfc": {
+      "text": "Katalog bağlantısı kontrol ediliyor...",
+      "hash": "eb26374c7c1d2d1a7e68cc1f6720cd815504117ca2b927197e45d9bbf03aebfc"
+    },
+    "phrase.eb76a4871dd6dde8e73d0118d852fcfaf9843ce1375801b401a39f520b49e1bb": {
+      "text": "Facebook ile giriş",
+      "hash": "eb76a4871dd6dde8e73d0118d852fcfaf9843ce1375801b401a39f520b49e1bb"
+    },
+    "phrase.ebbfb819ef0fe805467feea988de732c67b866858ecbb0990e7232ad908c03db": {
+      "text": "Seçilen ürün artık bu yayında veya yetkinizde bulunmuyor.",
+      "hash": "ebbfb819ef0fe805467feea988de732c67b866858ecbb0990e7232ad908c03db"
+    },
+    "phrase.ec2d071ceea3e96d8899d77d98c948aea7df9417d05c0ca0551f3f9ad3f8ab43": {
+      "text": "Ürün / stok sor",
+      "hash": "ec2d071ceea3e96d8899d77d98c948aea7df9417d05c0ca0551f3f9ad3f8ab43"
+    },
+    "phrase.ec72901cbd02662a2fa8784ca3f88de22d221b52bff242fd19f20e75b00d8c55": {
+      "text": "Sol görsel inceleme alanı",
+      "hash": "ec72901cbd02662a2fa8784ca3f88de22d221b52bff242fd19f20e75b00d8c55"
+    },
+    "phrase.eddaef12a98620653b6d9dfad7599a6002d756f7ce25162b2ebf8dba1af4616e": {
+      "text": "YALNIZCA TEST",
+      "hash": "eddaef12a98620653b6d9dfad7599a6002d756f7ce25162b2ebf8dba1af4616e"
+    },
+    "phrase.ee508c514836cacb4e47e83474b5cbb203bc62637aaecd4fabbdae48975955ab": {
+      "text": "Lütfen sorunuzu yazın.",
+      "hash": "ee508c514836cacb4e47e83474b5cbb203bc62637aaecd4fabbdae48975955ab"
+    },
+    "phrase.ee615bc3e28bc6c5aa84214cd12c183a15a6e12100cf0686a01a5b48aa27022e": {
+      "text": "Yardımcı Asistan Desktop içinde Ayarlar → Veri Yönetimi → ZIP İçe Aktar adımını açın.",
+      "hash": "ee615bc3e28bc6c5aa84214cd12c183a15a6e12100cf0686a01a5b48aa27022e"
+    },
+    "phrase.ee82c5be690e687ffe79b38e18f89e99d690e25bfb8681161492034bca893768": {
+      "text": "Genel sohbet",
+      "hash": "ee82c5be690e687ffe79b38e18f89e99d690e25bfb8681161492034bca893768"
+    },
+    "phrase.ee86377c6aaf23fa3abdb4bed2486695d1e5d23ffe72acc0d1a2e6c2e143f100": {
+      "text": "Sunucu katalog toplamı: ",
+      "hash": "ee86377c6aaf23fa3abdb4bed2486695d1e5d23ffe72acc0d1a2e6c2e143f100"
+    },
+    "phrase.ee869825a3a0796ed6d89b96ab067c6dc6b1ef73da344b4e43e91f230830ae95": {
+      "text": "Önceki denemeyle aynı iletişim, teslimat ve not bilgilerini girin. Yeni bir sipariş kimliği oluşturulmadı.",
+      "hash": "ee869825a3a0796ed6d89b96ab067c6dc6b1ef73da344b4e43e91f230830ae95"
+    },
+    "phrase.eec1480469335e53b74ad50482bd3b5c13aea8e9b3908f5c6288e455185c2649": {
+      "text": "Sağ görsel filtresi",
+      "hash": "eec1480469335e53b74ad50482bd3b5c13aea8e9b3908f5c6288e455185c2649"
+    },
+    "phrase.eeefd4f4993c08fc5e33e52cc0c00eae2fb22358b7b50dc45eea92baddfbb91c": {
+      "text": "KATALOĞUMUZDAN",
+      "hash": "eeefd4f4993c08fc5e33e52cc0c00eae2fb22358b7b50dc45eea92baddfbb91c"
+    },
+    "phrase.ef0128065b4ddede9a97b2042cf70c73418305a3e4bde83feccda3cb3dad541d": {
+      "text": "Birim",
+      "hash": "ef0128065b4ddede9a97b2042cf70c73418305a3e4bde83feccda3cb3dad541d"
+    },
+    "phrase.ef9078b06f54e92f5dfd21463d5a50d31f1a607a0e23dfc8aba638ee7a8641ef": {
+      "text": " — görsel ",
+      "hash": "ef9078b06f54e92f5dfd21463d5a50d31f1a607a0e23dfc8aba638ee7a8641ef"
+    },
+    "phrase.efea220d3f8abd7c8db169616dc134ca2ef1992938729d2d9e37dbc381d48912": {
+      "text": "Katalog kontrol ediliyor...",
+      "hash": "efea220d3f8abd7c8db169616dc134ca2ef1992938729d2d9e37dbc381d48912"
+    },
+    "phrase.f1643d373a0db41972874ce75f99bd9ce2ee928c72dcf3012e7b660807a73f19": {
+      "text": "Bayi ürünleri",
+      "hash": "f1643d373a0db41972874ce75f99bd9ce2ee928c72dcf3012e7b660807a73f19"
+    },
+    "phrase.f177c66012d9b3427b7624ff6179da4825c29b9f9bd45e0316c260db01b59b30": {
+      "text": "Parça bulma",
+      "hash": "f177c66012d9b3427b7624ff6179da4825c29b9f9bd45e0316c260db01b59b30"
+    },
+    "phrase.f21a1e7556eb414e00a9dd006078210ae3f45baadc213499628df01a2ee9a7d3": {
+      "text": "Sorunuzu yazın",
+      "hash": "f21a1e7556eb414e00a9dd006078210ae3f45baadc213499628df01a2ee9a7d3"
+    },
+    "phrase.f30f9be4f129951eac7e7ea23169481318a28e3d765256b93e49c0d23a76e601": {
+      "text": "Tarih ve saat seçin",
+      "hash": "f30f9be4f129951eac7e7ea23169481318a28e3d765256b93e49c0d23a76e601"
+    },
+    "phrase.f3f8852cecd6b5995240a31fcc87e797d5f625dae956616133e21c0333611d25": {
+      "text": "Sol görseli yakınlaştır",
+      "hash": "f3f8852cecd6b5995240a31fcc87e797d5f625dae956616133e21c0333611d25"
+    },
+    "phrase.f43a65ad826800a3f3cef7798a0eaddfdf61b2b7a4b0b77d9832ba04974d32eb": {
+      "text": "Tümü",
+      "hash": "f43a65ad826800a3f3cef7798a0eaddfdf61b2b7a4b0b77d9832ba04974d32eb"
+    },
+    "phrase.f554be484c2be46edc15f3399442114507d1a893aebf1b698da090aa968f5342": {
+      "text": "Tüm cihazlardan çıkış yap",
+      "hash": "f554be484c2be46edc15f3399442114507d1a893aebf1b698da090aa968f5342"
+    },
+    "phrase.f55ab0a470195ca1c9f0bbf40dad4e512f021f97987f09a3772198b0cc595478": {
+      "text": "Kataloğu filtrele",
+      "hash": "f55ab0a470195ca1c9f0bbf40dad4e512f021f97987f09a3772198b0cc595478"
+    },
+    "phrase.f5a5bb248d4eab1c2a4f42171515dc9fb2928a5fd176175df329b91946590a67": {
+      "text": "Aramanızla eşleşen ürün bulunamadı.",
+      "hash": "f5a5bb248d4eab1c2a4f42171515dc9fb2928a5fd176175df329b91946590a67"
+    },
+    "phrase.f6b4ebc041a40919eae158f0a7b2b7a03a7bdc6ae73bf3156c71dad4ced3decf": {
+      "text": "İhtiyacınız olan işlemle devam edin.",
+      "hash": "f6b4ebc041a40919eae158f0a7b2b7a03a7bdc6ae73bf3156c71dad4ced3decf"
+    },
+    "phrase.f75870bddec60b5ae8d1d692213ad8a021464681dd0d14fd4dee244afdd765c7": {
+      "text": "Ürün seçin",
+      "hash": "f75870bddec60b5ae8d1d692213ad8a021464681dd0d14fd4dee244afdd765c7"
+    },
+    "phrase.f781266ba73133154c81e0584f2873026ff525d99a77f52b80b8ecdf8ab5d905": {
+      "text": "Ürün sepetinize eklendi.",
+      "hash": "f781266ba73133154c81e0584f2873026ff525d99a77f52b80b8ecdf8ab5d905"
+    },
+    "phrase.f856df3bd65fad266fa90cd3a6001b577a8ad1e3bb84e1f24bc6e1a7d8dea15f": {
+      "text": "doğru bağlantı.",
+      "hash": "f856df3bd65fad266fa90cd3a6001b577a8ad1e3bb84e1f24bc6e1a7d8dea15f"
+    },
+    "phrase.f857e3bb4870504b35039653b44da8304e0080cb317d76715d631807da366927": {
+      "text": "Kontrast",
+      "hash": "f857e3bb4870504b35039653b44da8304e0080cb317d76715d631807da366927"
+    },
+    "phrase.f87af8dd2ec2295de8a739d82980073fceeaeeaaa973208c00b8a5bf0a816727": {
+      "text": "Markalar",
+      "hash": "f87af8dd2ec2295de8a739d82980073fceeaeeaaa973208c00b8a5bf0a816727"
+    },
+    "phrase.f98804518f54eb4ef68161678c568febcba01da6900ddc49e65a665154fd9cfd": {
+      "text": "Sipariş alındı",
+      "hash": "f98804518f54eb4ef68161678c568febcba01da6900ddc49e65a665154fd9cfd"
+    },
+    "phrase.fa6906d76ee94d4e8d05a2424fb89005840522ab6dec0ee8055247424977169e": {
+      "text": "Telefon",
+      "hash": "fa6906d76ee94d4e8d05a2424fb89005840522ab6dec0ee8055247424977169e"
+    },
+    "phrase.faec3e4342c9f366106040feeb2e07fd1e9c7fd6edfdc85a0b73f1e85954194f": {
+      "text": " ürün artık katalogda yok; diğer ürünler güncel bayi fiyatlarıyla eklendi.",
+      "hash": "faec3e4342c9f366106040feeb2e07fd1e9c7fd6edfdc85a0b73f1e85954194f"
+    },
+    "phrase.fb1970b75938f3ff561cc761d44dd2228b47ac9331abf66ffaca384222dce192": {
+      "text": "← Kataloğa dön",
+      "hash": "fb1970b75938f3ff561cc761d44dd2228b47ac9331abf66ffaca384222dce192"
+    },
+    "phrase.fb69bdd5ce29ffbae5eedf5202bb38659a983361d568eabc8ca3728c20f6aab4": {
+      "text": "Katalogdan ürün ekleyerek başlayın.",
+      "hash": "fb69bdd5ce29ffbae5eedf5202bb38659a983361d568eabc8ca3728c20f6aab4"
+    },
+    "phrase.fbd445db61ffe820416cb8e3fdd8d9954bcab68eeb70d34d37509ba09e7c54b3": {
+      "text": "Farklı bilgiler renkle ve “Farklı” etiketiyle işaretlenir.",
+      "hash": "fbd445db61ffe820416cb8e3fdd8d9954bcab68eeb70d34d37509ba09e7c54b3"
+    },
+    "phrase.fc05bfcd8f79837500442f2bd78b92e4be17deab4070d687662456dd43141268": {
+      "text": "Yan yana",
+      "hash": "fc05bfcd8f79837500442f2bd78b92e4be17deab4070d687662456dd43141268"
+    },
+    "phrase.fc126871d43196f1648f89d805aa1c09a1fefccf9cb1d90268abbc7c3dd74a47": {
+      "text": "Görsel yükleniyor…",
+      "hash": "fc126871d43196f1648f89d805aa1c09a1fefccf9cb1d90268abbc7c3dd74a47"
+    },
+    "phrase.fc5945fdade2d8ffc612fb74c516c1be98452e182ab902fc198df399e2cfd31f": {
+      "text": "Kataloğa geç ↗",
+      "hash": "fc5945fdade2d8ffc612fb74c516c1be98452e182ab902fc198df399e2cfd31f"
+    },
+    "phrase.fcee602395c3d318f012da79854d25e03214b0fe86facaeccaaea87b8fbbdf98": {
+      "text": "Ürün Detayı",
+      "hash": "fcee602395c3d318f012da79854d25e03214b0fe86facaeccaaea87b8fbbdf98"
+    },
+    "phrase.fd207dda1fdc60037e0a9f06208cbcfdbcc1f53033bcded9abee9cf99c63c987": {
+      "text": "Ürün veya stok kodu ara",
+      "hash": "fd207dda1fdc60037e0a9f06208cbcfdbcc1f53033bcded9abee9cf99c63c987"
+    },
+    "phrase.fdb417b6fa6a542e211744eccdf7957a2353e02c9093c20416410f11de4b315d": {
+      "text": "Üst üste",
+      "hash": "fdb417b6fa6a542e211744eccdf7957a2353e02c9093c20416410f11de4b315d"
+    },
+    "phrase.fdf3c0bd02afddd32ba1d03a0bec917915fcc9e47c56e759db4d92d6918123e4": {
+      "text": "Ürünleri yeniden sepete ekle",
+      "hash": "fdf3c0bd02afddd32ba1d03a0bec917915fcc9e47c56e759db4d92d6918123e4"
+    },
+    "phrase.fefced24bd710381269401af7eea9aeb8da59c6e85a1765bdaddb288737ed21c": {
+      "text": "Yeni şifre",
+      "hash": "fefced24bd710381269401af7eea9aeb8da59c6e85a1765bdaddb288737ed21c"
+    },
+    "phrase.ff096e64864305db0ed9a64c14fe27a24e40be3d41d441652969170021bff1fa": {
+      "text": "179 ürün · 68 ürün fotoğrafı · 30 demo müşteri/bayi",
+      "hash": "ff096e64864305db0ed9a64c14fe27a24e40be3d41d441652969170021bff1fa"
+    },
+    "phrase.ff9bfe07c53ea902316ac12cf35218dbe2f2434089f588e617b4f51d8109b5b2": {
+      "text": "Ulaşım bilgileri",
+      "hash": "ff9bfe07c53ea902316ac12cf35218dbe2f2434089f588e617b4f51d8109b5b2"
+    },
+    "phrase.ffa2d0b3c6a5d27e5b8fde2c74474196b0abe0a860110cdc59c0fbecf51efc38": {
+      "text": "Oda Detayı",
+      "hash": "ffa2d0b3c6a5d27e5b8fde2c74474196b0abe0a860110cdc59c0fbecf51efc38"
+    }
+  }
+}

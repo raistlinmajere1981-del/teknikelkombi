@@ -7,11 +7,12 @@ return [
     'public_origin' => getenv('YA_SITE_PUBLIC_ORIGIN') ?: 'https://yardimciasistantoptanci.alwaysdata.net',
     'api_base_path' => '/yardimci-asistan',
     // Same-host public API read for one-worker/restricted PHP hosts.
-    'local_api_root' => '/home/yardimciasistantoptanci/www/yardimci-asistan',
+    'local_api_root' => getenv('YA_SITE_API_ORIGIN') ? null : '/home/yardimciasistantoptanci/www/yardimci-asistan',
     'php_cli_binary' => '/usr/bin/php',
     'base_path' => '',
     'favicon' => 'site/brand/favicon.svg',
     // Restrict/reorder existing pages; this cannot grant publication visibility.
     'page_order' => ['home', 'catalog', 'announcements', 'about', 'gallery', 'reviews', 'contact', 'account'],
     'hidden_pages' => [],
+    'extensions' => ['demo-content' => ['key' => 'theme.teknikel.demo.title', 'editorial' => true]],
 ];

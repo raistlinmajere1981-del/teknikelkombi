@@ -9,7 +9,7 @@ await mkdir(artifacts,{recursive:true});
 const logo=await readFile(new URL('../canonical/public/assets/site/brand/logo.webp',import.meta.url));
 const state=commerceState(),api=await commerceFixtureServer(state);
 const port=await new Promise(resolve=>{const server=net.createServer();server.listen(0,'127.0.0.1',()=>{const port=server.address().port;server.close(()=>resolve(port));});});
-const php=spawn('php',['-S',`127.0.0.1:${port}`,'-t','canonical/public'],{env:{...process.env,YA_SITE_API_ORIGIN:api.origin},stdio:'ignore'});
+const php=spawn('php',['-S',`127.0.0.1:${port}`,'-t',process.env.CANONICAL_DOCUMENT_ROOT || 'canonical/public'],{env:{...process.env,YA_SITE_API_ORIGIN:api.origin},stdio:'ignore'});
 let proxy,browser;const results=[];
 const fits=async page=>assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'horizontal overflow');
 try{

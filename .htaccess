@@ -10,9 +10,19 @@ Options -Indexes
   Header always set X-Frame-Options "SAMEORIGIN"
 </IfModule>
 RewriteEngine On
-RewriteRule ^(?:canonical|core|site|public|locales|tools|docs|config|storage|data-import|tests|node_modules|scripts)(?:/|$) - [F,L]
-RewriteRule ^yardimci-asistan/(?:config|data|lib|knowledge)(?:/|$) - [F,L]
-RewriteRule (^|/)\. - [F,L]
+# Retain legacy sources locally; never serve the retired custom widget/logic.
+RewriteRule ^assets/(?:assistant|i18n)(?:/|$) - [F,L,NC]
+RewriteRule ^assets/[^/]+\.(?:js|mjs|php)$ - [F,L,NC]
+RewriteRule ^(?:canonical|inc|core|site|public|locales|tools|docs|config|storage|data-import|tests|node_modules|scripts)(?:/|$) - [F,L,NC]
+RewriteRule ^yardimci-asistan/(?:config|data|lib|knowledge)(?:/|$) - [F,L,NC]
+RewriteRule (^|/)\. - [F,L,NC]
 <FilesMatch "(^\.|\.(?:md|sh|bak)$)">
   Require all denied
 </FilesMatch>
+
+# Existing route wrappers and the site-owned demo remain files. Unknown paths
+# enter common aliases/missing-page gates; the API namespace is never rewritten.
+RewriteCond %{REQUEST_URI} !^/yardimci-asistan(?:/|$)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]

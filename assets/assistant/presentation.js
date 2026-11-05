@@ -1,30 +1,44 @@
 import {t} from '../language.js';
+import {createCustomerRequestFlow} from './customer-request.js';
 
-// Presentation adapter for the original widget. Avatar, AI, request submission,
-// documents, idempotency and lifecycle continue to belong to widget.js.
+export function assistantPublication(view) {
+  const flows = view.flows, has = id => flows.some(flow => flow.id === id);
+  const surfaces = [];
+  if (view.sections.featured) surfaces.push('catalog');
+  if (has('reservation')) surfaces.push('accommodation');
+  if (has('table')) surfaces.push('food_service');
+  if (view.sections.qr_menu) surfaces.push('menu','qr_menu');
+  if (has('directions')) surfaces.push('directions');
+  return {businessName:view.name,publicSurfaces:surfaces,aiEnabled:has('chat'),
+    requestsEnabled:view.requests.enabled,requestTypes:view.requests.types,dealerApplicationEnabled:has('dealer'),
+    whatsappEnabled:has('whatsapp'),whatsappPhone:has('whatsapp') ? view.info.whatsapp : '',
+    address:view.contact.address,mapUrl:has('directions') ? view.contact.directions : ''};
+}
+
+// Original avatar, AI, reservations and dealer documents stay in widget.js.
+// The site owns date-free public information/product requests.
 export function initAssistantPresentation(storefront,root = document) {
   let view, widgetRoot, observer, lastConfig = '', activeTab = 'actions';
+  const customerRequests = createCustomerRequestFlow({root,getView:() => view,onBack:id => {
+    window.YardimciAsistanWidget?.open(); decorate();
+    widgetRoot?.querySelector(`[data-support-flow="${id}"]`)?.focus();
+  }});
   const el = (tag,value,cls) => { const node = root.createElement(tag); if (value !== undefined) node.textContent = t(value); if (cls) node.className = cls; return node; };
   function config() {
-    const surfaces = [];
-    if (view.sections.featured) surfaces.push('catalog');
-    if (view.sections.rooms) surfaces.push('accommodation');
-    if (view.sections.restaurant) surfaces.push('food_service');
-    if (view.sections.qr_menu) surfaces.push('menu','qr_menu');
-    if (view.contact.directions) surfaces.push('directions');
-    return {businessName:view.name,publicSurfaces:surfaces,aiEnabled:view.flows.some(flow => flow.id === 'chat'),requestsEnabled:view.flows.some(flow => flow.kind === 'request'),dealerApplicationEnabled:view.sections.dealer,
-      whatsappEnabled:!!view.contact.whatsapp,whatsappPhone:view.contact.whatsapp ? view.info.whatsapp : '',address:view.contact.address,mapUrl:view.contact.directions};
+    return assistantPublication(view);
   }
   function openFlow(id) {
     const flow = view?.flows.find(flow => flow.id === id); if (!flow) return;
     const widget = window.YardimciAsistanWidget;
-    if (flow.kind === 'request') widget?.openRequest(flow.requestType);
+    if (flow.siteForm) { widget?.open(); customerRequests.open(id,widgetRoot); }
+    else if (flow.kind === 'request') widget?.openRequest(flow.requestType);
     else if (flow.kind === 'widget') widget?.open({intent:flow.intent});
     else if (flow.kind === 'info') widget?.open({intent:'info',context:{question:flow.id === 'parts' ? t('Ürünle ilgili teknik destek almak istiyorum.') : '',sourcePath:location.pathname}});
     else if (flow.href) location.assign(flow.href);
   }
   function decorate() {
     if (!widgetRoot || !view) return;
+    customerRequests.reconcile();
     widgetRoot.hidden = !view.flows.length;
     const home = widgetRoot.querySelector('.ya-widget-home');
     if (home && home.dataset.publication !== JSON.stringify(view.flows)) {
@@ -37,6 +51,7 @@ export function initAssistantPresentation(storefront,root = document) {
           marker.setAttribute('aria-hidden','true'); copy.append(el('strong',flow.label),el('small',flow.description)); button.append(marker,copy,el('span','↗','publication-flow-arrow')); return button;
         }));
       }
+      home.querySelector('.publication-widget-tabs')?.remove();
       const tabs = el('div',undefined,'publication-widget-tabs'); tabs.setAttribute('role','tablist'); tabs.setAttribute('aria-label',t('Destek seçenekleri'));
       for (const [id,label] of [['actions','İşlemler'],['chat','Sohbet'],['contact','İletişim']]) {
         if (id === 'chat' && !view.flows.some(flow => flow.id === 'chat') || id === 'contact' && !view.flows.some(flow => ['whatsapp','directions'].includes(flow.id))) continue;

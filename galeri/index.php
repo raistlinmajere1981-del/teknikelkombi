@@ -1,1 +1,3 @@
-<?php require_once dirname(__DIR__).'/inc/layout.php'; te_public_page('gallery','Galeri'); ?>
+<?php // teknikel-site: transport only; common legacy aliases own query forwarding.
+declare(strict_types=1);
+require __DIR__ . '/../index.php';

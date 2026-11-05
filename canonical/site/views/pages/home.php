@@ -3,7 +3,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === __FILE__) { http_response_co
 $publication = $view['publication'];
 render_view('components/hero', $view, $site);
 ?>
-<?php if (count($view['pages']) === 1): $key = $view['status'] === 'ok' ? 'empty' : 'unavailable'; ?>
+<?php if (count(array_filter($view['pages'], static fn (array $page): bool => empty($page['editorial']))) === 1): $key = $view['status'] === 'ok' ? 'empty' : 'unavailable'; ?>
 <section class="empty-state" role="status"><h2><?= e(t($site, 'state.' . $key . '.title')) ?></h2><p><?= e(t($site, 'state.' . $key . '.text')) ?></p></section>
 <?php endif; ?>
 

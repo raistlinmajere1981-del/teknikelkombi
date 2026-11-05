@@ -3,9 +3,10 @@ import assert from 'node:assert/strict';
 import {projectPublication,publicationEndpoints} from '../assets/publication-model.js';
 import {mapEmbedUrl} from '../assets/public-info.js';
 import {catalogFrom} from '../assets/commerce.js';
+import {assistantPublication} from '../assets/assistant/presentation.js';
 import {publicProducts,roomPublication,tablePublication,menuPublication,reviewsPublication,campaignPublication} from './fixtures/api.mjs';
 
-const snapshot = () => ({business:{business:{display_name:'Published business',public_surfaces:['store','rooms','restaurant','qr_menu'],ai_enabled:true,requests_enabled:true,dealer_application_enabled:true,google_reviews_enabled:true,phone:'+905550000000',description:'Published description',gallery:[{url:'https://images.example.com/gallery.jpg',title:'Published image'}]}},catalog:{enabled:true,products:publicProducts,categories:[{id:'c1',name:'Pumps'}]},publications:{rooms:{enabled:true,rooms:roomPublication},tables:{enabled:true,tables:tablePublication},menu:menuPublication,marketing:{publications:[campaignPublication]},'google-reviews':reviewsPublication}});
+const snapshot = () => ({business:{business:{display_name:'Published business',public_surfaces:['store','rooms','restaurant','qr_menu'],ai_enabled:true,requests_enabled:true,request_types:['dealer_application','pension_reservation','restaurant_reservation'],dealer_application_enabled:true,google_reviews_enabled:true,phone:'+905550000000',description:'Published description',gallery:[{url:'https://images.example.com/gallery.jpg',title:'Published image'}]}},catalog:{enabled:true,products:publicProducts,categories:[{id:'c1',name:'Pumps'}]},publications:{rooms:{enabled:true,rooms:roomPublication},tables:{enabled:true,tables:tablePublication},menu:menuPublication,marketing:{publications:[campaignPublication]},'google-reviews':reviewsPublication}});
 test('one projection handles store, rooms, tables, menu, campaigns, reviews, contact and widget flows',() => {
   const view = projectPublication(snapshot());
   for (const key of ['store','featured','rooms','restaurant','qr_menu','campaigns','reviews','gallery','contact','dealer','support']) assert.equal(view.sections[key],true,key);
@@ -43,6 +44,27 @@ test('malformed optional arrays and explicitly disabled campaigns stay empty',()
 test('widget contains only direct assistant actions, never duplicate site navigation',() => {
   const value = snapshot(); value.business.business.ai_enabled = false; value.business.business.phone = ''; value.business.business.requests_enabled = false;
   const view = projectPublication(value); assert.equal(view.flows.some(flow => flow.id === 'parts'),false); assert.equal(view.flows.some(flow => flow.kind === 'link'),false); assert.equal(view.sections.support,false);
+});
+test('current backend flags keep dealer and WhatsApp on while AI is off; future toggles revoke only their flows',() => {
+  const value = {business:{ok:true,business:{display_name:'Test',public_surfaces:['store','directions'],
+    ai_enabled:false,requests_enabled:true,request_types:['dealer_application'],dealer_application_enabled:true,dealer_portal_enabled:true,
+    whatsapp_enabled:true,whatsapp:'905550000000'}},catalog:snapshot().catalog};
+  const check = () => { const view = projectPublication(value); return {view,config:assistantPublication(view)}; };
+  let result = check();
+  assert.deepEqual(result.view.flows.map(flow => flow.id),['dealer','whatsapp']);
+  assert.equal(result.config.dealerApplicationEnabled,true); assert.equal(result.config.whatsappEnabled,true); assert.equal(result.config.aiEnabled,false);
+  value.business.business.dealer_application_enabled = false;
+  result = check(); assert.deepEqual(result.view.flows.map(flow => flow.id),['whatsapp']);
+  assert.equal(result.config.dealerApplicationEnabled,false); assert.equal(result.config.requestsEnabled,true);
+  value.business.business.whatsapp_enabled = false;
+  result = check(); assert.deepEqual(result.view.flows,[]); assert.equal(result.config.whatsappEnabled,false); assert.equal(result.config.whatsappPhone,'');
+  value.business.business.ai_enabled = true;
+  assert.deepEqual(check().view.flows.map(flow => flow.id),['chat','parts']);
+  value.business.business.ai_enabled = false;
+  assert.deepEqual(check().view.flows,[]);
+  value.business = null;
+  result = check(); assert.deepEqual(result.view.flows,[]);
+  for (const key of ['aiEnabled','requestsEnabled','dealerApplicationEnabled','whatsappEnabled']) assert.equal(result.config[key],false,key);
 });
 test('catalog ignores explicitly unpublished/inactive records without altering accepted prices',() => {
   const value = catalogFrom({enabled:true,products:[publicProducts[0],{...publicProducts[1],published:false}],categories:[],delivery_methods:[]});

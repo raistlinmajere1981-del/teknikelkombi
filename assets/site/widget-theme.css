@@ -1,0 +1,27 @@
+/* Visual skin only. Canonical Nexa, gates, forms and event handlers remain owners. */
+#yardimci-asistan-widget { font-family:var(--site-font); right:auto; left:auto; inset-inline-end:18px; }
+#yardimci-asistan-widget .ya-widget-panel { width:min(420px,calc(100vw - 24px)); border:1px solid #d7dfe6; border-radius:8px; background:#f5f7f8; box-shadow:0 20px 64px #12283d33; }
+#yardimci-asistan-widget .ya-widget-header { background:#12283d; padding:16px 20px; }
+#yardimci-asistan-widget .ya-widget-identity { flex:1; min-width:0; }
+#yardimci-asistan-widget .ya-widget-header::after { display:none; }
+#yardimci-asistan-widget .ya-widget-title-copy strong { color:#fff; font-size:16px; }
+#yardimci-asistan-widget .ya-widget-title-copy small { color:#d7dfe6; }
+#yardimci-asistan-widget .ya-widget-content { padding:18px; }
+#yardimci-asistan-widget .ya-widget-welcome { background:transparent; padding:0 0 18px; border-block-end:1px solid #d7dfe6; border-radius:0; }
+#yardimci-asistan-widget .ya-widget-welcome h2 { color:#12283d; font-size:21px; }
+#yardimci-asistan-widget .ya-widget-welcome p { color:#526171; font-size:14px; }
+#yardimci-asistan-widget .ya-widget-actions { display:flex; flex-direction:column; gap:10px; }
+#yardimci-asistan-widget .ya-widget-action-card { background:#fff; border:1px solid #d7dfe6; border-radius:6px; padding:14px; min-height:72px; box-shadow:none; text-align:start; }
+#yardimci-asistan-widget .ya-widget-action-card:hover { transform:none; border-color:#c92134; background:#fff; }
+#yardimci-asistan-widget .ya-widget-action-copy strong { color:#12283d; font-size:14px; }
+#yardimci-asistan-widget .ya-widget-action-copy small { color:#526171; font-size:12px; }
+#yardimci-asistan-widget .ya-widget-action-icon { color:#12283d; background:#edf1f4; }
+#yardimci-asistan-widget .ya-widget-action-arrow { color:#c92134; }
+#yardimci-asistan-widget .ya-widget-primary-action { background:#c92134; color:#fff; border-radius:5px; }
+#yardimci-asistan-widget .ya-widget-action-card:focus-visible { outline:3px solid #c92134; outline-offset:3px; }
+#yardimci-asistan-widget .ya-widget-button { border-radius:8px; border-color:#d7dfe6; box-shadow:0 8px 30px #12283d26; }
+#yardimci-asistan-widget .ya-widget-launcher-copy strong { color:#12283d; }
+@media(max-width:760px) {
+  #yardimci-asistan-widget { inset-inline-end:8px; right:auto; left:auto; bottom:8px; }
+  #yardimci-asistan-widget .ya-widget-panel { width:min(420px,calc(100vw - 16px)); max-height:calc(100dvh - 16px); border-radius:8px; }
+}

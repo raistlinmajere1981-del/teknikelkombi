@@ -1,3 +1,3 @@
-<?php require_once dirname(__DIR__).'/inc/layout.php'; te_header('detail','Ürün Detayı'); ?>
-<div class="container detail-page"><div class="crumb"><a href="/"><?= te_t('Anasayfa') ?></a> / <a href="/magaza/"><?= te_t('Katalog') ?></a> <?= te_t('/ Ürün') ?></div><div data-product-detail></div><p role="status" data-detail-state><?= te_t('Ürün bilgileri yükleniyor...') ?></p><a href="/magaza/" class="text-link"><?= te_t('← Kataloğa dön') ?></a></div>
-<?php te_footer(); ?>
+<?php // teknikel-site: transport only; common legacy aliases own query forwarding.
+declare(strict_types=1);
+require __DIR__ . '/../index.php';

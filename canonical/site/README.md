@@ -1,50 +1,42 @@
-# Teknikel — yerel canonical 0.4.0 kurulumu
+# Teknikel — active canonical 0.6.1 skin (Chunk 4A)
 
-Eski site depo kökünde korunur. Bu dizinin üstündeki `canonical/public/`, yeni
-PHP document root'udur. Eski köke veya backend/data/media alanlarına taşıma yapılmadı.
+Repository root `index.php` is the hosting adapter for `canonical/public/index.php`.
+Document root is the repository root. `canonical/` remains HTTP-private; PHP includes
+it locally. Existing business route wrappers enter common `core/legacy.php`, which
+redirects to the canonical query page and evaluates publication gates there.
 
-Depo kökünden:
+Site-owned: `site/config.php`, `site/views/**`, `locales/tr.json`, and
+`public/assets/site/**`. Common files are installed only by the explicit updater:
 
-```bash
-php -S 127.0.0.1:8099 -t canonical/public
+```sh
+node scripts/update-canonical.mjs --check /home/raistlin/YardimciWorkspace/YardimciAsistan/web-site-template
+node scripts/update-canonical.mjs --apply /home/raistlin/YardimciWorkspace/YardimciAsistan/web-site-template
+node scripts/sync-public-assets.mjs --apply
+node scripts/sync-public-assets.mjs --check
 ```
 
-API origin'i ayarlanmadan tema güvenli “yayın okunamıyor” durumuyla açılır. Gerçek
-kurulumda `YA_SITE_API_ORIGIN`, ayrı çalışan mevcut public HTTP API origin'idir.
-Tarayıcı için `/yardimci-asistan/` aynı origin'de mevcut modül sahibine bağlanmalıdır;
-yalnız uzak SSR origin'i hesap, medya, widget ve sepeti bağlamaz. Tek PHP worker'ının
-kendi API isteğini beklemesine yol açmayın. Secret, müşteri verisi veya test verisi
-bu kuruluma eklenmez.
+Run these from the repository root. Neither builds nor verification repair assets.
+The updater checks the unmodified upstream three-way planner, stages all changes,
+preserves site-owned bytes, validates the manifest and swaps directories with
+rollback. Previous installations remain in ignored `.test-artifacts/canonical-updates`.
+The asset installer stages and renames the three explicit public namespaces with
+rollback; a multi-directory crash-atomic exchange is not claimed.
 
-Teknikel ayrışması yalnız `site/`, `locales/tr.json`, `public/assets/site/`
-altındadır. Layout, core, widget, portal ve storefront dağıtım kopyası byte-identical
-canonical kaynaklardır. `README.md` üstteki ortak şablon belgesidir; bu belge site sahibine aittir.
+`YA_SITE_API_ORIGIN` selects a separate public API fixture for host tests and disables
+the production same-host CLI transport. Without that override, the existing explicit
+hosting public-GET transport remains configured. Browser mutations/media still use
+same-origin `/yardimci-asistan`; no backend source is packaged or changed.
 
-```bash
-node canonical/tools/manifest.mjs
-node tests/canonical-theme.mjs
-node tests/canonical-commerce.mjs
-```
+`/demo-icerik/` redirects to the site-owned `demo-content` editorial extension. Its
+existing ZIP and all original source photos remain intact. Its text and the previous
+site phrase catalog are preserved in the single Turkish canonical catalog, ID
+`teknikel-site`; only Desktop publication supplies target languages.
 
-İkinci komut izole TEST HTTP fixture'ı, gerçek PHP ve yerel Chromium/Brave kullanır;
-canlı veriye gitmez. Tarayıcı bulunamazsa `PLAYWRIGHT_CHROMIUM_EXECUTABLE` ile yolu
-belirtin. Fixture sunucuları test bitince kapanır; görüntüler
-`.test-artifacts/canonical/` altına yazılır. Fixture ürün görsellerinde kullanılan
-logo yalnız görüntü çözümleme testi içindir, gerçek ürün fotoğrafı değildir.
+Product detail adds a presentation-only canonical `request.general` trigger for an
+already published public product ID. The common widget owns validation, transport,
+idempotency and dates (none for general_info), independently of AI. Private product
+request hooks and the old advanced overlay/pinch/filter comparison have not been
+ported. Shared canonical comparison remains available.
 
-İkinci turda tek Hesabım/profil, ortak sipariş liste/detayı, filtreli tek katalog,
-ürün detayı ve tek sepet/checkout bağlandı. Bayi fiyatı backend'in yetkili katalog
-cevabından gelir; ziyaretçi mod seçmez. Özel fiyatlar storage'a yazılmaz; sepet
-taslağı yalnız hesap kapsamında ürün kimliği/miktar tutar ve her açılışta doğrulanır.
-Hesap backend'inde yeni `api/account/receipt.php` salt okunur sonucu kurtarır;
-canonical kopya API modülünü içermez, gerçek kurulumda bu endpoint de mevcut olmalıdır.
-
-Eski `/urun/`, `/sepet/`, `/magaza/`, `/katalog/`, `/markalar/`, `/hesabim/` ve
-`/bayi/` bağlantıları sabit hedefli canonical alias'ları kullanır; filtre/dil/action
-parametreleri korunur. Production sunucuda bu yollar index fallback'ine bağlanmalıdır.
-Eski sitenin kendisinde hiçbir route değişmedi. Katalog içi iki ürün karşılaştırması,
-yakınlaştırma/sürükleme/döndürme ve cihaz fotoğrafını tarayıcıda açma vardır; eski
-overlay/pinch/bağlı hareket/filtre araçlarının tamamı taşınmış sayılmaz.
-
-Ana depodaki güncel teslim: `artifacts/site-redesign-plan/teknikel-ikinci-tur.md`.
-Gerçek backend/medya/hesap callback ve HTTPS kurulumu henüz canlı doğrulanmadı.
+See the root README and milestone handoff for exact local/host acceptance commands.
+Not live-ready: browser, real backend callback/session/receipt and HTTPS checks remain.

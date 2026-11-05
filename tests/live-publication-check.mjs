@@ -1,0 +1,35 @@
+import assert from 'node:assert/strict';
+import {chromium,expect} from '@playwright/test';
+const base='https://yardimciasistantoptanci.alwaysdata.net';
+const browser=await chromium.launch({headless:true,executablePath:'/usr/bin/brave',args:['--no-sandbox','--disable-gpu']});
+try {
+ const context=await browser.newContext();
+ await context.addCookies([{name:'teknikel_language',value:'en',url:base,httpOnly:true},{name:'teknikel_site_language',value:'en',url:base}]);
+ const page=await context.newPage(); page.setDefaultTimeout(15000);
+ const errors=[];page.on('pageerror',error=>errors.push(error.message));
+ await page.goto(base+'/?lang=en',{waitUntil:'domcontentloaded',timeout:30000});
+ await expect(page.locator('html')).toHaveAttribute('lang','tr');
+ await expect(page.locator('.language-chooser')).toBeHidden();
+ await expect(page.locator('.language-chooser [data-language]')).toHaveCount(0);
+ const source=await page.request.get(base+'/?resource=translation-source');
+ assert.equal(source.status(),200);
+ const catalog=await source.json();assert.equal(catalog.id,'teknikel-site');assert.ok(Object.keys(catalog.entries).length>300);
+ const old=await page.request.get(base+'/assets/i18n/en.json');
+ assert.notEqual(old.status(),200);
+ const business=await (await page.request.get(base+'/yardimci-asistan/api/business.php')).json();
+ const catalogRes=await (await page.request.get(base+'/yardimci-asistan/api/catalog.php')).json();
+ await page.waitForFunction(() => typeof window.YardimciAsistanWidget?.open === 'function');
+ await page.evaluate(() => window.YardimciAsistanWidget.open());
+ await expect.poll(async()=>await page.locator('#yardimci-asistan-widget .ya-widget-actions [data-support-flow]').count(),{timeout:20000}).toBeGreaterThanOrEqual(2);
+ const flows=await page.locator('#yardimci-asistan-widget [data-support-flow]').evaluateAll(nodes=>nodes.map(node=>node.dataset.supportFlow));
+ assert.equal(flows.includes('dealer'),true);
+ assert.equal(flows.includes('whatsapp'),true);
+ assert.equal(flows.includes('chat'),false);
+ assert.equal(flows.includes('parts'),false);
+ assert.ok(flows.every(value=>['dealer','whatsapp','directions'].includes(value)),JSON.stringify(flows));
+ assert.deepEqual(business.localization.target_languages,[]);
+ assert.equal(business.business.ai_enabled,false);assert.equal(business.business.dealer_application_enabled,true);assert.equal(business.business.whatsapp_enabled,true);
+ assert.equal(catalogRes.products.length,28);
+ assert.deepEqual(errors,[]);
+ console.log('LIVE_PASS',{locale:await page.locator('html').getAttribute('lang'),chooserVisible:false,sourceEntries:Object.keys(catalog.entries).length,oldDictionaryStatus:old.status(),flows,productCount:catalogRes.products.length});
+} finally {await browser.close();}

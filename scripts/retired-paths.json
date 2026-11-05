@@ -1,0 +1,26 @@
+{
+  "format": 1,
+  "identity": "teknikel-site",
+  "policy": "Exact code files only; remote hash equality and ownership preflight required. Preview only; no retirement executor approved.",
+  "files": {
+    "assets/account.js": "b96e015640042558c7066c44868b15a8ec4a755b45b17172eb9d7eafc6c2276b",
+    "assets/assistant/customer-request.js": "7a1068ebb10bafb2dc9766f86229c53a1758ee32fc4b2be6afb44ac385d4074d",
+    "assets/assistant/presentation.js": "bd19cc1e4de3d5dbdad09f21afcded606e8ded2ceb45898eb9a873424206e5c8",
+    "assets/assistant/widget.js": "8201732679ebe95c11ff84c645c01933531182078233e98dae7a11618d22dd00",
+    "assets/commerce.js": "df33497175e23b22526448a7331594ffd2e32caa232c49887a68dc43b3e10cb0",
+    "assets/compare.js": "06183fbe83d760c44f7eacb41458c3af035221bd6784ce55a5b954b8b76052f6",
+    "assets/comparison-model.js": "bacaa4bfe1cf316612c9d974b78c0655fbce8cff43f9c7fbadde83fdf51f3691",
+    "assets/homepage.js": "0b780f8ea257ad5a55f45536a8b3fd09e9e63e559d7da981e3d85acd34a19713",
+    "assets/language.js": "22c3874148dd57eb680a1e7ab15d41363f08c9d90a1325afd90428f020160c77",
+    "assets/marketing.js": "06c5483e210bf1a09415178403c7e7eac40d4ade455ee8194bfb25382184289f",
+    "assets/public-info.js": "3adbfffa0e84704b92a4bb746420d91f9ed7a8d8e46c769ba03508e1a368ddfa",
+    "assets/public-pages.js": "d42e850a493d9978f9c14544071ce08cb78ac5bae324dfbcc93eb6677b33cb0c",
+    "assets/publication-model.js": "b3303aa5eaee8572efc0efa7da68412dd6c1c54f64d3ef04c1c9bb4ad41406d7",
+    "assets/publications.js": "9c4abdab735060e5f80b7d6e3d7e70400d358118923eabab8ce026e8c7eac820",
+    "assets/rooms.js": "da55927bd9280f31fbe9f6b7a73648f70cf31e4b77ab7f4ffcae5bb7ef6036cf",
+    "assets/site.js": "15ce01fd72564bc5f32418c429fd83e6b554f9940c3c74abf80b177aa611c8ee",
+    "assets/storefront.js": "2840095d944266629b62a24d52f8f70a2de5739753c0269f507fa0f05ed09b0f",
+    "inc/language.php": "6436600259b93930cef5d877e0b0e2921a96cd2f7f7ce9f4266de1dccf75e511",
+    "inc/layout.php": "81c85fe7613e1a1ca57987c8a48cbe5ac2d1624e5eac2a2b33e75071552a3455"
+  }
+}

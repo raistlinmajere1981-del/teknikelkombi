@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {expect} from '@playwright/test';
+import {localizationMetadata,sourceKey} from './fixtures/localization.mjs';
 
 export async function storefrontScenarios({scenario,base,login,fits}) {
   const visit = async (page,path = '/') => { await page.goto(base + path); await page.waitForLoadState('domcontentloaded'); };
@@ -243,21 +244,25 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
 
 
   await scenario('TR EN dil seçimi kalıcıdır; yayın metinleri İngilizceyse kullanılır',390,async ({page,backend}) => {
-    const metadata = translations => ({version:1,source_language:'tr',target_languages:['en'],translations});
+    const metadata = translations => localizationMetadata(translations,{'Mağaza':'Store','Tüm kategoriler':'All categories','Ürün adı, stok kodu veya model ara...':'Search published products'});
     backend.business = {id:'',display_name:'TEST İşletme',about_text:'Türkçe işletme açıklaması',email:'test@example.com',address:'İstanbul Üsküdar',phone:''};
     backend.businessLocalization = metadata({business:{'published-business':{en:{about_text:'English business details'}}}});
     backend.catalogLocalization = metadata({catalog_category:{c1:{en:{name:'Pumps'}}},catalog_product:{p1:{en:{name:'Test translated pump'}}}});
     backend.menuLocalization = metadata({menu_category:{food:{en:{name:'Foods'}}},menu_product:{meal:{en:{name:'Soup'}}}});
     backend.publicSurfaces = ['store','qr_menu'];backend.menuEnabled = true;
     await visit(page,'/magaza/?lang=en&category=c1');
-    assert.equal(await page.locator('html').getAttribute('lang'),'en');
+    await expect(page.locator('html')).toHaveAttribute('lang','en');
+    await expect(page.locator('html')).toHaveAttribute('dir','ltr');
+    assert.deepEqual(await page.evaluate(async () => { const {language,locale} = await import('/assets/language.js'); return {language,locale}; }),{language:'en',locale:'en-GB'});
     await expect(page.getByRole('heading',{level:1})).toHaveText('Store');
+    await expect(page.locator('#global-search')).toHaveAttribute('placeholder','Search published products');
+    await expect(page.locator('[data-product-grid]')).toContainText('100.00');
     await expect(page.locator('header .language-chooser [data-language="en"]')).toHaveAttribute('aria-current','true');
     await expect(page.getByRole('heading',{name:'Test translated pump',exact:true})).toBeVisible();
     await expect(page.locator('[data-category-nav]')).toContainText('Pumps');
     assert.equal(new URL(page.url()).searchParams.get('category'),'c1');
     await visit(page,'/bayi/');
-    assert.equal(await page.locator('html').getAttribute('lang'),'en','cookie persistence');
+    await expect(page.locator('html')).toHaveAttribute('lang','en');
     await expect(page.locator('[data-category-menu] summary')).toContainText('All categories');
     await visit(page,'/hakkimizda/');
     await expect(page.locator('[data-public-content]')).toContainText('English business details');
@@ -265,9 +270,90 @@ export async function storefrontScenarios({scenario,base,login,fits}) {
     await expect(page.locator('[data-menu-list]')).toContainText('Soup');
     await expect(page.locator('header .language-chooser [data-language="tr"]')).toBeVisible();
     await page.locator('header .language-chooser [data-language="tr"]').click();
-    assert.equal(await page.locator('html').getAttribute('lang'),'tr');
+    await expect(page.locator('html')).toHaveAttribute('lang','tr');
     await expect(page.locator('[data-menu-list]')).toContainText('TEST Çorba');
     await fits(page,390);
+  });
+  await scenario('dil yayını kapalı: eski URL ve çerezler Türkçe HTML veya seçiciyi değiştiremez',390,async ({page,context,backend}) => {
+    await context.addCookies([
+      {name:'teknikel_language',value:'en',url:base,httpOnly:true},
+      {name:'teknikel_site_language',value:'en',url:base}
+    ]);
+    backend.businessLocalization = {...localizationMetadata({}, {'Mağaza':'Unauthorized Store'}),target_languages:[],languages:[{code:'tr',locale:'tr-TR'}]};
+    await visit(page,'/magaza/?q=Bosch&lang=en#filter');
+    await expect(page.locator('[data-product-grid] .product-card')).toHaveCount(1);
+    await expect(page.locator('html')).toHaveAttribute('lang','tr');
+    await expect(page.locator('.language-chooser')).toBeHidden();
+    await expect(page.locator('.language-chooser')).toHaveAttribute('inert','');
+    await expect(page.locator('[data-language]')).toHaveCount(0);
+    await expect(page.getByRole('heading',{level:1})).toHaveText('Mağaza');
+    assert.equal((await context.cookies()).some(cookie => cookie.name === 'teknikel_language'),false,'HttpOnly cookie retired by PHP');
+    assert.deepEqual(await page.evaluate(async () => { const {language,locale} = await import('/assets/language.js'); return {language,locale}; }),{language:'tr',locale:'tr-TR'});
+    assert.equal(new URL(page.url()).hash,'#filter');
+    backend.businessFailure = true;
+    await page.reload();
+    await expect(page.locator('.language-chooser')).toBeHidden();
+    await expect(page.locator('html')).toHaveAttribute('lang','tr');
+  });
+  await scenario('dil yayını açılana kadar SSR Türkçe; kaynak hash ve yalnız site metni doğrulanır',390,async ({page,context,backend}) => {
+    backend.business = {display_name:'Mağaza',description:'Tüm kategoriler'};
+    backend.public[0].name = 'Mağaza';
+    backend.businessLocalization = localizationMetadata({}, {'Mağaza':'App Store','Tüm kategoriler':'App categories','Demo Veri Paketi':'Published demo package'});
+    let release;
+    const gate = new Promise(resolve => { release = resolve; });
+    await context.route('**/yardimci-asistan/api/business.php',async route => { await gate; return route.fallback(); });
+    await page.goto(base+'/magaza/?category=c1&lang=en#filter',{waitUntil:'domcontentloaded'});
+    await expect(page.locator('html')).toHaveAttribute('lang','tr');
+    await expect(page.locator('.language-chooser')).toBeHidden();
+    await expect(page.getByRole('heading',{level:1})).toHaveText('Mağaza');
+    release();
+    await expect(page.getByRole('heading',{level:1})).toHaveText('App Store');
+    await expect(page.locator('[data-business-name]').first()).toHaveText('Mağaza');
+    await expect(page.locator('[data-business-description]').first()).toHaveText('Tüm kategoriler');
+    await expect(page.locator('[data-product-grid] .product-card h3').first()).toHaveText('Mağaza');
+    await expect(page.locator('footer a[href="/demo-icerik/"]')).toHaveText('Published demo package ↓');
+    await page.evaluate(() => { history.replaceState(null,'','?category=c1&q=Mağaza&lang=en#latest'); });
+    await page.locator('.language-chooser [data-language="tr"]').click();
+    await expect(page.locator('html')).toHaveAttribute('lang','tr');
+    assert.equal(new URL(page.url()).searchParams.get('q'),'Mağaza');
+    assert.equal(new URL(page.url()).searchParams.get('category'),'c1');
+    assert.equal(new URL(page.url()).hash,'#latest');
+    backend.businessLocalization.site_catalog.entries[sourceKey('Mağaza')].hash = '0'.repeat(64);
+    await visit(page,'/magaza/?lang=en');
+    await expect(page.locator('html')).toHaveAttribute('lang','en');
+    await expect(page.getByRole('heading',{level:1})).toHaveText('Mağaza');
+    await expect(page.locator('[data-category-menu] summary')).toContainText('App categories');
+    backend.businessLocalization.target_languages = [];
+    await page.locator('[data-reload]').click();
+    await expect(page.locator('html')).toHaveAttribute('lang','tr');
+    await expect(page.locator('.language-chooser')).toBeHidden();
+    await expect(page.locator('[data-category-menu] summary')).toContainText('Tüm kategoriler');
+  });
+  await scenario('widget yayın değişimlerini izler: bayi WhatsApp ve AI bağımsız kapanır, API hatası boş kalır',390,async ({page,backend}) => {
+    backend.business = {display_name:'TEST Widget',ai_enabled:false,requests_enabled:true,request_types:['dealer_application'],dealer_application_enabled:true,
+      dealer_portal_enabled:true,whatsapp_enabled:true,whatsapp:'905550000000'};
+    backend.publicSurfaces = ['store','directions'];
+    await visit(page,'/magaza/');
+    await page.waitForFunction(() => typeof window.YardimciAsistanWidget?.open === 'function');
+    await page.evaluate(() => window.YardimciAsistanWidget.open());
+    const cards = page.locator('#yardimci-asistan-widget .ya-widget-actions [data-support-flow]');
+    await expect(cards).toHaveCount(2);
+    await expect(cards.nth(0)).toHaveAttribute('data-support-flow','dealer');
+    await expect(cards.nth(1)).toHaveAttribute('data-support-flow','whatsapp');
+    const refresh = async () => { await page.locator('[data-reload]').evaluate(button => button.click()); };
+    backend.business.dealer_application_enabled = false; await refresh();
+    await expect(cards).toHaveCount(1); await expect(cards).toHaveAttribute('data-support-flow','whatsapp');
+    backend.business.whatsapp_enabled = false; await refresh();
+    await expect(cards).toHaveCount(0);
+    await expect(page.locator('#yardimci-asistan-widget')).toBeHidden();
+    backend.business.ai_enabled = true; await refresh();
+    await expect(cards).toHaveCount(2);
+    await expect(page.locator('#yardimci-asistan-widget')).toBeVisible();
+    backend.business.ai_enabled = false; await refresh();
+    await expect(cards).toHaveCount(0);
+    backend.businessFailure = true; await refresh();
+    await expect(cards).toHaveCount(0);
+    await expect(page.locator('#yardimci-asistan-widget')).toBeHidden();
   });
   await scenario('eski katalog adresi Mağazaya yönlenir; filtre korunur; widget ve harita kullanılabilir',390,async ({page,backend}) => {
     backend.business = {display_name:'TEST Yayın',phone:'',email:'test@example.com',address:'Test İstanbul',

@@ -21,6 +21,9 @@ const dealerMode = page === 'account';
 const dealerPanel = dealerMode && new URLSearchParams(location.search).get('panel') === 'dealer';
 const publicationPage = ['restaurant','qr-menu','rooms','room','contact','about','gallery','reviews','announcements','brands'].includes(page);
 const storefront = createStorefront();
+// Build client controls after business localization, so their explicit t() copy
+// and formatting use the published selection on the first render too.
+await storefront.load();
 const RETAIL_KEY = 'teknikel.retail.v1';
 const LOCK_KEY = 'teknikel.dealer.signed-out';
 const EVENT_KEY = 'teknikel.dealer.visibility';
@@ -52,7 +55,7 @@ initAssistantPresentation(storefront);
 storefront.subscribe(({view}) => {
   renderHomepage(view);
   const meta = $('[data-public-description]'); if (meta) meta.content = view.description;
-  const title = $('[data-page-title]'); if (title) document.title = [title.dataset.pageTitle,view.name].filter(Boolean).join(' | ');
+  const title = $('[data-page-title]'); if (title) document.title = [t(title.dataset.pageTitle),view.name].filter(Boolean).join(' | ');
 });
 let retailCart;
 const checkoutValues = {};

@@ -9,7 +9,7 @@ await mkdir(artifacts,{recursive:true});
 const logo=await readFile(new URL('../canonical/public/assets/site/brand/logo.webp',import.meta.url));
 const state=freshState(),api=await fixtureServer(state);
 const port=await new Promise(resolve=>{const s=net.createServer();s.listen(0,'127.0.0.1',()=>{const p=s.address().port;s.close(()=>resolve(p));});});
-const php=spawn('php',['-S',`127.0.0.1:${port}`,'-t','canonical/public'],{env:{...process.env,YA_SITE_API_ORIGIN:api.origin,YA_SITE_PUBLIC_ORIGIN:'https://teknikel.test'},stdio:'ignore'});
+const php=spawn('php',['-S',`127.0.0.1:${port}`,'-t','.'],{env:{...process.env,YA_SITE_API_ORIGIN:api.origin,YA_SITE_PUBLIC_ORIGIN:'https://teknikel.test'},stdio:'ignore'});
 let proxy,browser;const results=[];
 const reset=()=>Object.assign(state,freshState());
 const fits=async page=>assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'horizontal overflow');

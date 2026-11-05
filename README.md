@@ -1,5 +1,60 @@
 # Teknikel — Perakende satış ve bayi portalı
 
+## Active entry — Chunk 4A, local checkpoint (2026-11-04)
+
+The root now includes `canonical/public/index.php`. All existing business routes enter
+common canonical aliases and publication gates. Teknikel logo/theme and the demo ZIP
+remain. The old root JS/widget/request implementation is retained locally for review,
+blocked by `.htaccess`, and excluded from the new explicit deployment package. The
+historical implementation notes below describe that retained code, not the active path.
+
+Common update and public installation are explicit; checks do not repair files:
+
+```sh
+node scripts/update-canonical.mjs --check /home/raistlin/YardimciWorkspace/YardimciAsistan/web-site-template
+node scripts/update-canonical.mjs --apply /home/raistlin/YardimciWorkspace/YardimciAsistan/web-site-template
+node scripts/sync-public-assets.mjs --apply
+node scripts/sync-public-assets.mjs --check
+node --test --test-isolation=none tests/canonical-cutover.test.mjs
+php tests/canonical-entry.php
+bash scripts/deploy-site.sh --dry-run
+```
+
+`--dry-run` is now entirely local: it verifies and stages a 164-file allowlisted site
+package with hashes/identity/version receipt under `.test-artifacts/`; it never opens
+SSH or HTTP. `--yes` is a separate remote deployment, not authorized or run in Chunk 4A.
+It does not ship the API, data, keys, original legacy JS or private import fixtures.
+No build or test silently updates canonical or mirrored assets.
+
+Run these browser checks on the host, from this repository (they create isolated local
+PHP/API fixtures; they do not use the live API):
+
+```sh
+node tests/canonical-live-entry.mjs
+node tests/canonical-theme.mjs
+CANONICAL_DOCUMENT_ROOT=. TEST_FILTER='one canonical catalog' node tests/canonical-commerce.mjs
+CANONICAL_DOCUMENT_ROOT=. TEST_FILTER='authenticated reload recovers' node tests/canonical-commerce.mjs
+CANONICAL_DOCUMENT_ROOT=. TEST_FILTER='guest uncertain retry' node tests/canonical-commerce.mjs
+CANONICAL_DOCUMENT_ROOT=. TEST_FILTER='logout and cross-account' node tests/canonical-commerce.mjs
+CANONICAL_DOCUMENT_ROOT=. TEST_FILTER='legacy aliases' node tests/canonical-commerce.mjs
+```
+
+Set `PLAYWRIGHT_CHROMIUM_EXECUTABLE=/path/to/chromium` if `/usr/bin/brave` is unavailable.
+The new live-entry smoke proves the actual root, 16 business aliases, query validation,
+OFF gates, AI-OFF product requests, one widget, source-only language discovery, demo
+and asset URLs at 390/1440px. It does not prove Apache `.htaccess` behavior or real
+Secure cookies/backend integration. Original customer tests are retained; broad legacy
+`npm test`/`npm run check` have not been migrated to the new active DOM/source catalog.
+No browser suite was run in the sandbox, which cannot bind localhost.
+
+**Not live-ready.** Chunk 4B must run the host checks above; reconcile original legacy
+tests with the active canonical DOM and strict query rejection; verify real API account
+callback/session/private-price isolation/checkout/receipt behavior and Apache private
+path denial; review 320/768px and the advanced legacy comparison gap. Keep old source
+until that equivalence review is complete. No staging data was reset and no deployment,
+commit, push, broad npm test or full verification was run.
+
+
 Mevcut lacivert/kırmızı/beyaz PHP tasarımını kullanan e-ticaret pilotu. Veri ve fiyat otoritesi Yardımcı Asistan Desktop'tır; site yalnız aynı origin üzerindeki `/yardimci-asistan/api/` yayınlarını ve sipariş uç noktalarını tüketir. Ödeme alınmaz; talepler işletmenin onayını bekler.
 
 ## Ortak publication/view-model
@@ -150,7 +205,7 @@ Site değişiklikleri yayına çıkmadan önce npm run check ve npm test ile do�
 
 ## TR / EN ve canlı Teknikel arayüzü
 
-Teknikel sitesinin üstündeki TR / EN seçiminden sonra tercih, aynı sitenin teknikel_language çerezinde tutulur. Siteye ait Türkçe/İngilizce metinler assets/i18n/en.json kaynağındadır. Uygulamadan İngilizce çevirisi yayınlanan ürün, kategori, oda, restoran, galeri ve kampanya metinleri public API localization kaydından gösterilir. Çevrilmemiş alanlar özgün dilde kalır; ürün kimliği, fiyat, stok ve bayi özel sipariş alanları değişmez.
+Site ilk HTML yanıtını daima Türkçe verir; Çoklu Dil uygulamada kapalıysa dil seçicisi gizlidir. Türkçe kaynak ifadeler `assets/i18n/tr.json` üzerinden `GET /?resource=translation-source` ile masaüstüne sunulur. Dil seçenekleri yalnız public `business.localization.target_languages` yayınından açılır. Türkçe kaynak, hash ve yer tutucuları eşleşen `site_text` alanları yayınlanmışsa çeviri uygulanır; sabit İngilizce sözlük yoktur. Ziyaretçinin tercihleri yalnız izinli diller için `teknikel_site_language` istemci çerezinde saklanır, eski `teknikel_language` HttpOnly çerezi temizlenir. Ürün, kategori, oda, restoran, galeri ve kampanya yayınlarının çevirileri aynı localization sözleşmesinden gelir. Eksik çeviriler Türkçe kalır; ürün kimliği, fiyat, stok ve bayi özel sipariş alanları değişmez. Web'e bağlandıktan sonra site kaynak metinlerini Dil Yönetimi'ne almak için gerekirse yeniden Bağlan yapılır.
 
 Mağaza tek public katalog sayfasıdır: /magaza/. Eski /katalog/ adresi arama, kategori, marka ve dil parametrelerini koruyarak Mağaza'ya geçer. Bağımsız bayi girişi ve siparişler korunur.
 
@@ -158,10 +213,24 @@ Mağaza tek public katalog sayfasıdır: /magaza/. Eski /katalog/ adresi arama, 
 
 Site ortak Yardımcı Asistan widget dosyasını assets/assistant/widget.js içinde barındırır. Orijinal Yardımcı Asistan demo widget runtime ve avatarı korunur; AI, talep ve WhatsApp durumları public business API tarafından belirlenir. Widget sitenin html lang alanını kullanarak TR / EN dilini takip eder. Yeni widget yayınlarında yukarıdaki publication köprüsü de korunarak kanonik demo kaynağıyla eşlenmelidir.
 
+Widget **İşlemler** sekmesindeki **Bilgi talebi oluştur**, `business.requests_enabled === true` ve yayınlanmış `request_types` içinde `general_info` gerektirir. **Ürün / stok sor** ayrıca açık public mağaza ve gerçek yayınlanmış ürün gerektirir; `price_question` varsa bu türle, yalnız `general_info` varsa o türle gönderir. İki işlem AI kapalıyken de çalışır. AI sohbet/teknik destek kartları ayrı **Sohbet** sekmesindedir ve yalnız AI açıkken görünür. Bayi ve rezervasyon kartları da kendi talep türlerinin yayın iznini gerektirir; eksik veya hatalı tür listesi izin vermez. Widget `requestsEnabled` değeri bayi kartından değil yayınlanmış müşteri talebi bayrağından alınır.
+
+Tarihsiz genel/ürün formları `assets/assistant/customer-request.js` içinde siteye aittir ve mevcut widget panelinde açılır. Ad soyad, geçerli telefon ve soru zorunludur; ürün talebinde yayınlanmış ürün seçimi de zorunludur. Seçilen ürün kimliği/adı `context` içinde, ürün adı/stok kodu ayrıca `message` içinde gönderilir. Formlar aynı origin `/yardimci-asistan/api/request.php` adresine resmi JSON şemasıyla (`source: web_form`, şemanın gerektirdiği `guest_count: 1`) POST eder; tarih/saat alanı ve AI çağrısı içermez. Gönderim yalnız geçerli `ok: true` ve `request_id` yanıtıyla başarılı sayılır. Hata/zaman aşımı sonrası aynı içerikle tekrar gönderim aynı `idempotency_key` kullanır; değişen içerik yeni anahtar alır. Başarıdan sonra yeni talep yeni anahtar kullanır. Kişisel bilgiler ve anahtarlar browser storage'a yazılmaz. Yenileme başlarken eski yayın temizlenir, açık form kaldırılır; 403 yanıtı açık formdaki tekrar gönderimi durdurur. Sunucu her gönderimde yetkiyi ayrıca doğrular.
+
+Yeni site formları bundle'ın rezervasyon gönderim işaretçisi `data-ya-form` kullanmaz; eski adaptörün yanlış tür/tarih işlemesine girmez. `widget.js` ve mevcut bayi belge yükleme akışı değiştirilmemiştir. Geri, Tamam, başlıktaki kapatma düğmesi ve Escape ile gezinilir. Kontroller 390 px ve masaüstü için düzenlenmiştir.
+
 Kontrol: npm run check, npm test, gerçek HTTPS site rotaları, tarayıcı TR/EN, sosyal ikon, harita ve widget. Bu web dosyası yayını web modülü verilerini veya bayi oturumlarını sıfırlamaz.
 
 ## Bu tur doğrulama kapsamı
 
 `npm run check` PHP ve tüm site/widget JavaScript sözdizimini kontrol eder. `npm test` birim testleri ve fixture API ile 320/390/768/1440 px tarayıcı regresyonlarını çalıştırır. `tests/experience.mjs` ürün/fotoğraf ve ürün/ürün, iki galeriden seçim, zoom/pan/pinch, bindirme/şeffaflık/filtre/sıfırlama, yayın kaldırma, fiyat yetkisi, kaynak/bellek temizliği, upload yapılmaması, widget sekmeleri/orijinal avatar ve tüm ana sayfa modüllerini kapsar.
 
+`tests/customer-request.test.mjs` AI kapalı izinlerini, fiyat türünü ve genel bilgiye dönüşü, eksik işletme/izin kaldırmayı, şema/doğrulama ve idempotency tekrarlarını kapsar. `tests/customer-requests.mjs` mevcut 80 tarayıcı senaryosuna 6 yerel mock senaryosu ekler: 390/1440 px gerçek form açma, zorunlu alanlar, JSON POST gövdesi/ürün bağlamı, 503 ve kesilen bağlantı sonrası aynı anahtarla tekrar, başarı, sekmeler/klavye gezinmesi, bekleyen yayın yenilemesinde eski formun kaldırılması, AI bağımsızlığı ve 403. Yalnız bu testler için `TEST_FILTER='no-AI requests' node tests/smoke.mjs` kullanılabilir. Testler canlı HTTPS talebi göndermez; canlı dağıtım ayrı onaylanmalıdır.
+
 `npm run test:accounts` komşu canonical repo'nun izole fixture'ında gerçek PHP/API/yerel SMTP kullanarak hesap/EN/mobil, oturum yenileme, bayi yetkisi ve Online Satış kapatma/açmayı kontrol eder. Canlı sunucuya istek/sipariş göndermez; gerçek production e-posta sağlayıcısı, Android cihazdan oturum düşmesi veya canlı HTTPS kanıtı değildir.
+
+## Teknikel demo ZIP (2026-11-04)
+
+Staging sitesinde `/demo-icerik/` bağlantısı footer'da yer alır; ZIP dosyası `/assets/downloads/teknikel-demo-verileri.zip` üzerinden indirilir. Kaynak, Yardımcı Asistan'ın isteğe bağlı `d-teknikel` backup-v2 paketidir. 179 Teknikel katalog ürünü, 68 orijinal ürün fotoğrafı (35 fotoğraflı ürün), 25 kategori, 30 sentetik müşteri/bayi, 28 ilk yayına hazır ürün, 4 test siparişi, stok, tedarikçi ve veresiye örnekleri içerir. Gerçek ürün adları/SKU'lar ve kaynak fiyat anlık görüntüsü korunur; stok, satın alma maliyeti, bayi fiyatı ve vergi oranı sentetik test değerleridir. Orijinal fotoğraflar açık lisanslı varsayılmaz. Demo başlangıcında teslimat açık ve işletmeden teslim etkin, ancak Aras Kargo kimlik bilgisi olmadığı için **kargo ile gönderim kapalıdır**. Bu ayar testi tamamlanmadan etkinleştirilmez.
+
+Yeniden üretim: Yardımcı Asistan depo kökünde `node scripts/demo-data/generate-demo-data.mjs --only d`, ardından `node scripts/demo-data/verify-demo-data.mjs`. Oluşan geçerli ZIP'i aynı site indirme yoluna kopyalayıp `node --test tests/demo-package.test.mjs` ve `bash scripts/deploy-site.sh --dry-run` doğrulamasından sonra yalnız staging site deploy'u yapılır. Site yayını `/yardimci-asistan` modülüne veya mevcut uygulama verisine müdahale etmez; ZIP indirmek web veritabanını beslemez. Desktop'ta **Ayarlar → Veri Yönetimi → ZIP İçe Aktar**, ardından yedeği **Geri Yükle** gerekir. Gerçek bayi web hesapları/davetler bu ZIP'te bulunmaz; ayrı doğrulanır.
