@@ -15,7 +15,7 @@ const upstream=process.env.YA_TEMPLATE_SOURCE || join(repo,'../YardimciAsistan/w
 const json=path=>JSON.parse(readFileSync(path,'utf8'));
 const manifest=json(join(repo,'canonical/template-manifest.json'));
 test('all 76 installed common hashes equal incoming release and baseline',()=>{
-  assert.equal(manifest.template_version,'0.7.1'); assert.equal(Object.keys(manifest.common).length,76);
+  assert.equal(manifest.template_version,'0.7.2'); assert.equal(Object.keys(manifest.common).length,76);
   assert.deepEqual(inventory(join(repo,'canonical')),manifest.common);
   assert.deepEqual(manifest.common,json(join(upstream,'template-manifest.json')).common);
   assert.deepEqual(inventory(upstream),manifest.common);

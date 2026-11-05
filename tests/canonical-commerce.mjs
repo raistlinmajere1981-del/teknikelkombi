@@ -27,8 +27,24 @@ try{
   const catalog=async page=>{await page.goto(base+'/?page=catalog');await expect(page.locator('#product-grid article').first()).toBeVisible();};
   const add=async page=>page.locator('#product-grid article').first().getByRole('button',{name:'Sepete ekle',exact:true}).click();
   const checkout=async page=>{await add(page);await page.locator('#open-checkout').click();await page.locator('#buyer-phone').fill('+905550000000');};
-  await scenario('public catalog remains browsable when account refresh returns 503',async page=>{
+  await scenario('unconfigured optional account allows guest retail checkout',async page=>{
     await page.route('**/api/account/refresh.php',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({ok:false,code:'account_unconfigured'})}));
+    await page.goto(base+'/?page=catalog');
+    await expect(page.locator('#product-grid article').first()).toBeVisible();
+    await expect.poll(()=>page.evaluate(()=>window.YaAccount?.state.status)).toBe('guest');
+    await expect(page.locator('#product-grid article')).toHaveCount(state.products.length);
+    await expect(page.locator('#product-grid article').first().locator('.price')).toContainText('100,00');
+    await expect(page.locator('#catalog-state')).toBeHidden();
+    await checkout(page);
+    await expect(page.locator('#cart-count')).toHaveText('1');
+    await page.locator('#buyer-name').fill('TEST Misafir');
+    await page.locator('#submit-order').click();
+    await expect(page.locator('#success')).toBeVisible();
+    assert.equal(state.requests.filter(call=>call.path==='order').length,1);
+    assert.equal(state.requests.filter(call=>call.path==='dealer/order').length,0);
+  });
+  await scenario('ambiguous account outage keeps checkout closed without verified guest',async page=>{
+    await page.route('**/api/account/refresh.php',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({ok:false,code:'temporary_unavailable'})}));
     await page.goto(base+'/?page=catalog');
     await expect(page.locator('#product-grid article').first()).toBeVisible();
     await expect.poll(()=>page.evaluate(()=>window.YaAccount?.state.status)).toBe('unavailable');
@@ -37,6 +53,20 @@ try{
     await expect(page.locator('#product-grid article').first().getByRole('button',{name:'Sepete ekle'})).toBeDisabled();
     await expect(page.locator('#open-checkout')).toBeDisabled();
   });
+  await scenario('expired dealer session falls back to retail without private prices',async page=>{
+    await catalog(page);
+    await expect(page.locator('#product-grid article').first().locator('.price')).toContainText('80,00');
+    await add(page);
+    await page.route('**/api/account/session.php',route=>route.fulfill({status:401,contentType:'application/json',body:JSON.stringify({ok:false,code:'login_required'})}));
+    await page.route('**/api/account/refresh.php',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({ok:false,code:'account_unconfigured'})}));
+    await page.evaluate(()=>window.YaAccount.refresh());
+    await expect.poll(()=>page.evaluate(()=>window.YaAccount?.state.status)).toBe('guest');
+    await expect(page.locator('#product-grid article').first().locator('.price')).toContainText('100,00');
+    await expect(page.locator('#product-grid')).not.toContainText('80,00');
+    await expect(page.locator('#cart-count')).toHaveText('0');
+    await expect(page.locator('#product-grid article').first().getByRole('button',{name:'Sepete ekle'})).toBeEnabled();
+    assert.ok(state.requests.filter(call=>call.path==='dealer/catalog').length>0);
+  },{identity:'a'});
   await scenario('failed private account refresh never leaves private prices visible',async page=>{
     await catalog(page);
     await expect(page.locator('#product-grid article').first().locator('.price')).toContainText('80,00');
