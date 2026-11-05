@@ -17,7 +17,7 @@ try {
   for(let i=0;i<80;i++){try{await fetch(`http://127.0.0.1:${port}/`);break;}catch{await new Promise(r=>setTimeout(r,50));}}
   proxy=await proxyServer(`http://127.0.0.1:${port}`,api.origin);const base=proxy.origin;
   browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || '/usr/bin/brave',args:['--no-sandbox','--disable-gpu']});
-  const scenario=async(name,run,options={})=>{reset();const context=await browser.newContext({viewport:{width:390,height:900},reducedMotion:'reduce',...options});
+  const scenario=async(name,run,options={})=>{if(process.env.TEST_FILTER&&!name.includes(process.env.TEST_FILTER))return;reset();const context=await browser.newContext({viewport:{width:390,height:900},reducedMotion:'reduce',...options});
     await context.route('**/*',route=>/^https:\/\/images\.example\.com\/TEST-.*\.webp$/.test(route.request().url())?route.fulfill({contentType:'image/webp',body:logo}):new URL(route.request().url()).origin===base?route.continue():route.abort());
     const page=await context.newPage();try{await run(page);results.push(name);console.log('PASS',name);}finally{await context.close();}};
   await scenario('SSR publication gates',async page=>{
@@ -58,6 +58,81 @@ try {
     state.surfaces=['store','directions'];state.business={about_text:'TEST Yayınlanmış işletme açıklaması',phone:'+90 555 000 00 00',email:'test@example.test',address:'TEST Yayın Adresi',whatsapp_enabled:true,whatsapp:'+90 555 000 00 00',google_reviews_enabled:true,dealer_application_enabled:true,requests_enabled:true,request_types:['general_info','dealer_application'],gallery:[{id:'TEST-media-1',kind:'photo',url:'https://images.example.com/TEST-media-1.webp',title:'TEST Logo medya 1'},{id:'TEST-media-2',kind:'photo',url:'https://images.example.com/TEST-media-2.webp',title:'TEST Logo medya 2'}]};
     state.announcements=[{id:'TEST-announcement',published:true,channel:'website',title:'TEST Yayınlanmış Duyuru',text:'TEST yayın metni'}];state.reviews=[{author:'TEST Yorumcu',text:'TEST Yayınlanmış yorum',published:true}];
   };
+  for(const width of [390,1440])await scenario('compact technical widget and three-stage dealer application '+width,async page=>{
+    fullPublication();state.business.ai_enabled=true;
+    await page.setViewportSize({width,height:900});await page.goto(base+'/');
+    await page.locator('[data-ya-open]').click();
+    const widget=page.locator('#yardimci-asistan-widget');
+    await expect(widget.locator('.ya-widget-welcome .ya-widget-kicker,.ya-widget-welcome > p')).toBeHidden();
+    await expect(widget.locator('.ya-widget-actions button')).toHaveCount(6);
+    const noScroll=async label=>{
+      const layout=await widget.evaluate(root=>({content:root.querySelector('.ya-widget-content')?.scrollHeight,view:root.querySelector('.ya-widget-content')?.clientHeight}));
+      assert.ok(layout.content<=layout.view+2,label+' should not need inner scrolling '+JSON.stringify(layout));
+      await fits(page);
+    };
+    await noScroll('home');
+    await widget.locator('[data-ya-request-type="dealer_application"]').click();
+    const form=widget.locator('.teknikel-application');
+    await expect(form).toBeVisible();
+    await expect(widget.locator('.teknikel-form-progress-item')).toHaveCount(3);
+    await expect(form.locator('[data-teknikel-step="1"]')).toBeVisible();
+    await expect(form.locator('[data-teknikel-step="2"]')).toBeHidden();
+    await form.locator('[data-teknikel-step="1"] button.teknikel-form-next').click();
+    await expect(form.locator('[data-teknikel-step="1"]')).toBeVisible();
+    await form.locator('[name="company_name"]').fill('TEST Teknikel Bayi');
+    await form.locator('[name="authorized_person"]').fill('TEST Yetkili');
+    await form.locator('[name="customer_phone"]').fill('+905551112233');
+    await form.locator('[name="email"]').fill('test@example.test');
+    await form.locator('[data-teknikel-step="1"] button.teknikel-form-next').click();
+    await expect(form.locator('[data-teknikel-step="2"]')).toBeVisible();
+    await noScroll('dealer step 2');
+    await form.locator('[name="tax_office"]').fill('TEST Vergi');
+    await form.locator('[name="message"]').fill('Bosch ve Ferroli parçaları');
+    await form.locator('[data-teknikel-step="2"] button.teknikel-form-next').click();
+    await expect(form.locator('[data-teknikel-step="3"]')).toBeVisible();
+    await expect(form.locator('.teknikel-file-selection')).toHaveText('Henüz dosya seçilmedi');
+    await expect(form.locator('.teknikel-file-button')).toHaveText('Dosya seç');
+    await form.locator('input[data-document-picker]').setInputFiles({name:'bayi-belgesi.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF-1.4 test')});
+    await expect(form.locator('.teknikel-file-selection')).toHaveText('1 dosya seçildi');
+    await expect(form.locator('[data-document-list]')).toContainText('bayi-belgesi.pdf');
+    await noScroll('dealer documents');
+    await page.screenshot({path:`${artifacts}teknikel-dealer-documents-${width}.png`,fullPage:true});
+    await form.locator('[data-teknikel-step="3"] button.teknikel-form-previous').click();
+    await expect(form.locator('[name="tax_office"]')).toHaveValue('TEST Vergi');
+    await form.locator('[data-teknikel-step="2"] button.teknikel-form-previous').click();
+    await expect(form.locator('[name="company_name"]')).toHaveValue('TEST Teknikel Bayi');
+    await widget.locator('button.teknikel-widget-back').first().click();
+    await widget.getByRole('button',{name:/Ürün \/ stok sor/}).click();
+    await expect(widget.locator('textarea[name="message"]')).toHaveAttribute('placeholder',/Bosch U072 Condense/);
+    await noScroll('technical quick question');
+    await page.screenshot({path:`${artifacts}teknikel-widget-form-${width}.png`,fullPage:true});
+  });
+  await scenario('dealer application submit keeps the canonical API handler',async page=>{
+    fullPublication();
+    const submissions=[];
+    await page.route('**/yardimci-asistan/api/request.php',async route=>{
+      submissions.push({method:route.request().method(),body:route.request().postData()});
+      await route.fulfill({status:201,contentType:'application/json',body:JSON.stringify({ok:true,request_id:'TEST-dealer-request'})});
+    });
+    await page.goto(base+'/');
+    await page.locator('[data-ya-open]').click();
+    await page.locator('[data-ya-request-type="dealer_application"]').click();
+    const form=page.locator('#yardimci-asistan-widget .teknikel-application');
+    await form.locator('[name="company_name"]').fill('TEST Yetkili Bayi');
+    await form.locator('[name="authorized_person"]').fill('TEST Yetkili');
+    await form.locator('[name="customer_phone"]').fill('+905551112233');
+    await form.locator('[name="email"]').fill('test@example.test');
+    await form.locator('[data-teknikel-step="1"] .teknikel-form-next').click();
+    assert.equal(submissions.length,0);
+    await form.locator('[name="tax_office"]').fill('TEST Vergi');
+    await form.locator('[data-teknikel-step="2"] .teknikel-form-next').click();
+    assert.equal(submissions.length,0);
+    await form.locator('[data-teknikel-step="3"] button[type="submit"]').click();
+    await expect.poll(()=>submissions.length).toBe(1);
+    assert.equal(submissions[0].method,'POST');
+    assert.match(submissions[0].body,/dealer_application/);
+    assert.match(submissions[0].body,/TEST Yetkili Bayi/);
+  });
   await scenario('published social icons and separate account action at desktop and mobile',async page=>{
     fullPublication();
     state.business.social_links=[
