@@ -1,4 +1,4 @@
-# Teknikel — canonical 0.7.5 site presentation
+# Teknikel — canonical 0.7.6 site presentation
 
 Repository root `index.php` is the hosting adapter for `canonical/public/index.php`.
 Document root is the repository root. `canonical/` remains HTTP-private; PHP includes
