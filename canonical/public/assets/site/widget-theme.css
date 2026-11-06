@@ -136,8 +136,17 @@
 #yardimci-asistan-widget .teknikel-file-label:focus-within .teknikel-file-button {outline:2px solid #c92134;outline-offset:2px;}
 #yardimci-asistan-widget .teknikel-file-selection {color:#52697c;font-size:11px;min-width:0;overflow-wrap:anywhere;flex:1;}
 #yardimci-asistan-widget .teknikel-file-hint {display:block;width:100%;color:#6b7d8a;font-size:10px;line-height:1.35;}
-#yardimci-asistan-widget .ya-widget-button {border-radius:10px;border-color:#d7dfe6;box-shadow:0 8px 30px #12283d26;}
-#yardimci-asistan-widget .ya-widget-launcher-copy strong {color:#12283d;}
+/* Site-only launcher: a larger Nexa figure and readable two-line caption. */
+#yardimci-asistan-widget .ya-widget-button {
+  gap:11px; min-height:74px; min-width:184px; padding:7px 18px 7px 9px;
+  border-radius:13px; background:#172d42; color:#fff;
+  border:1px solid #344c60; box-shadow:0 8px 30px #12283d38;
+}
+#yardimci-asistan-widget .ya-widget-button:hover {background:#213c54;}
+#yardimci-asistan-widget .ya-widget-button .ya-widget-launcher-avatar {width:64px;height:64px;}
+#yardimci-asistan-widget .ya-widget-launcher-copy {gap:3px;}
+#yardimci-asistan-widget .ya-widget-launcher-copy strong {color:#fff;font-size:16px;font-weight:800;line-height:1.2;}
+#yardimci-asistan-widget .ya-widget-launcher-copy small {color:#d0e0eb;font-size:13px;font-weight:600;line-height:1.2;}
 @media (max-width:760px) {
   #yardimci-asistan-widget {inset-inline-end:8px;right:auto;left:auto;bottom:8px;}
   #yardimci-asistan-widget .ya-widget-panel {width:min(426px,calc(100vw - 16px));max-height:calc(100dvh - 16px);}
@@ -182,4 +191,11 @@
 #yardimci-asistan-widget .ya-widget-content .teknikel-widget-back:hover {color:#c92134;border-color:#d7aab4;background:#fff7f8;}
 #yardimci-asistan-widget .teknikel-form-footer > .ya-widget-primary-action {
   font-size:13px;line-height:1.25;padding-inline:9px;white-space:normal;
+}
+
+@media (max-width:430px) {
+  #yardimci-asistan-widget .ya-widget-button {min-height:66px;min-width:160px;padding:5px 13px 5px 7px;}
+  #yardimci-asistan-widget .ya-widget-button .ya-widget-launcher-avatar {width:55px;height:55px;}
+  #yardimci-asistan-widget .ya-widget-launcher-copy strong {font-size:15px;}
+  #yardimci-asistan-widget .ya-widget-launcher-copy small {font-size:12px;}
 }

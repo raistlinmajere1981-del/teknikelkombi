@@ -45,6 +45,24 @@ try {
     if(width<768){const toggle=page.locator('[data-menu-toggle]');await toggle.focus();await page.keyboard.press('Enter');await expect(toggle).toHaveAttribute('aria-expanded','true');await page.keyboard.press('Escape');await expect(toggle).toHaveAttribute('aria-expanded','false');}
     await page.screenshot({path:`${artifacts}home-${width}.png`,fullPage:true});await page.goto(base+'/?page=catalog');await expect(page.locator('#product-grid article')).toHaveCount(2);await fits(page);await page.screenshot({path:`${artifacts}catalog-${width}.png`,fullPage:true});
   });
+  for(const width of [1024,1440])await scenario('two-row Teknikel header and concise home preview '+width,async page=>{
+    await page.setViewportSize({width,height:900});await page.goto(base+'/');
+    const positions=await page.evaluate(()=>{
+      const nav=document.querySelector('.teknikel-header .main-navigation').getBoundingClientRect();
+      const tools=document.querySelector('.teknikel-header .header-tools').getBoundingClientRect();
+      const logo=document.querySelector('.teknikel-header .site-name').getBoundingClientRect();
+      return {navTop:nav.top,toolsBottom:tools.bottom,logoBottom:logo.bottom};
+    });
+    assert.ok(positions.navTop>=positions.toolsBottom-1,'navigation must have its own row '+JSON.stringify(positions));
+    assert.ok(positions.navTop>=positions.logoBottom-1,'logo must sit above navigation');
+    await expect(page.locator('.technical-product.is-preview')).toHaveCount(2);
+    await expect(page.locator('.technical-product.is-preview .price')).toHaveCount(2);
+    const copy=await page.locator('.technical-product.is-preview').allTextContents();
+    assert.ok(copy.every(text=>!text.includes('Yalnız test verisi:')),'long descriptions must stay out of homepage cards');
+    await expect(page.locator('#yardimci-asistan-widget .ya-widget-launcher-avatar')).toHaveCSS('width','64px');
+    await expect(page.locator('#yardimci-asistan-widget .ya-widget-launcher-copy strong')).toHaveCSS('font-size','16px');
+    await fits(page);
+  });
   await scenario('no JavaScript preserves SSR and navigation',async page=>{await page.goto(base+'/');await expect(page.locator('.teknikel-hero')).toBeVisible();await expect(page.locator('#main-navigation')).toBeVisible();await expect(page.locator('#catalog-preview')).toContainText('TEST Bosch Pompa');await fits(page);},{javaScriptEnabled:false});
   await scenario('published RTL language and stale hash Turkish fallback',async page=>{
     const source=await (await fetch(base+'/?resource=translation-source')).json();
