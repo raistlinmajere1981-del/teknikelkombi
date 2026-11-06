@@ -70,9 +70,9 @@ if (!empty($view['publication']['features']['requests'])
 
         <section id="product-detail" class="content-card" hidden tabindex="-1" aria-labelledby="product-detail-title"></section>
         <section id="comparison-panel" class="content-card" hidden tabindex="-1" aria-labelledby="comparison-title"></section>
-        <div id="product-grid" class="product-grid" aria-busy="true">
-          <?php foreach (array_slice($view['publication']['products'], 0, 18) as $record) render_view('components/product-card', ['record' => $record], $site); ?>
-        </div>
+        <!-- Product cards have one owner: Teknikel catalog.js. Avoid a transient
+             server-rendered legacy card grid before the current catalog loads. -->
+        <div id="product-grid" class="product-grid" aria-busy="true"></div>
         <nav id="catalog-pagination" class="section-heading" aria-label="<?= e(t($site, 'catalog.pagination')) ?>" hidden>
           <button id="catalog-prev" class="quiet" type="button" aria-controls="product-grid"><?= e(t($site, 'catalog.previous')) ?></button>
           <p id="catalog-page-status" role="status" aria-live="polite"></p>

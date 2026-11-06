@@ -40,6 +40,24 @@ try {
   await scenario('all actions off hides launcher',async page=>{state.requests=false;await page.goto(base+'/');await expect(page.locator('[data-ya-open]')).toBeHidden();});
   await scenario('account remains available with orders off',async page=>{state.delivery=[];const response=await page.goto(base+'/?page=account');assert.equal(response.status(),200);await expect(page.locator('script[src*="portal.js"]')).toHaveCount(1);await expect(page.locator('script[src*="storefront.js"]')).toHaveCount(0);});
   await scenario('catalog cart uses single canonical owner',async page=>{await page.goto(base+'/?page=catalog');await expect(page.locator('#product-grid article')).toHaveCount(2);await page.locator('#product-grid article').first().getByRole('button',{name:'Sepete ekle',exact:true}).click();await expect(page.locator('#cart-count')).toHaveText('1');await expect(page.locator('#cart-lines li')).toHaveCount(1);await expect(page.locator('script[src="/assets/site/catalog.js"]')).toHaveCount(1);await expect(page.locator('script[src="/assets/core/commerce.js"]')).toHaveCount(1);await expect(page.locator('script[src*="storefront.js"]')).toHaveCount(0);await expect(page.locator('#cart')).toHaveCount(1);});
+  await scenario('catalog has one card renderer from first paint through product detail',async page=>{
+    const response=await page.request.get(base+'/?page=catalog');
+    assert.equal(response.status(),200);
+    const html=await response.text();
+    assert.match(html,/<div id="product-grid" class="product-grid" aria-busy="true"><\/div>/);
+    assert.doesNotMatch(html,/class="content-card technical-product"/);
+    assert.doesNotMatch(html,/Yalnız test verisi: pompa açıklaması/);
+    await page.goto(base+'/?page=catalog');
+    await expect(page.locator('#product-grid article')).toHaveCount(2);
+    await expect(page.locator('#product-grid')).not.toContainText('Yalnız test verisi:');
+    await page.locator('#product-grid [data-product-link]').first().click();
+    await expect(page.locator('#product-detail')).toContainText('Yalnız test verisi: pompa açıklaması.');
+  });
+  await scenario('catalog without JavaScript has no temporary legacy cards',async page=>{
+    await page.goto(base+'/?page=catalog');
+    await expect(page.locator('#product-grid article')).toHaveCount(0);
+    await expect(page.locator('.ya-storefront noscript p')).toContainText(/JavaScript/i);
+  },{javaScriptEnabled:false});
   for(const width of [320,390,768,1440])await scenario(`responsive ${width}`,async page=>{
     await page.setViewportSize({width,height:1000});await page.goto(base+'/');await expect(page.locator('h1')).toHaveText('Parçayı bulun. Detayını inceleyin.');await expect(page.locator('.teknikel-hero')).toBeVisible();await fits(page);
     if(width<768){const toggle=page.locator('[data-menu-toggle]');await toggle.focus();await page.keyboard.press('Enter');await expect(toggle).toHaveAttribute('aria-expanded','true');await page.keyboard.press('Escape');await expect(toggle).toHaveAttribute('aria-expanded','false');}
