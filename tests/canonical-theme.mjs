@@ -40,6 +40,39 @@ try {
   await scenario('all actions off hides launcher',async page=>{state.requests=false;await page.goto(base+'/');await expect(page.locator('[data-ya-open]')).toBeHidden();});
   await scenario('account remains available with orders off',async page=>{state.delivery=[];const response=await page.goto(base+'/?page=account');assert.equal(response.status(),200);await expect(page.locator('script[src*="portal.js"]')).toHaveCount(1);await expect(page.locator('script[src*="storefront.js"]')).toHaveCount(0);});
   await scenario('catalog cart uses single canonical owner',async page=>{await page.goto(base+'/?page=catalog');await expect(page.locator('#product-grid article')).toHaveCount(2);await page.locator('#product-grid article').first().getByRole('button',{name:'Sepete ekle',exact:true}).click();await expect(page.locator('#cart-count')).toHaveText('1');await expect(page.locator('#cart-lines li')).toHaveCount(1);await expect(page.locator('script[src="/assets/site/catalog.js"]')).toHaveCount(1);await expect(page.locator('script[src="/assets/core/commerce.js"]')).toHaveCount(1);await expect(page.locator('script[src*="storefront.js"]')).toHaveCount(0);await expect(page.locator('#cart')).toHaveCount(1);});
+  for(const width of [390,1440])await scenario('shared photo fit and inline gallery across home and catalog '+width,async page=>{
+    await page.setViewportSize({width,height:900});
+    state.products[0].image_urls=['https://images.example.com/TEST-site-logo.webp','https://images.example.com/TEST-media-2.webp','https://images.example.com/TEST-media-3.webp'];
+    const measure=async selector=>{
+      const card=page.locator(selector).first();
+      const geometry=await card.evaluate(node=>{
+        const media=node.querySelector('.teknikel-product-media').getBoundingClientRect();
+        const image=node.querySelector('.teknikel-gallery-image-link img').getBoundingClientRect();
+        const body=node.querySelector('.technical-product-copy,.product-body').getBoundingClientRect();
+        return {media:{top:media.top,bottom:media.bottom},image:{top:image.top,bottom:image.bottom},bodyTop:body.top,
+          fit:getComputedStyle(node.querySelector('.teknikel-gallery-image-link img')).objectFit};
+      });
+      assert.ok(geometry.image.top>=geometry.media.top-1&&geometry.image.bottom<=geometry.media.bottom+1,'image must fit media '+JSON.stringify(geometry));
+      assert.ok(geometry.bodyTop>=geometry.media.bottom-1,'media may not overlap copy '+JSON.stringify(geometry));
+      assert.equal(geometry.fit,'contain');
+      const gallery=card.locator('.teknikel-gallery');
+      await expect(gallery.locator('.teknikel-gallery-count')).toHaveText('1 / 3');
+      const firstSrc=await gallery.locator('img').getAttribute('src');
+      await gallery.locator('[data-gallery-step="1"]').click();
+      await expect(gallery.locator('.teknikel-gallery-count')).toHaveText('2 / 3');
+      assert.notEqual(await gallery.locator('img').getAttribute('src'),firstSrc);
+      await gallery.locator('[data-gallery-step="-1"]').click();
+      await expect(gallery.locator('img')).toHaveAttribute('src',firstSrc);
+      await fits(page);
+    };
+    await page.goto(base+'/');
+    await measure('.technical-product.is-preview');
+    await page.goto(base+'/?page=catalog');
+    await expect(page.locator('#product-grid article')).toHaveCount(2);
+    await measure('#product-grid .product-card');
+    await page.locator('#product-grid [data-product-link]').first().click();
+    await expect(page.locator('#product-detail')).toContainText('Yalnız test verisi: pompa açıklaması.');
+  });
   await scenario('catalog has one card renderer from first paint through product detail',async page=>{
     const response=await page.request.get(base+'/?page=catalog');
     assert.equal(response.status(),200);

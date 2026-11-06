@@ -259,21 +259,40 @@
     for (const product of products.slice((pageNumber - 1) * pageSize,pageNumber * pageSize)) {
       const card = el('article', undefined, 'product-card');
       card.dataset.productId = product.product_id;
-      const media = el('a', undefined, 'product-media'); media.href = productUrl(product.product_id); media.setAttribute('aria-label',product.name);
-      const fallback = el('span', ui("Görsel yok")); media.append(fallback);
-      const url = safeImage(product.image_url);
-      if (url) {
+      const urls = [...new Set([product.image_url,...product.image_urls].map(safeImage).filter(Boolean))].slice(0,12);
+      const media = el('div', undefined, 'product-media teknikel-product-media teknikel-gallery');
+      media.dataset.galleryImages = JSON.stringify(urls);
+      media.dataset.galleryName = product.name;
+      const imageLink = el('a', undefined, 'teknikel-gallery-image-link');
+      imageLink.href = productUrl(product.product_id); imageLink.setAttribute('aria-label',product.name);
+      const fallback = el('span', ui("Görsel yok"), 'teknikel-gallery-missing');
+      fallback.hidden = urls.length > 0; imageLink.append(fallback);
+      if (urls.length) {
         const image = el('img'); image.alt = product.name; image.loading = 'lazy'; image.referrerPolicy = 'no-referrer';
-        image.addEventListener('error', () => { image.remove(); fallback.hidden = false; }, { once: true });
-        fallback.hidden = true; image.src = url; media.append(image);
+        image.addEventListener('error', () => { image.hidden = true; fallback.hidden = false; });
+        image.addEventListener('load', () => { image.hidden = false; fallback.hidden = true; });
+        image.src = urls[0]; imageLink.append(image);
+      }
+      media.append(imageLink);
+      if (urls.length > 1) {
+        const controls = el('div',undefined,'teknikel-gallery-controls');
+        controls.setAttribute('role','group'); controls.setAttribute('aria-label',ui('Ürün fotoğrafları'));
+        for (const [step,symbol,label] of [[-1,'‹',ui('Önceki fotoğraf')],[1,'›',ui('Sonraki fotoğraf')]]) {
+          const arrow = el('button',symbol); arrow.type = 'button'; arrow.dataset.galleryStep = String(step);
+          arrow.setAttribute('aria-label',label);
+          if (step === 1) controls.append(el('span', `1 / ${urls.length}`, 'teknikel-gallery-count'));
+          controls.append(arrow);
+        }
+        controls.querySelector('.teknikel-gallery-count').setAttribute('aria-live','polite');
+        media.append(controls);
       }
       const body = el('div', undefined, 'product-body');
       const heading = el('h3'), link = el('a',product.name); link.href = productUrl(product.product_id); link.dataset.productLink = '';
       heading.append(link); body.append(heading);
       if (product.sku) body.append(el('p', `${ui('Stok kodu')}: ${product.sku}`, 'product-sku'));
       if (product.brand) body.append(el('span',product.brand,'product-brand'));
-      if (product.image_urls.length > 1) {
-        const galleryLink = el('a',ui('Fotoğraflar ({0})',{0:product.image_urls.length}),'product-gallery-link');
+      if (urls.length > 1) {
+        const galleryLink = el('a',ui('Fotoğraflar ({0})',{0:urls.length}),'product-gallery-link');
         galleryLink.href = productUrl(product.product_id);
         galleryLink.setAttribute('aria-label',product.name);
         body.append(galleryLink);

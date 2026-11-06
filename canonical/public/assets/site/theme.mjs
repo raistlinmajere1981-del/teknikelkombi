@@ -195,6 +195,42 @@ export function mount({language}) {
     discoveryObserver=new MutationObserver(attach);
     discoveryObserver.observe(document.body,{childList:true});
   }
+  // The same delegated gallery controller owns home (PHP) and catalog (JS) cards.
+  // Cards are allowed to be replaced by the catalog without re-attaching listeners.
+  document.addEventListener('click',event=>{
+    const stepButton=event.target.closest?.('[data-gallery-step]');
+    const gallery=stepButton?.closest('.teknikel-gallery');
+    if(!gallery)return;
+    let urls;
+    try { urls=JSON.parse(gallery.dataset.galleryImages); } catch { return; }
+    if(!Array.isArray(urls)||urls.length<2||urls.some(url=>typeof url!=='string'))return;
+    const picture=gallery.querySelector('.teknikel-gallery-image-link img');
+    if(!picture)return;
+    const step=Number(stepButton.dataset.galleryStep);
+    if(![-1,1].includes(step))return;
+    const current=Number(gallery.dataset.galleryIndex)||0;
+    const next=(current+step+urls.length)%urls.length;
+    gallery.dataset.galleryIndex=String(next);
+    picture.hidden=false;
+    picture.src=urls[next];
+    picture.alt=gallery.dataset.galleryName+' · '+(next+1)+' / '+urls.length;
+    const label=gallery.querySelector('.teknikel-gallery-count');
+    if(label)label.textContent=(next+1)+' / '+urls.length;
+  });
+  document.addEventListener('error',event=>{
+    const picture=event.target;
+    if(!(picture instanceof HTMLImageElement)||!picture.closest('.teknikel-gallery'))return;
+    picture.hidden=true;
+    const fallback=picture.closest('.teknikel-gallery-image-link')?.querySelector('.teknikel-gallery-missing');
+    if(fallback)fallback.hidden=false;
+  },true);
+  document.addEventListener('load',event=>{
+    const picture=event.target;
+    if(!(picture instanceof HTMLImageElement)||!picture.closest('.teknikel-gallery'))return;
+    picture.hidden=false;
+    const fallback=picture.closest('.teknikel-gallery-image-link')?.querySelector('.teknikel-gallery-missing');
+    if(fallback)fallback.hidden=true;
+  },true);
   window.addEventListener('pagehide',()=>{
     discoveryObserver?.disconnect();
     widgetObserver?.disconnect();
