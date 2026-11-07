@@ -20,6 +20,167 @@ try {
   const scenario=async(name,run,options={})=>{if(process.env.TEST_FILTER&&!name.includes(process.env.TEST_FILTER))return;reset();const context=await browser.newContext({viewport:{width:390,height:900},reducedMotion:'reduce',...options});
     await context.route('**/*',route=>/^https:\/\/images\.example\.com\/TEST-.*\.webp$/.test(route.request().url())?route.fulfill({contentType:'image/webp',body:logo,headers:{'access-control-allow-origin':'*'}}):new URL(route.request().url()).origin===base?route.continue():route.abort());
     const page=await context.newPage();try{await run(page);results.push(name);console.log('PASS',name);}finally{await context.close();}};
+  const announcement = (extra = {}) => ({id:'TEST-announcement', published:true, channel:'website', title:'', text:'', ...extra});
+  const announcementImages = [1,2].map(i=>({url:`https://images.example.com/TEST-announcement-${i}.webp`,altText:'',sortOrder:i-1}));
+  const announcementRoot = page => page.locator('[data-announcement-slider]');
+  const activeAnnouncement = page => page.locator('[data-announcement-slide].is-active');
+  const campaignMedia = await Promise.all([1,2].map(async i => {
+    if(process.env.TEKNIKEL_CAMPAIGN_DIR) return {body:await readFile(`${process.env.TEKNIKEL_CAMPAIGN_DIR}/campaign-${i}.png`),contentType:'image/png'};
+    const width=i===1?1177:1183,height=i===1?588:527;
+    return {body:Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="100%" height="100%" fill="#12283d"/><rect x="4" y="4" width="${width-8}" height="${height-8}" fill="none" stroke="#c92134" stroke-width="8"/><text x="50%" y="50%" fill="white" text-anchor="middle" font-size="50">TEST Kampanya ${i}</text></svg>`),contentType:'image/svg+xml'};
+  }));
+  const serveCampaigns = async page => {
+    for (const [i,media] of campaignMedia.entries()) await page.route(announcementImages[i].url,route=>route.fulfill(media));
+  };
+  for (const width of [390,1440]) await scenario(`announcement slider image-only responsive ${width}`,async page=>{
+    await page.setViewportSize({width,height:1000});
+    state.announcements=[announcement({images:announcementImages})];
+    await serveCampaigns(page);
+    const errors=[];page.on('pageerror',error=>errors.push(error.message));
+    await page.goto(base+'/');
+    const root=announcementRoot(page), slides=root.locator('[data-announcement-slide]');
+    await expect(slides).toHaveCount(2);
+    await expect(root.locator('h3,.announcement-copy')).toHaveCount(0);
+    await expect(activeAnnouncement(page)).toHaveAttribute('id','home-announcement-1');
+    await root.scrollIntoViewIfNeeded();
+    const geometry=async()=>root.locator('.announcement-stage').boundingBox();
+    const first=await geometry();
+    const checkImage=async()=>{
+      const image=activeAnnouncement(page).locator('img');await expect(image).toBeVisible();
+      await expect.poll(()=>image.evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
+      await expect(image).toHaveCSS('object-fit','contain');
+      const img=await image.boundingBox(), stage=await geometry();
+      assert.ok(img.x>=stage.x&&img.x+img.width<=stage.x+stage.width+1);
+      assert.ok(img.y>=stage.y&&img.y+img.height<=stage.y+stage.height+1);
+      await fits(page);
+    };
+    await checkImage();
+    await root.screenshot({path:`${artifacts}announcement-${width}-1.png`});
+    await page.evaluate(()=>window.scrollTo(0,0));
+    await page.screenshot({path:`${artifacts}announcement-home-${width}.png`,fullPage:true});
+    await root.scrollIntoViewIfNeeded();
+    await root.locator('[data-announcement-step="1"]').click();
+    await expect(activeAnnouncement(page)).toHaveAttribute('id','home-announcement-2');
+    await checkImage();assert.equal(Math.round((await geometry()).height),Math.round(first.height));
+    await root.screenshot({path:`${artifacts}announcement-${width}-2.png`});
+    await expect(slides.first()).toHaveAttribute('inert','');
+    await expect(slides.first()).toHaveAttribute('aria-hidden','true');
+    await root.locator('[data-announcement-select="0"]').click();
+    await expect(activeAnnouncement(page)).toHaveAttribute('id','home-announcement-1');
+    await root.locator('[data-announcement-step="-1"]').click();
+    await expect(activeAnnouncement(page)).toHaveAttribute('id','home-announcement-2');
+    const stage=root.locator('.announcement-stage');await stage.focus();
+    await page.keyboard.press('Home');await expect(activeAnnouncement(page)).toHaveAttribute('id','home-announcement-1');
+    await page.keyboard.press('ArrowRight');await expect(activeAnnouncement(page)).toHaveAttribute('id','home-announcement-2');
+    await page.keyboard.press('ArrowLeft');await expect(activeAnnouncement(page)).toHaveAttribute('id','home-announcement-1');
+    await page.keyboard.press('End');await expect(activeAnnouncement(page)).toHaveAttribute('id','home-announcement-2');
+    await stage.dispatchEvent('pointerdown',{pointerType:'touch',isPrimary:true,pointerId:1,clientX:280,clientY:100});
+    await stage.dispatchEvent('pointerup',{pointerType:'touch',isPrimary:true,pointerId:1,clientX:90,clientY:105});
+    await expect(activeAnnouncement(page)).toHaveAttribute('id','home-announcement-1');
+    await stage.dispatchEvent('pointerdown',{pointerType:'touch',isPrimary:true,pointerId:2,clientX:100,clientY:100});
+    await stage.dispatchEvent('pointerup',{pointerType:'touch',isPrimary:true,pointerId:2,clientX:105,clientY:260});
+    await expect(activeAnnouncement(page)).toHaveAttribute('id','home-announcement-1');
+    if(width===390){
+      const box=await stage.boundingBox(), cdp=await page.context().newCDPSession(page);
+      const x=box.x+box.width*.8,y=box.y+box.height*.5;
+      await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
+      for(let step=1;step<=6;step++) await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x-box.width*.6*step/6,y}]});
+      await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+      await expect(activeAnnouncement(page)).toHaveAttribute('id','home-announcement-2');
+      await cdp.detach();await stage.press('Home');
+    }
+    // Defensive focus repair if interactive content is ever added to a slide.
+    await activeAnnouncement(page).evaluate(slide=>{const link=document.createElement('a');link.href='#';link.textContent='TEST focus';slide.append(link);link.focus();});
+    await page.keyboard.press('ArrowRight');await expect(stage).toBeFocused();
+    // The unchanged announcements page still renders both images without fake copy.
+    await root.getByRole('link',{name:'Tüm duyurular'}).click();
+    await expect(page.locator('.announcement-card img')).toHaveCount(2);
+    await expect(page.locator('.announcement-body')).toHaveCount(0);
+    await fits(page);assert.deepEqual(errors,[]);
+  });
+  await scenario('announcement slider publication gates order and escaped copy',async page=>{
+    state.announcements=[
+      announcement({id:'a',title:'TEST Başlık',text:'TEST açıklama <script>bad()</script>',images:announcementImages}),
+      announcement({id:'hidden',published:false,images:announcementImages}),
+      announcement({id:'inactive',active:false,text:'TEST hidden'}),
+      announcement({id:'other-channel',channel:'email',text:'TEST hidden'}),
+      announcement({id:'empty',images:[{url:'javascript:alert(1)'},{url:'/yardimci-asistan/media/../secret.png'},{url:'http://bad.test/image.png'},{url:announcementImages[0].url,published:false},{url:announcementImages[0].url,visible:false}]}),
+      announcement({id:'text',text:'TEST Yalnız metin'}),
+      announcement({id:'last',images:[announcementImages[1],{url:'data:image/png;base64,invalid'},announcementImages[0]]})
+    ];
+    await serveCampaigns(page);await page.goto(base+'/');
+    const root=announcementRoot(page), slides=root.locator('[data-announcement-slide]');
+    await expect(slides).toHaveCount(5);
+    assert.deepEqual(await slides.evaluateAll(nodes=>nodes.map(node=>node.querySelector('img')?.getAttribute('src')||'text')),[announcementImages[0].url,announcementImages[1].url,'text',announcementImages[1].url,announcementImages[0].url]);
+    await expect(slides.first().locator('h3')).toHaveText('TEST Başlık');
+    await expect(slides.first().locator('p')).toHaveText('TEST açıklama <script>bad()</script>');
+    await expect(slides.locator('script')).toHaveCount(0);
+    await root.screenshot({path:`${artifacts}announcement-mixed-390.png`});
+    const first=await root.locator('.announcement-stage').boundingBox();
+    await root.locator('[data-announcement-select="2"]').click();
+    await expect(activeAnnouncement(page)).toContainText('TEST Yalnız metin');
+    await expect(activeAnnouncement(page).locator('img,h3')).toHaveCount(0);
+    const next=await root.locator('.announcement-stage').boundingBox();assert.equal(first.height,next.height);
+    await fits(page);
+  });
+  await scenario('announcement slider single image and text hide controls and empty hides section',async page=>{
+    for(const content of [{images:[announcementImages[0]]},{title:'TEST Başlık',text:'TEST Metin'},{text:'TEST Yalnız metin'}]){
+      state.announcements=[announcement(content)];await page.goto(base+'/');
+      await expect(announcementRoot(page)).toBeVisible();
+      await expect(page.locator('[data-announcement-slide]')).toHaveCount(1);
+      await expect(page.locator('[data-announcement-controls],script[src*="announcement-slider.js"]')).toHaveCount(0);
+    }
+    for(const items of [[],[announcement({images:[{url:'javascript:bad()'}]})],[announcement({published:false,text:'hidden'})]]){
+      state.announcements=items;await page.goto(base+'/');await expect(announcementRoot(page)).toHaveCount(0);
+      await expect(page.locator('a[href*="page=announcements"]')).toHaveCount(0);
+    }
+  });
+  await scenario('announcement slider JavaScript disabled first campaign visible',async page=>{
+    state.announcements=[announcement({images:announcementImages})];await serveCampaigns(page);await page.goto(base+'/');
+    await expect(activeAnnouncement(page).locator('img')).toBeVisible();
+    await expect(page.locator('[data-announcement-slide]').nth(1)).toBeHidden();
+    await expect(page.locator('[data-announcement-controls]')).toBeHidden();
+    await expect(page.locator('#main-navigation')).toBeVisible();await fits(page);
+  },{javaScriptEnabled:false});
+  await scenario('announcement slider autoplay pause focus visibility and reduced motion',async page=>{
+    state.announcements=[announcement({images:announcementImages})];await serveCampaigns(page);
+    await page.clock.install();await page.clock.pauseAt(new Date());await page.goto(base+'/');
+    const root=announcementRoot(page),play=root.locator('[data-announcement-playback]'),stage=root.locator('.announcement-stage');
+    const at=async n=>expect(activeAnnouncement(page)).toHaveAttribute('id',`home-announcement-${n}`);
+    await page.clock.runFor(5900);await at(1);await page.clock.runFor(200);await at(2);
+    await root.hover();await page.clock.runFor(6500);await at(2);
+    await page.mouse.move(0,0);await page.clock.runFor(6100);await at(1);
+    await stage.focus();await page.clock.runFor(6500);await at(1);
+    await page.locator('h1').evaluate(node=>{node.tabIndex=-1;node.focus();});await page.clock.runFor(6100);await at(2);
+    await play.click();await expect(play).toHaveText('Otomatik geçişi başlat');
+    await page.mouse.move(0,0);await page.locator('h1').focus();await page.clock.runFor(6500);await at(2);
+    await play.click();await expect(play).toHaveText('Otomatik geçişi duraklat');
+    await page.mouse.move(0,0);await page.locator('h1').focus();await page.clock.runFor(6100);await at(1);
+    await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'));});
+    await page.clock.runFor(6500);await at(1);
+    await page.evaluate(()=>{delete document.hidden;document.dispatchEvent(new Event('visibilitychange'));});
+    await page.clock.runFor(6100);await at(2);
+    await page.emulateMedia({reducedMotion:'reduce'});await expect(play).toBeDisabled();
+    await page.clock.runFor(6500);await at(2);
+    await expect(activeAnnouncement(page)).toHaveCSS('transition-duration','0s');
+    await stage.focus();await page.keyboard.press('ArrowRight');await at(1);
+  },{reducedMotion:'no-preference'});
+  await scenario('announcement slider initial reduced motion has manual navigation only',async page=>{
+    state.announcements=[announcement({images:announcementImages})];await page.clock.install();await page.clock.pauseAt(new Date());await page.goto(base+'/');
+    await page.clock.runFor(12500);await expect(activeAnnouncement(page)).toHaveAttribute('id','home-announcement-1');
+    await expect(page.locator('[data-announcement-playback]')).toBeDisabled();
+    await page.locator('[data-announcement-step="1"]').click();await expect(activeAnnouncement(page)).toHaveAttribute('id','home-announcement-2');
+  });
+  await scenario('announcement slider published English UI and content',async page=>{
+    const source=await (await fetch(base+'/?resource=translation-source')).json();
+    const phrases={'page.announcements':'Announcements','theme.teknikel.announcements.next':'Next announcement','theme.teknikel.announcements.pause':'Pause autoplay','theme.teknikel.announcements.select':'Go to slide {number}'};
+    state.localization={version:1,source_language:'tr',target_languages:['en'],languages:[{code:'en',locale:'en',direction:'ltr',nativeName:'English'}],site_catalog:{id:source.id,entries:source.entries},translations:{site_text:Object.fromEntries(Object.entries(phrases).map(([key,text])=>[source.id+':'+key,{en:{text}}]))}};
+    state.announcements=[announcement({title:'TEST Duyuru',images:announcementImages})];await page.goto(base+'/?lang=en');
+    await expect(announcementRoot(page).getByRole('heading',{name:'Announcements',exact:true})).toBeVisible();
+    await expect(page.getByRole('button',{name:'Next announcement',exact:true})).toBeVisible();
+    await expect(page.getByRole('button',{name:'Go to slide 2',exact:true})).toBeVisible();
+    await expect(page.locator('[data-announcement-playback]')).toHaveAttribute('data-pause','Pause autoplay');
+  });
   await scenario('SSR publication gates',async page=>{
     for(const mode of ['surface-off','enabled-off','zero','catalog-error','business-error']){
       reset();if(mode==='surface-off')state.surfaces=[];if(mode==='enabled-off')state.enabled=false;if(mode==='zero')state.products=[];if(mode==='catalog-error')state.catalogError=true;if(mode==='business-error')state.businessError=true;
@@ -460,12 +621,12 @@ try {
   });
   for(const width of [390,1440])await scenario(`conditional home blocks and gallery media ${width}`,async page=>{
     fullPublication();await page.setViewportSize({width,height:1000});await page.goto(base+'/');
-    for(const selector of ['.announcement-strip','.about-preview','.dealer-callout','.review-card','.contact-preview','[aria-labelledby="discover-title"]'])await expect(page.locator(selector)).toBeVisible();
-    await expect(page.locator('.about-preview')).toContainText('TEST Yayınlanmış işletme açıklaması');await expect(page.locator('.announcement-strip')).toContainText('TEST Yayınlanmış Duyuru');await expect(page.locator('.review-card')).toContainText('TEST Yayınlanmış yorum');
+    for(const selector of ['.announcement-slider','.about-preview','.dealer-callout','.review-card','.contact-preview','[aria-labelledby="discover-title"]'])await expect(page.locator(selector)).toBeVisible();
+    await expect(page.locator('.about-preview')).toContainText('TEST Yayınlanmış işletme açıklaması');await expect(page.locator('[data-announcement-slider]')).toContainText('TEST Yayınlanmış Duyuru');await expect(page.locator('.review-card')).toContainText('TEST Yayınlanmış yorum');
     await expect(page.locator('[data-brand-section],[data-category-section],[data-category-grid]')).toHaveCount(0);await fits(page);await page.screenshot({path:`${artifacts}home-full-${width}.png`,fullPage:true});
     await page.goto(base+'/?page=gallery');const images=page.locator('main img');await expect(images).toHaveCount(2);await expect.poll(()=>images.evaluateAll(nodes=>nodes.every(image=>image.complete&&image.naturalWidth>0))).toBe(true);
     assert.deepEqual(await images.evaluateAll(nodes=>nodes.map(image=>new URL(image.src).pathname)),['/TEST-media-1.webp','/TEST-media-2.webp']);await fits(page);
-    reset();await page.goto(base+'/');await expect(page.locator('.announcement-strip,.about-preview,.dealer-callout,.review-card,.contact-preview,[aria-labelledby="discover-title"]')).toHaveCount(0);
+    reset();await page.goto(base+'/');await expect(page.locator('.announcement-slider,.about-preview,.dealer-callout,.review-card,.contact-preview,[aria-labelledby="discover-title"]')).toHaveCount(0);
   });
   await scenario('support actions retain existing DOM in intended order',async page=>{
     fullPublication();state.business.ai_enabled=true;await page.goto(base+'/');await page.locator('[data-ya-open]').click();
@@ -478,7 +639,7 @@ try {
   });
   await scenario('invalid media and API HTML remain inert',async page=>{
     const attack='<img src=x onerror="window.TESTInjection=true">';fullPublication();state.business.about_text=attack;state.business.gallery=[{id:'TEST-invalid',kind:'photo',url:'javascript:alert(1)',title:attack}];state.announcements[0].title=attack;state.reviews[0].text=attack;
-    await page.goto(base+'/');await expect(page.locator('.about-preview')).toContainText(attack);await expect(page.locator('.announcement-strip')).toContainText(attack);await expect(page.locator('.review-card')).toContainText(attack);await expect(page.locator('main a[href*="page=gallery"]')).toHaveCount(0);await expect(page.locator('img[src="x"],a[href^="javascript:"]')).toHaveCount(0);assert.equal(await page.evaluate(()=>window.TESTInjection),undefined);assert.equal((await page.goto(base+'/?page=gallery')).status(),404);
+    await page.goto(base+'/');await expect(page.locator('.about-preview')).toContainText(attack);await expect(page.locator('[data-announcement-slider]')).toContainText(attack);await expect(page.locator('.review-card')).toContainText(attack);await expect(page.locator('main a[href*="page=gallery"]')).toHaveCount(0);await expect(page.locator('img[src="x"],a[href^="javascript:"]')).toHaveCount(0);assert.equal(await page.evaluate(()=>window.TESTInjection),undefined);assert.equal((await page.goto(base+'/?page=gallery')).status(),404);
   });
   await scenario('site favicon origin SEO projection and media withdrawal',async page=>{
     const provenance=await readFile(new URL('../canonical/public/assets/site/SOURCES.md',import.meta.url),'utf8');assert.match(provenance,/brand\/favicon\.svg/);assert.match(provenance,/assets\/favicon\.svg/);

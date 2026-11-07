@@ -30,9 +30,7 @@ render_view('components/hero', $view, $site);
 </section>
 <?php endif; ?>
 
-<?php if (isset($view['pages']['announcements'])): $announcement = $publication['announcements'][0]; ?>
-<section class="home-section announcement-strip" aria-labelledby="announcement-title"><div><p class="eyebrow"><?= e(t($site, 'page.announcements')) ?></p><h2 id="announcement-title"><?= e($announcement['title']) ?></h2><?php if (text($announcement['text'] ?? '') !== ''): ?><p><?= nl2br(e($announcement['text'])) ?></p><?php endif; ?></div><a class="text-link" href="<?= e(page_url($site, 'announcements')) ?>"><?= e(t($site, 'theme.teknikel.announcements.all')) ?> <span aria-hidden="true">→</span></a></section>
-<?php endif; ?>
+<?php if (isset($view['pages']['announcements'])) render_view('components/home-announcement-slider', $view, $site); ?>
 
 <?php if (isset($view['pages']['about'])): ?>
 <section class="home-section about-preview" aria-labelledby="about-title"><div><p class="eyebrow"><?= e(t($site, 'page.about')) ?></p><h2 id="about-title"><?= e(t($site, 'theme.teknikel.about.title')) ?></h2></div><div><?php if ($publication['about'] !== ''): ?><p><?= nl2br(e($publication['about'])) ?></p><?php endif; ?><a class="text-link" href="<?= e(page_url($site, 'about')) ?>"><?= e(t($site, 'theme.teknikel.about.more')) ?> <span aria-hidden="true">→</span></a></div></section>

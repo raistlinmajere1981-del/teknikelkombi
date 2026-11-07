@@ -64,3 +64,52 @@ olarak işaretlenmiş ürünleri `featured_order` ile sıralar (eşitlikte yayı
 Seçili ürün yoksa eski ilk dört ürüne geri döner. Vitrin sırası kategorileri, bayi
 fiyatlarını, sepeti ya da mağaza ürün kartı bileşenini değiştirmez. Vitrin bayrağı
 yalnız masaüstündeki online ürün yayınında yönetilir; bu site onu yalnız yorumlar.
+
+## Ana sayfa duyuru slider’ı
+
+`views/components/home-announcement-slider.php`, mevcut `publication.announcements`
+listesini yayın sırasıyla işler. Her geçerli/yayınlanmış görsel ayrı slayttır;
+metin aynı duyurunun her görseline eşlik eder. Görseli olmayan başlık/metin de bir
+slayttır. Başlıksız görsellere ek metin üretilmez. Boş bölüm ve tek slaytın kontrolleri
+gizlenir. Ortak publication modeli ve Duyurular sayfası değişmez.
+
+`public/assets/site/announcement-slider.js` yalnız bu sunumun etkileşimidir.
+6 saniyelik geçiş; fare, odak, sekme görünürlüğü ve kullanıcı duraklatmasıyla durur.
+Reduced-motion otomatik geçişi ve animasyonu kapatır. Oklar, konum düğmeleri,
+klavye ve yatay dokunma hareketi çalışır. Pasif slaytlar `inert`/`aria-hidden` ile
+odak ve erişilebilirlik ağacından çıkarılır. JavaScript olmadan ilk slayt SSR görünür.
+`theme.css` görselleri `contain` ile bütünüyle gösterir; ortak grid alanı geçişlerde
+en uzun içeriğin yüksekliğini korur. UI metinleri mevcut yayınlanan çeviri kataloğunu kullanır.
+
+Yerel dar doğrulama (canlı yayın veya veri mutasyonu yok):
+
+```sh
+php -l canonical/site/views/components/home-announcement-slider.php
+php -l canonical/site/views/pages/home.php
+node --check canonical/public/assets/site/announcement-slider.js
+node tests/check.mjs
+node tests/canonical-theme.mjs
+node tests/canonical-live-entry.mjs
+node --test tests/publication-model.test.mjs
+node --test --test-name-pattern='deploy package includes' tests/canonical-cutover.test.mjs
+node scripts/sync-public-assets.mjs --check
+node scripts/package-site.mjs --check
+git diff --check
+```
+
+Sadece slider senaryoları için `TEST_FILTER='announcement slider'` kullanılabilir.
+Varsayılan test medyası, orijinal iki afişin 1177×588 ve 1183×527 oranlarında yerel
+sentetik görsellerdir. Gerçek afişlerle aynı testleri çalıştırmak için bunları
+Git dışında `campaign-1.png` ve `campaign-2.png` adlarıyla bir dizine koyup
+`TEKNIKEL_CAMPAIGN_DIR=/mutlak/dizin` verin. Testler bu görselleri yerelde sunar;
+canlı API’ye bağlanmaz, yayın verisi üretmez. Ekran görüntüleri
+`.test-artifacts/canonical/announcement-{390,1440}-{1,2}.png`,
+`announcement-home-{390,1440}.png` ve `announcement-mixed-390.png` altındadır.
+
+2026-11-07 yerel kabulü: gerçek iki kampanya afişiyle slider senaryoları **8/8**,
+tüm canonical tema/responsive senaryoları **46/46**, publication model testleri
+**11/11**, gerçek kök/yönlendirme testi **390 ve 1440 px**, paket sözleşmesi **1/1**,
+syntax/katalog kontrolü **67 PASS**, asset mirror **57 hash** ve paket ön kontrolü
+**186 dosya** geçti. Mobil gerçek touch olayı, klavye/odak, 6 saniyelik zamanlama,
+duraklatma, gizli sekme, reduced-motion, yayınlanmış İngilizce UI ve no-JS dahildir.
+Gerçek afişlerin iki boyutta da tamamı görüldü; görsel kabulü yereldir. Push/deploy yok.
