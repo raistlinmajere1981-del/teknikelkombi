@@ -15,8 +15,9 @@ const repo=new URL('../',import.meta.url).pathname;
 const upstream=process.env.YA_TEMPLATE_SOURCE || join(repo,'../YardimciAsistan/web-site-template');
 const json=path=>JSON.parse(readFileSync(path,'utf8'));
 const manifest=json(join(repo,'canonical/template-manifest.json'));
-test('all 77 installed common hashes equal incoming release and baseline',()=>{
-  assert.equal(manifest.template_version,'0.7.7'); assert.equal(Object.keys(manifest.common).length,77);
+test('installed common hashes equal current incoming release and baseline',()=>{
+  assert.equal(manifest.template_version,json(join(upstream,'template-manifest.json')).template_version);
+  assert.ok(Object.keys(manifest.common).length >= 77);
   assert.deepEqual(inventory(join(repo,'canonical')),manifest.common);
   assert.deepEqual(manifest.common,json(join(upstream,'template-manifest.json')).common);
   assert.deepEqual(inventory(upstream),manifest.common);
@@ -69,7 +70,7 @@ test('commerce is headless and Teknikel owns its complete catalog presentation',
   assert.match(page,/is-detail/);
   assert.match(page,/id="catalog-filter-rail"/);
   assert.doesNotMatch(page,/require.*core\/views\/pages\/catalog/);
-  assert.match(renderer,/YaCommerce\.create/);
+  assert.match(renderer,/YaCommerce\.shared/);
   assert.doesNotMatch(renderer,/\bfetch\s*\(|sessionStorage|localStorage|idempotencyKey|catalogRevision/);
   for(const path of ['core/views/pages/catalog.php','public/assets/core/storefront.js','public/assets/core/site.css']) {
     assert.doesNotMatch(read(path),/ya-storefront|catalog-filter-rail|category-choice|brand-choice|cart-line-thumb|comparison-viewport|minmax\(190px,232px\)/,path);

@@ -43,7 +43,7 @@ check(str_contains($catalog,'data-ya-action="request.general"') && str_contains(
 set_error_handler(static function (int $level, string $message): never { throw new RuntimeException($message); });
 foreach (array_keys($pages) as $page) {
     $renderView = ['publication'=>$pub, 'pages'=>$pages, 'page'=>$page, 'title'=>'TEST '.$page,
-        'status'=>'ok', 'room'=>null, 'table'=>null, 'menu_category'=>'',
+        'status'=>'ok', 'room'=>null, 'table'=>null, 'table_token'=>'', 'menu_category'=>'',
         'menu_categories'=>$pub['categories'], 'effects'=>[], 'canonical'=>'', 'demo_widget_visible'=>false];
     ob_start(); \YaSite\render_view('pages/'.$page, $renderView, $site); $pageHtml=ob_get_clean();
     check(trim($pageHtml) !== '', 'Available page renders: '.$page);
@@ -90,5 +90,7 @@ $business['business']['public_surfaces']=[];
 $closed=\YaSite\available_pages(\YaSite\project_publication($business,$sources,'/yardimci-asistan','tr'),$config,$root);
 foreach (['catalog','rooms','restaurant','menu'] as $page) check(!isset($closed[$page]), 'Surface OFF gate: '.$page);
 $empty=\YaSite\available_pages(\YaSite\project_publication([],[],'/yardimci-asistan','tr'),$config,$root);
-check(array_keys($empty)===['home','demo-content'], 'Unavailable publication leaves only home and site editorial demo');
+check(isset($empty['home'], $empty['demo-content'])
+    && count(array_filter($empty, static fn (array $page): bool => empty($page['internal']))) === 2,
+    'Unavailable publication leaves only home/editorial visible; internal checkout recovery routes remain');
 echo "canonical-entry-php-ok: actual root, assets, source, 12 page gates, site page/JS/CSS override and generic fallback, AI OFF product hook\n";
