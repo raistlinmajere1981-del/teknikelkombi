@@ -9,7 +9,9 @@
   let commerceState, auth, generation, catalog, catalogStatus, loading, categories, favorites, cart, pending, busy, deliveryMethods, deliveryMethod, units, deliveryLabels, scale;
   const selected = new Set(), filters = {q:'',category:'',brand:'',sku:''};
   let localPhoto = '', compareGeneration = 0, favoritesOnly = false, pageNumber = 1;
-  const pageSize = 18, parameters = new URLSearchParams(location.search), reorderId = parameters.get('reorder');
+  let pageSize = 18, sortMode = 'published', viewMode = 'grid';
+  const collator = new Intl.Collator(locale,{numeric:true,sensitivity:'base'});
+  const parameters = new URLSearchParams(location.search), reorderId = parameters.get('reorder');
   let reorderHandled = false;
   for (const key of Object.keys(filters)) filters[key] = (parameters.get(key) || '').slice(0,180);
   const current = stamp => stamp === generation && auth.status !== 'unavailable';
@@ -251,6 +253,18 @@
       && (!filters.sku || fold(product.sku).includes(fold(filters.sku))) && (!filters.category || selectedCategoryIds().has(product.category_id))
       && (!filters.brand || product.brand === filters.brand) && (!favoritesOnly || favorites.has(product.product_id)));
     $('catalog-count').textContent = ui('{0} ürün', {0:products.length});
+    // Presentation-only ordering. Never mutate published data or the shared commerce catalog.
+    if (sortMode === 'name-asc' || sortMode === 'name-desc') {
+      const direction = sortMode === 'name-asc' ? 1 : -1;
+      products.sort((a,b) => direction * collator.compare(a.name,b.name));
+    } else if (sortMode === 'price-asc' || sortMode === 'price-desc') {
+      const direction = sortMode === 'price-asc' ? 1 : -1;
+      // Currency groups are kept separate: no conversion or misleading cross-currency total.
+      products.sort((a,b) => collator.compare(a.currency,b.currency) || direction * (a.price-b.price));
+    }
+    $('product-grid').classList.toggle('is-list',viewMode === 'list');
+    $('catalog-view-grid').setAttribute('aria-pressed',String(viewMode === 'grid'));
+    $('catalog-view-list').setAttribute('aria-pressed',String(viewMode === 'list'));
     const pages = Math.max(1,Math.ceil(products.length / pageSize));
     pageNumber = Math.min(Math.max(1,pageNumber),pages);
     $('catalog-pagination').hidden = pages <= 1;
@@ -444,6 +458,17 @@
     $('category-query').value = ''; renderFilters(); syncFilterUrl(); renderProducts();
   });
   $('favorites-only').addEventListener('change',() => { favoritesOnly = $('favorites-only').checked; pageNumber = 1; renderProducts(); });
+  $('catalog-sort').addEventListener('change',() => {
+    sortMode = $('catalog-sort').value; pageNumber = 1; renderProducts();
+  });
+  $('catalog-page-size').addEventListener('change',() => {
+    const next = Number($('catalog-page-size').value);
+    if (![18,36,54].includes(next)) return;
+    pageSize = next; pageNumber = 1; renderProducts();
+  });
+  for (const mode of ['grid','list']) $('catalog-view-'+mode).addEventListener('click',() => {
+    viewMode = mode; renderProducts();
+  });
   $('filter-panel-toggle').addEventListener('click', () => {
     const collapsed = $('catalog-filter-rail').classList.toggle('rail-collapsed');
     $('filter-panel-toggle').setAttribute('aria-expanded',String(!collapsed));

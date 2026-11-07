@@ -2,6 +2,20 @@
 export function mount({language}) {
   let widgetObserver;
   let discoveryObserver;
+  // The header height varies by breakpoint and available published actions.
+  // Keep sticky filter/cart rails entirely below the actual header, not a fixed guess.
+  const siteHeader = document.querySelector('.teknikel-header');
+  const updateStickyClearance = () => {
+    if (siteHeader && document.querySelector('.teknikel-catalog')) {
+      document.documentElement.style.setProperty('--teknikel-sticky-clearance',
+        Math.ceil(siteHeader.getBoundingClientRect().height + 12) + 'px');
+    }
+  };
+  updateStickyClearance();
+  if (siteHeader && document.querySelector('.teknikel-catalog')) {
+    if ('ResizeObserver' in window) new ResizeObserver(updateStickyClearance).observe(siteHeader);
+    window.addEventListener('resize',updateStickyClearance,{passive:true});
+  }
   const locale = document.documentElement.lang === 'en' ? 'en' : 'tr';
   const copy = locale === 'en' ? {
     steps:['Contact','Company','Documents'], next:'Continue', back:'Previous',
@@ -235,5 +249,5 @@ export function mount({language}) {
     discoveryObserver?.disconnect();
     widgetObserver?.disconnect();
   });
-  window.addEventListener('pageshow',event=>{if(event.persisted)attach();});
+  window.addEventListener('pageshow',event=>{if(event.persisted){attach();updateStickyClearance();}});
 }

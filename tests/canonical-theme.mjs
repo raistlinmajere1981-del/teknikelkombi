@@ -73,6 +73,62 @@ try {
     await page.locator('#product-grid [data-product-link]').first().click();
     await expect(page.locator('#product-detail')).toContainText('Yalnız test verisi: pompa açıklaması.');
   });
+  for (const width of [320,1440]) await scenario('catalog toolbar controls sorting density and layout '+width,async page=>{
+    state.products.push({...state.products[0],product_id:'p3',name:'TEST Alfa',sku:'TEST-ALF-303',price:75});
+    await page.setViewportSize({width,height:800});
+    await page.goto(base+'/?page=catalog');
+    await expect(page.locator('#catalog-count')).toHaveText('3 ürün');
+    await page.screenshot({path:`${artifacts}catalog-toolbar-${width}.png`,fullPage:false});
+    await expect(page.locator('#refresh')).toHaveAttribute('aria-label',/Ürünleri yenile/);
+    await page.locator('#catalog-sort').selectOption('name-asc');
+    await expect(page.locator('#product-grid .product-card').first()).toContainText('TEST Alfa');
+    await page.locator('#catalog-sort').selectOption('price-desc');
+    await expect(page.locator('#product-grid .product-card').first()).toContainText('TEST Kontrol Kartı');
+    await page.locator('#catalog-sort').selectOption('price-asc');
+    await expect(page.locator('#product-grid .product-card').first()).toContainText('TEST Alfa');
+    await page.locator('#catalog-view-list').click();
+    await expect(page.locator('#product-grid')).toHaveClass(/is-list/);
+    await expect(page.locator('#catalog-view-list')).toHaveAttribute('aria-pressed','true');
+    if(width===1440)await page.screenshot({path:`${artifacts}catalog-list-1440.png`,fullPage:false});
+    await page.locator('#product-grid .compare-select').nth(0).check();
+    await page.locator('#product-grid .compare-select').nth(1).check();
+    await expect(page.locator('#compare-open')).toBeEnabled();
+    await page.locator('#compare-open').click();
+    await expect(page.locator('#comparison-panel')).toBeVisible();
+    await page.locator('#catalog-page-size').selectOption('36');
+    await page.locator('#catalog-view-grid').click();
+    await expect(page.locator('#catalog-view-grid')).toHaveAttribute('aria-pressed','true');
+    await expect(page.locator('#product-grid')).not.toHaveClass(/is-list/);
+    await expect(page.locator('#catalog-count')).toHaveText('3 ürün');
+    await fits(page);
+  });
+  await scenario('sticky filter and cart stay below measured header while scrolling',async page=>{
+    const template=state.products.map(row=>({...row}));
+    state.products=Array.from({length:55},(_,i)=>({
+      ...template[i%template.length],product_id:'test-scroll-'+i,name:'TEST Scroll Ürün '+i,
+      sku:'TEST-SCROLL-'+i,sort_order:i
+    }));
+    await page.setViewportSize({width:1440,height:720});
+    await page.goto(base+'/?page=catalog');
+    await expect(page.locator('#product-grid article')).toHaveCount(18);
+    await page.evaluate(()=>window.scrollTo(0,850));
+    const positions=await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      const b=selector=>document.querySelector(selector).getBoundingClientRect();
+      resolve({header:b('.teknikel-header').bottom,filterTop:b('#catalog-filter-rail').top,
+        filterBottom:b('#catalog-filter-rail').bottom,cartTop:b('#cart').top,
+        cartBottom:b('#cart').bottom,scroll:scrollY,viewport:innerHeight,
+        clearance:getComputedStyle(document.documentElement).getPropertyValue('--teknikel-sticky-clearance')});
+    }))));
+    assert.ok(positions.scroll>450,'should reach a scrolled position '+JSON.stringify(positions));
+    assert.ok(positions.filterTop>=positions.header+7,'filters must not sit under header '+JSON.stringify(positions));
+    assert.ok(positions.cartTop>=positions.header+7,'cart must not sit under header '+JSON.stringify(positions));
+    assert.ok(positions.filterBottom<=positions.viewport-4,'filters must fit the visible viewport '+JSON.stringify(positions));
+    assert.ok(positions.cartBottom<=positions.viewport-4,'cart must fit the visible viewport '+JSON.stringify(positions));
+    await page.locator('#catalog-page-size').selectOption('36');
+    await expect(page.locator('#product-grid article')).toHaveCount(36);
+    await expect(page.locator('#catalog-page-status')).toHaveText('Sayfa 1 / 2');
+    await fits(page);
+  });
   await scenario('catalog has one card renderer from first paint through product detail',async page=>{
     const response=await page.request.get(base+'/?page=catalog');
     assert.equal(response.status(),200);

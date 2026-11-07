@@ -57,11 +57,39 @@ if (!empty($view['publication']['features']['requests'])
         </form>
       </aside>
       <section aria-label="<?= e(t($site, 'page.catalog')) ?>" id="products" tabindex="-1">
-        <div class="catalog-results-bar">
+        <div class="catalog-results-bar" role="toolbar" aria-label="<?= e(t($site, 'theme.teknikel.list.toolbar')) ?>">
           <button id="filter-panel-toggle" type="button" class="button secondary mobile-rail-toggle" aria-expanded="false" aria-controls="catalog-filter-rail"><?= e(t($site, 'catalog.category')) ?></button>
-          <p id="catalog-count" role="status" aria-live="polite"></p>
+          <div class="catalog-results-summary">
+            <p id="catalog-count" role="status" aria-live="polite"></p>
+            <button id="refresh" class="catalog-icon-button" type="button" title="<?= e(t($site, 'account.refresh_products')) ?>" aria-label="<?= e(t($site, 'account.refresh_products')) ?>" aria-controls="product-grid">
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14-5l-2 2"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14 5l2-2"/><path d="M20 21v-5h-5"/></svg>
+            </button>
+          </div>
           <div class="catalog-result-actions">
-            <button id="refresh" class="quiet" type="button"><?= e(t($site, 'account.refresh_products')) ?></button>
+            <label class="catalog-toolbar-select" for="catalog-sort">
+              <span><?= e(t($site, 'theme.teknikel.list.sort')) ?></span>
+              <select id="catalog-sort" aria-controls="product-grid">
+                <option value="published"><?= e(t($site, 'theme.teknikel.list.published')) ?></option>
+                <option value="name-asc"><?= e(t($site, 'theme.teknikel.list.name_asc')) ?></option>
+                <option value="name-desc"><?= e(t($site, 'theme.teknikel.list.name_desc')) ?></option>
+                <option value="price-asc"><?= e(t($site, 'theme.teknikel.list.price_asc')) ?></option>
+                <option value="price-desc"><?= e(t($site, 'theme.teknikel.list.price_desc')) ?></option>
+              </select>
+            </label>
+            <label class="catalog-toolbar-select catalog-page-size" for="catalog-page-size">
+              <span><?= e(t($site, 'theme.teknikel.list.per_page')) ?></span>
+              <select id="catalog-page-size" aria-controls="product-grid">
+                <option value="18">18</option><option value="36">36</option><option value="54">54</option>
+              </select>
+            </label>
+            <div class="catalog-view-switch" role="group" aria-label="<?= e(t($site, 'theme.teknikel.list.view')) ?>">
+              <button id="catalog-view-grid" type="button" aria-pressed="true" aria-controls="product-grid" title="<?= e(t($site, 'theme.teknikel.list.grid')) ?>" aria-label="<?= e(t($site, 'theme.teknikel.list.grid')) ?>">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              </button>
+              <button id="catalog-view-list" type="button" aria-pressed="false" aria-controls="product-grid" title="<?= e(t($site, 'theme.teknikel.list.list')) ?>" aria-label="<?= e(t($site, 'theme.teknikel.list.list')) ?>">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 5h12M9 12h12M9 19h12"/><rect x="3" y="3" width="3" height="4" rx=".5"/><rect x="3" y="10" width="3" height="4" rx=".5"/><rect x="3" y="17" width="3" height="4" rx=".5"/></svg>
+              </button>
+            </div>
             <button id="compare-open" class="button secondary" type="button" disabled><?= e(t($site, 'catalog.compare')) ?></button>
             <button id="cart-panel-toggle" type="button" class="button secondary mobile-rail-toggle" aria-expanded="false" aria-controls="cart"><?= e(t($site, 'cart.title')) ?></button>
           </div>

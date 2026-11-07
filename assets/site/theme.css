@@ -551,3 +551,115 @@ body:has(.ya-storefront) .main-content.shell {width:min(1510px,calc(100% - 42px)
   .technical-product.is-preview .price,
   .ya-storefront .product-body .price {font-size:13px;}
 }
+
+/* Teknikel catalog: a measured sticky-header clearance for both side rails.
+   Both rails stay within the viewport; long contents scroll inside independently. */
+:root { --teknikel-sticky-clearance:144px; }
+@media (min-width:951px) {
+  .ya-storefront .catalog-filter-rail,
+  .ya-storefront .cart-panel {
+    position:sticky;
+    top:var(--teknikel-sticky-clearance);
+    max-height:calc(100dvh - var(--teknikel-sticky-clearance) - 12px);
+    overflow-y:auto; overscroll-behavior:contain;
+  }
+}
+.ya-storefront #cart,
+.ya-storefront #catalog-filter-rail,
+.ya-storefront #products {scroll-margin-top:var(--teknikel-sticky-clearance);}
+
+/* Technical catalog toolbar: results, refresh, sorting, density and view choice. */
+.ya-storefront .catalog-results-bar {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:9px 12px; flex-wrap:wrap; padding:11px 12px;
+  margin:0 0 13px; border:1px solid #d8e3eb; border-radius:11px;
+  background:#fff; box-shadow:0 3px 12px rgba(20,43,61,.035);
+}
+.ya-storefront .catalog-results-summary {
+  display:flex; align-items:center; gap:8px; min-width:0; flex:none;
+}
+.ya-storefront #catalog-count {
+  margin:0; font-size:13px; font-weight:800; color:#1e3a50;
+  white-space:nowrap; font-variant-numeric:tabular-nums;
+}
+.ya-storefront .catalog-icon-button {
+  display:grid; place-items:center; width:38px; min-width:38px;
+  height:38px; min-height:38px; padding:0; border:1px solid #d8e2eb;
+  border-radius:8px; color:#24465f; background:#f7f9fb;
+}
+.ya-storefront .catalog-icon-button:hover:not(:disabled) {background:#f0f4f7;border-color:#b6c8d8;}
+.ya-storefront .catalog-icon-button svg {width:18px;height:18px;}
+.ya-storefront .catalog-result-actions {
+  display:flex; justify-content:flex-end; align-items:center;
+  flex-wrap:wrap; gap:7px; flex:1 1 auto; min-width:0;
+}
+.ya-storefront .catalog-toolbar-select {
+  display:flex; gap:6px; align-items:center; min-width:0;
+  font-size:11px; font-weight:700; color:#526b7d;
+}
+.ya-storefront .catalog-toolbar-select span {white-space:nowrap;}
+.ya-storefront .catalog-toolbar-select select {
+  width:clamp(112px,11vw,147px); min-width:0; max-width:100%;
+  height:38px; min-height:38px; padding:5px 7px;
+  border:1px solid #d8e2eb; border-radius:8px;
+  color:#20394f; background:#f8fafb; font-size:11px; font-weight:650;
+}
+.ya-storefront .catalog-page-size select {width:57px;}
+.ya-storefront .catalog-view-switch {
+  display:inline-flex; gap:2px; align-items:center; flex:none;
+  padding:3px; border:1px solid #d8e2eb; border-radius:8px; background:#f8fafb;
+}
+.ya-storefront .catalog-view-switch button {
+  display:grid; place-items:center; min-height:32px; height:32px;
+  width:33px; min-width:33px; padding:0; border:0; border-radius:5px;
+  background:transparent; color:#526a7c;
+}
+.ya-storefront .catalog-view-switch button svg {width:17px;height:17px;}
+.ya-storefront .catalog-view-switch button[aria-pressed=true] {
+  background:#fff; color:#c92134; box-shadow:0 1px 5px rgba(16,40,62,.14);
+}
+.ya-storefront .catalog-result-actions #compare-open {
+  min-height:38px; padding:7px 10px; font-size:11px; border-radius:8px;
+  white-space:nowrap; gap:4px;
+}
+
+/* List mode rearranges only the already-authorized catalog cards. */
+.ya-storefront .product-grid.is-list {grid-template-columns:minmax(0,1fr);}
+.ya-storefront .product-grid.is-list .product-card {
+  display:grid; grid-template-columns:minmax(120px,34%) minmax(0,1fr);
+  align-items:stretch; height:auto; min-width:0;
+}
+.ya-storefront .product-grid.is-list .teknikel-product-media {
+  width:100%; height:100%; min-height:175px; min-width:0; flex-basis:auto;
+  border-bottom:0; border-right:1px solid #edf1f4;
+}
+.ya-storefront .product-grid.is-list .product-body {
+  min-width:0; align-items:stretch; gap:7px; padding:13px 15px;
+}
+.ya-storefront .product-grid.is-list .product-body h3 {
+  display:block; -webkit-line-clamp:unset;
+  overflow:visible; max-height:none; min-height:0; font-size:13px;
+}
+.ya-storefront .product-grid.is-list .product-body > button:last-child {
+  align-self:flex-start; width:auto; min-width:145px;
+  margin-top:6px;
+}
+@media(max-width:950px) {
+  .ya-storefront .catalog-filter-rail,.ya-storefront .cart-panel {
+    position:static; top:auto; max-height:none;
+  }
+}
+@media(max-width:540px) {
+  .ya-storefront .catalog-results-bar {padding:9px;gap:7px;}
+  .ya-storefront .catalog-results-summary {width:100%;justify-content:space-between;}
+  .ya-storefront .catalog-result-actions {justify-content:flex-start;gap:7px;}
+  .ya-storefront .catalog-toolbar-select select {width:132px;}
+  .ya-storefront .catalog-page-size select {width:57px;}
+  .ya-storefront .catalog-result-actions #compare-open {flex:1 1 auto;min-width:0;}
+  .ya-storefront .product-grid.is-list .product-card {grid-template-columns:minmax(100px,34%) minmax(0,1fr);}
+  .ya-storefront .product-grid.is-list .teknikel-product-media {min-height:155px;height:100%;}
+  .ya-storefront .product-grid.is-list .teknikel-gallery-image-link {padding-inline:7px;}
+  .ya-storefront .product-grid.is-list .product-body {padding:10px;gap:5px;}
+  .ya-storefront .product-grid.is-list .product-body h3 {font-size:11.5px;}
+  .ya-storefront .product-grid.is-list .product-body > button:last-child {min-width:0;width:100%;}
+}
