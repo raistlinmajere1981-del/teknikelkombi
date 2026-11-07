@@ -119,5 +119,7 @@ payment notice work without SMTP; password registration/reset remain gated by SM
 and the server-side token encryption key. Campaign artwork is marked DEMO/passive;
 no visual promise becomes a discount, installment, points or free-shipping rule.
 See `../YardimciAsistan/docs/commerce/ECOMMERCE_V2.md` in the adjacent source repo
-for remaining returns, Desktop/Electron/browser/restore acceptance and coordinated
-installation requirements. No push, live deploy or installer was produced here.
+for the passing bank/refund, real Electron, account browser and V2 restore evidence,
+remaining Android/template/Windows work, and coordinated installation requirements.
+Linux AppImage and local API/site/common review archives exist in the adjacent repo;
+no Windows installer, push or live deployment was produced.
