@@ -313,7 +313,7 @@ body:has(.ya-storefront) .main-content.shell {width:min(1510px,calc(100% - 42px)
 .ya-storefront .store-header h1 {font-size:clamp(30px,3vw,43px);line-height:1.1;letter-spacing:-.045em}
 .ya-storefront .store-header .cart-access {padding:8px 13px;min-height:39px;border-radius:9px;font-size:12px}
 .ya-storefront .store-header .cart-access span {display:inline-grid;place-items:center;min-width:25px;height:25px;background:#172f45;color:#fff;border-radius:8px}
-.ya-storefront .store-layout {grid-template-columns:222px minmax(0,1fr) 288px;gap:15px}
+.ya-storefront .store-layout {grid-template-columns:222px minmax(0,1fr);gap:15px}
 .ya-storefront .catalog-filter-rail,.ya-storefront .cart-panel {
   border:1px solid #d7e2e9;background:#fff;border-radius:12px;
   box-shadow:0 5px 24px rgba(16,40,62,.045);top:104px
@@ -384,7 +384,7 @@ body:has(.ya-storefront) .main-content.shell {width:min(1510px,calc(100% - 42px)
   font-size:10px;font-weight:850;color:#fff;background:#c92134;border:2px solid white;
 }
 @media(max-width:1250px) {
-  .ya-storefront .store-layout {grid-template-columns:200px minmax(0,1fr) 265px;gap:11px}
+  .ya-storefront .store-layout {grid-template-columns:200px minmax(0,1fr);gap:11px}
   .ya-storefront .product-grid {grid-template-columns:repeat(auto-fill,minmax(min(100%,185px),1fr));gap:11px}
 }
 @media(max-width:950px) {
@@ -672,7 +672,7 @@ body:has(.ya-storefront) .main-content.shell {width:min(1510px,calc(100% - 42px)
 .ya-storefront.is-detail .store-layout,
 .ya-storefront.is-detail #store-layout {
   display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(266px,288px);
+  grid-template-columns:minmax(0,1fr);
   gap:16px; align-items:start;
 }
 .ya-storefront.is-detail #products {min-width:0;}
@@ -904,3 +904,7 @@ body:has(.ya-storefront) .main-content.shell {width:min(1510px,calc(100% - 42px)
 .ya-storefront .product-body .compare-choice input {
   accent-color:var(--site-link);
 }
+
+/* Checkout and account use the existing Teknikel palette and one-column mobile flow. */
+.teknikel-home-commerce{display:block}.account-container{max-width:940px;margin-inline:auto}#account-forms{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:1rem}#account-forms[hidden]{display:none}.account-card h2{font-size:1.05rem}
+.announcement-demo-note{font-size:.8rem;color:var(--color-text-muted,#687588);margin:.6rem 0}

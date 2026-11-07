@@ -1,4 +1,4 @@
-# Teknikel — canonical 0.7.7 site presentation
+# Teknikel — canonical 0.8.0 local commerce candidate
 
 Repository root `index.php` is the hosting adapter for `canonical/public/index.php`.
 Document root is the repository root. `canonical/` remains HTTP-private; PHP includes
@@ -39,20 +39,18 @@ request hooks and the old advanced overlay/pinch/filter comparison have not been
 ported. Site-owned catalog detail, gallery and comparison use the authorized products
 from the common headless controller.
 
-`site/views/pages/catalog.php` owns the complete catalog HTML. `public/assets/site/catalog.js`
-owns category/brand widgets, filtering, pagination, comparison, detail, cart thumbnails
-and form presentation. `site/views/pages/home.php` owns only the homepage placement
-and compact cart summary; `public/assets/site/home-catalog.js` subscribes to the
-same headless commerce state for that page. `public/assets/site/product-card.js`
-is the sole product card builder for both pages (gallery, favorite, compare and add
-controls). The obsolete homepage PHP product-card component has been removed.
-`catalog.css` and `theme.css` own site-only structure and responsive layout.
-The common layout and canonical template are unchanged: site-owned page views load
-their scripts, and `core/commerce.js` alone owns catalog/session/cart validation,
-current price snapshots, order payloads, uncertain retry/idempotency and receipt
-recovery. Home comparison selection is transferred to the existing catalog comparison
+`site/views/pages/catalog.php` owns catalog HTML; `public/assets/site/catalog.js`
+owns filters, pagination, comparison and product detail. The separate home cart and
+catalog sidebar/order form are removed. Both pages use `YaCommerce.shared()`;
+`public/assets/site/product-card.js` remains the one card builder. The header opens
+the common mini cart. `cart` and the five `checkout-*` routes use common
+`core/shopping.js` and the existing account/cart controller, without a site order
+transport or database. Source/core release 0.8.0 is a local V2 candidate, not final
+V2 acceptance. Red/white/navy styling, brand assets and Image Inspector remain.
+
+Home comparison selection is transferred to the existing catalog comparison
 panel via an ephemeral URL fragment, never a second comparison implementation.
-There is no site-specific order transport or database/schema/publication change.
+The site has no second order transport or database; shared API/schema/publication changes are coordinated in the parent commerce contract.
 
 See the root README and milestone handoff for exact local/host acceptance commands.
 Not live-ready: browser, real backend callback/session/receipt and HTTPS checks remain.
@@ -113,3 +111,13 @@ syntax/katalog kontrolü **67 PASS**, asset mirror **57 hash** ve paket ön kont
 **186 dosya** geçti. Mobil gerçek touch olayı, klavye/odak, 6 saniyelik zamanlama,
 duraklatma, gizli sekme, reduced-motion, yayınlanmış İngilizce UI ve no-JS dahildir.
 Gerçek afişlerin iki boyutta da tamamı görüldü; görsel kabulü yereldir. Push/deploy yok.
+
+
+The shared bank/quote/status API and Desktop contracts changed with this candidate.
+Bank details are published business settings, not PHP constants. Guest checkout and
+payment notice work without SMTP; password registration/reset remain gated by SMTP
+and the server-side token encryption key. Campaign artwork is marked DEMO/passive;
+no visual promise becomes a discount, installment, points or free-shipping rule.
+See `../YardimciAsistan/docs/commerce/ECOMMERCE_V2.md` in the adjacent source repo
+for remaining returns, Desktop/Electron/browser/restore acceptance and coordinated
+installation requirements. No push, live deploy or installer was produced here.

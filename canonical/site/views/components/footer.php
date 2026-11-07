@@ -14,7 +14,7 @@ $contact = $publication['contact'];
       <?php if ($publication['name'] !== ''): ?><p><?= e($publication['name']) ?></p><?php endif; ?>
     </div>
     <nav class="footer-navigation" aria-label="<?= e(t($site, 'nav.footer')) ?>">
-      <?php foreach ($view['pages'] as $id => $page): if ($id === 'account') continue; ?>
+      <?php foreach ($view['pages'] as $id => $page): if ($id === 'account' || !empty($page['internal'])) continue; ?>
       <a href="<?= e(page_url($site, $id)) ?>"<?= $view['page'] === $id ? ' aria-current="page"' : '' ?>><?= e(t($site, $page['key'])) ?></a>
       <?php endforeach; ?>
     </nav>

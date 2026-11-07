@@ -35,16 +35,16 @@ try {
     await page.goto(base+'/?lang=en');await expect(page.locator('html')).toHaveAttribute('lang','tr');
     await expect(page.locator('.language-picker')).toHaveCount(0);await expect(page.locator('.brand-logo').first()).toBeVisible();
     for(const [path,target] of [
-      ['/magaza/','catalog'],['/katalog/','catalog'],['/urun/?id=p1','catalog'],['/sepet/','catalog'],['/markalar/','catalog'],['/hesabim/','account'],['/bayi/','account'],
+      ['/magaza/','catalog'],['/katalog/','catalog'],['/urun/?id=p1','catalog'],['/sepet/','cart'],['/markalar/','catalog'],['/hesabim/','account'],['/bayi/','account'],
       ['/galeri/','gallery'],['/odalar/','rooms'],['/odalar/oda/?id=r1','rooms'],['/restoran/','restaurant'],['/qr-menu/','menu'],['/iletisim/','contact'],['/yorumlar/','reviews'],['/duyurular/','announcements'],['/hakkimizda/','about']
     ]) {const reply=await context.request.get(base+path,{maxRedirects:0});assert.equal(reply.status(),302,path);const to=new URL(reply.headers().location,base);assert.equal(to.pathname,'/');assert.equal(to.searchParams.get('page'),target,path);}
     const filtered=await context.request.get(base+'/katalog/?q=TEST&category=c1&sku=TEST-POM-101&brand=TEST%20Bosch&page=account',{maxRedirects:0});const params=new URL(filtered.headers().location,base).searchParams;
     for(const [key,value] of Object.entries({page:'catalog',q:'TEST',category:'c1',sku:'TEST-POM-101',brand:'TEST Bosch'})) assert.equal(params.get(key),value);
-    const cart=await context.request.get(base+'/sepet/',{maxRedirects:0});assert.ok(cart.headers().location.endsWith('#cart'));
+    const cart=await context.request.get(base+'/sepet/',{maxRedirects:0});assert.equal(new URL(cart.headers().location,base).searchParams.get('page'),'cart');
     const account=await context.request.get(base+'/hesabim/?action=verify&order=TEST-order',{maxRedirects:0});assert.equal(new URL(account.headers().location,base).searchParams.get('order'),'TEST-order');assert.ok(!account.headers().location.includes('#'),'Fragment token inherited by browser');
     const token='TEST_'+ 'a'.repeat(32);const login=await context.request.get(base+'/bayi/?action=verify&token='+token,{maxRedirects:0});const tokenUrl=new URL(login.headers().location,base);assert.equal(tokenUrl.hash,'#token='+token);assert.equal(tokenUrl.searchParams.has('token'),false);
     for(const query of ['q[]=bad','q=%0Ainjection','redirect=https://example.test']) assert.equal((await context.request.get(base+'/katalog/?'+query)).status(),400);
-    state.surfaces=[];assert.equal((await page.goto(base+'/magaza/')).status(),404);assert.equal((await page.goto(base+'/sepet/')).status(),404);
+    state.surfaces=[];assert.equal((await page.goto(base+'/magaza/')).status(),404);assert.equal((await page.goto(base+'/sepet/')).status(),200,'cart retains an empty/result-safe route after catalog withdrawal');
     state.account=false;assert.equal((await page.goto(base+'/hesabim/')).status(),404);
     Object.assign(state,freshState());
     await page.goto(base+'/urun/?id=p1');await expect(page.locator('#product-detail-title')).toHaveText('TEST Bosch Pompa');

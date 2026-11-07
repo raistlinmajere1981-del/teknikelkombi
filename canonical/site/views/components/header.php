@@ -11,7 +11,7 @@ $accountAvailable = isset($view['pages']['account']);
       <img class="brand-logo" src="<?= e(asset($site, 'site/brand/logo.webp')) ?>" alt="<?= e(t($site, 'theme.teknikel.brand')) ?>" width="350" height="91">
     </a>
     <nav id="main-navigation" class="main-navigation" aria-label="<?= e(t($site, 'nav.main')) ?>">
-      <?php foreach ($view['pages'] as $id => $page): if ($id === 'account') continue; ?>
+      <?php foreach ($view['pages'] as $id => $page): if ($id === 'account' || !empty($page['internal'])) continue; ?>
       <a href="<?= e(page_url($site, $id)) ?>"<?= $view['page'] === $id ? ' aria-current="page"' : '' ?>><?= e(t($site, $page['key'])) ?></a>
       <?php endforeach; ?>
       <div class="menu-social"><?php render_view('components/social-icons', ['social' => $publication['contact']['social'], 'variant' => 'menu'], $site); ?></div>
@@ -19,7 +19,7 @@ $accountAvailable = isset($view['pages']['account']);
     <div class="header-tools">
       <?php render_view('components/social-icons', ['social' => $publication['contact']['social'], 'variant' => 'header'], $site); ?>
       <?php if (isset($view['pages']['catalog'])): ?>
-      <a class="header-cart-link" href="<?= e($view['page'] === 'catalog' ? '#cart' : page_url($site, 'catalog') . '#cart') ?>" aria-label="<?= e(t($site, 'cart.title')) ?>" title="<?= e(t($site, 'cart.title')) ?>">
+      <a class="header-cart-link" data-cart-open aria-controls="mini-cart" aria-haspopup="dialog" href="<?= e(page_url($site, 'cart')) ?>" aria-label="<?= e(t($site, 'cart.title')) ?>" title="<?= e(t($site, 'cart.title')) ?>">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.2 11.3a2 2 0 0 0 2 1.7H19a2 2 0 0 0 2-1.6L22 8H6"/><circle cx="10" cy="21" r="1"/><circle cx="19" cy="21" r="1"/></svg>
         <span id="header-cart-count" class="header-cart-count" hidden>0</span>
       </a>

@@ -11,7 +11,7 @@
   if(!root)return;
   const $=id=>root.querySelector('#'+id);
   const {ui,locale}=window.DemoLanguage;
-  const controller=window.YaCommerce.create({apiBase});
+  const controller=window.YaCommerce.shared({apiBase});
   const selected=new Set();
   const el=(tag,text,className)=>{
     const node=document.createElement(tag);
@@ -53,30 +53,6 @@
     control.addEventListener('click',()=>controller.toggleFavorite(product.product_id));
     return control;
   };
-  const renderCart=next=>{
-    $('home-cart-count').textContent=String(next.cart.length);
-    $('home-cart-message').textContent=next.cartMessage || (!next.cart.length ? ui('Sepetiniz henüz boş.') : '');
-    const list=$('home-cart-items');list.replaceChildren();
-    for(const item of next.cart){
-      const row=el('li',undefined,'teknikel-home-cart-line');
-      const thumbnail=el('div',undefined,'teknikel-home-cart-thumb');
-      const url=controller.safeImage(item.display.image_url);
-      if(url){
-        const photo=el('img');photo.src=url;photo.alt='';photo.loading='lazy';
-        photo.addEventListener('error',()=>photo.remove(),{once:true});
-        thumbnail.append(photo);
-      }
-      const copy=el('div',undefined,'teknikel-home-cart-copy');
-      const link=el('a',item.display.name);
-      link.href=catalogUrl(item.productId);
-      copy.append(link,el('span',ui('{0} × {1}',{0:item.q/next.scale,1:money(item.display.price,item.display.currency)})));
-      const available=next.catalogStatus==='ready'&&next.products.some(product=>product.product_id===item.productId);
-      if(!available)copy.append(el('small',ui('Ürünleri yenileyip sepetinizi kontrol edin.')));
-      row.append(thumbnail,copy);list.append(row);
-    }
-    const totals=$('home-cart-totals');totals.replaceChildren();
-    for(const total of next.totals)totals.append(el('strong',ui('Ara toplam: {0}',{0:money(total.amount,total.currency)})));
-  };
   const render=next=>{
     window.TeknikelProductCard.closeInspector();
     state=next;
@@ -111,7 +87,7 @@
       ),'teknikel-home-product-state'));
     }
     renderComparison();
-    renderCart(next);
+
   };
   $('home-compare-open').addEventListener('click',()=>{
     if(selected.size!==2||state?.catalogStatus!=='ready')return;

@@ -3,7 +3,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === __FILE__) { http_response_co
 $publication = $view['publication'];
 render_view('components/hero', $view, $site);
 ?>
-<?php if (count(array_filter($view['pages'], static fn (array $page): bool => empty($page['editorial']))) === 1): $key = $view['status'] === 'ok' ? 'empty' : 'unavailable'; ?>
+<?php if (count(array_filter($view['pages'], static fn (array $page): bool => empty($page['editorial']) && empty($page['internal']))) === 1): $key = $view['status'] === 'ok' ? 'empty' : 'unavailable'; ?>
 <section class="empty-state" role="status"><h2><?= e(t($site, 'state.' . $key . '.title')) ?></h2><p><?= e(t($site, 'state.' . $key . '.text')) ?></p></section>
 <?php endif; ?>
 
@@ -16,15 +16,6 @@ render_view('components/hero', $view, $site);
       <span id="home-product-status" role="status" aria-live="polite"></span>
       <button id="home-compare-open" type="button" class="button secondary" disabled><?= e(t($site, 'catalog.compare')) ?></button>
     </div>
-    <aside id="home-cart" class="teknikel-home-cart" aria-labelledby="home-cart-title">
-      <div class="teknikel-home-cart-heading">
-        <h3 id="home-cart-title"><?= e(t($site, 'cart.title')) ?> <span id="home-cart-count">0</span></h3>
-        <a class="text-link" href="<?= e(page_url($site, 'catalog')) ?>#cart"><?= e(t($site, 'cart.title')) ?> →</a>
-      </div>
-      <p id="home-cart-message" role="status" aria-live="polite"></p>
-      <ul id="home-cart-items" class="teknikel-home-cart-items"></ul>
-      <div id="home-cart-totals" class="teknikel-home-cart-totals"></div>
-    </aside>
   </div>
   <noscript><p class="state"><?= e(t($site, 'account.noscript')) ?> <a href="<?= e(page_url($site, 'catalog')) ?>"><?= e(t($site, 'page.catalog')) ?></a></p></noscript>
 </section>
@@ -56,8 +47,6 @@ render_view('components/hero', $view, $site);
 
 
 <?php if (isset($view['pages']['catalog'])): ?>
-<!-- Only the site view opts into the shared headless commerce controller. -->
-<script src="<?= e(asset($site, 'core/commerce.js')) ?>" defer></script>
 <link rel="stylesheet" href="<?= e(asset($site, 'site/image-inspector/inspector.css')) ?>">
 <script src="<?= e(asset($site, 'site/image-inspector/core.js')) ?>" defer></script>
 <script src="<?= e(asset($site, 'site/image-inspector/inspector.js')) ?>" defer></script>

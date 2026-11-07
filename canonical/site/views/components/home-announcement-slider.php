@@ -37,6 +37,7 @@ if ($total === 0) return;
     <?php endforeach; ?>
   </div>
   <?php if ($total > 1): ?>
+  <p class="announcement-demo-note"><?= e(t($site, 'theme.teknikel.announcements.demo')) ?></p>
   <div class="announcement-controls" data-announcement-controls hidden>
     <button type="button" data-announcement-step="-1" aria-controls="home-announcement-stage" aria-label="<?= e(t($site, 'theme.teknikel.announcements.previous')) ?>"><span aria-hidden="true">←</span></button>
     <div class="announcement-dots" role="group" aria-label="<?= e(t($site, 'page.announcements')) ?>">

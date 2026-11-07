@@ -5,7 +5,7 @@
   if (!root) return;
   const $ = id => root.querySelector(`#${id}`);
   const {ui,locale} = window.DemoLanguage;
-  const controller = window.YaCommerce.create({apiBase:document.currentScript.dataset.apiBase});
+  const controller = window.YaCommerce.shared({apiBase:document.currentScript.dataset.apiBase});
   let commerceState, auth, generation, catalog, catalogStatus, loading, categories, favorites, cart, pending, busy, deliveryMethods, deliveryMethod, units, deliveryLabels, scale;
   const selected = new Set(), filters = {q:'',category:'',brand:'',sku:''};
   let favoritesOnly = false, pageNumber = 1;
@@ -300,70 +300,8 @@
     updateComparisonControls();
   }
   function updateControls() {
-    $('clear-cart').disabled = !cart.length || !commerceState.canEdit;
-    $('open-checkout').disabled = !commerceState.canCheckout;
-    $('buyer-fields').disabled = busy || Boolean(pending?.hasPayload);
-    $('delivery-fields').disabled = busy || Boolean(pending?.hasPayload);
-    renderDelivery();
-    $('submit-order').disabled = !commerceState.canSubmit;
-    $('submit-order').textContent = busy ? ui("Gönderiliyor…") : pending ? ui("Aynı siparişi tekrar dene") : ui("Siparişi gönder");
-    $('checkout-form').setAttribute('aria-busy', String(busy));
     const detailAdd = $('product-detail')?.querySelector('button.button');
     if (detailAdd) detailAdd.disabled = !commerceState.canEdit || !deliveryMethods.length;
-  }
-  function renderCart() {
-    const focusedLabel = document.activeElement?.closest('.quantity-controls') ? document.activeElement.getAttribute('aria-label') : null;
-    $('cart-lines').replaceChildren();
-    $('cart-count').textContent = String(cart.length);
-    const headerCount = document.getElementById('header-cart-count');
-    if (headerCount) { headerCount.textContent = String(cart.length); headerCount.hidden = cart.length === 0; }
-    if (!cart.length) $('cart-lines').append(el('li', ui("Sepetiniz henüz boş.")));
-    cart.forEach((item, index) => {
-      const product = item.display, row = el('li', undefined, 'cart-line');
-      const heading = el('div', undefined, 'cart-line-heading'), thumbnail = el('div', undefined, 'cart-line-thumb');
-      const thumbnailUrl = safeImage(product.image_url);
-      if (thumbnailUrl) {
-        const photo = el('img'); photo.src = thumbnailUrl; photo.alt = '';
-        photo.loading = 'lazy'; photo.referrerPolicy = 'no-referrer';
-        photo.addEventListener('error', () => photo.remove(), {once:true});
-        thumbnail.append(photo);
-      }
-      const copy = el('div',undefined,'cart-line-copy');
-      copy.append(el('strong',product.name), el('p', money(product.price, product.currency) + ' / ' + units[product.unit]));
-      heading.append(thumbnail,copy); row.append(heading);
-      const available = catalogStatus === 'ready' && catalog.has(item.productId);
-      if (!available || !quantity(item.q / scale, product.unit)) row.append(el('p', catalogStatus === 'loading' ? ui("Ürün kontrol ediliyor…") : !available ? ui("Artık satışta değil veya katalog doğrulanamadı. Satırı kaldırın ya da ürünleri yenileyin.") : ui("Bu ürünün birimi değişti. Miktarı güncelleyin."), 'unavailable'));
-      const controls = el('div', undefined, 'quantity-controls');
-      const step = ['kg', 'l', 'meter', 'other'].includes(product.unit) ? 1000 : scale;
-      const minus = button('−', () => changeQuantity(item, Math.max(discrete(product.unit) ? scale : 1, item.q - step)));
-      minus.setAttribute('aria-label', ui("{0}: miktarı azalt", {0: product.name}));
-      const input = el('input'); input.type = 'text'; input.inputMode = discrete(product.unit) ? 'numeric' : 'decimal'; input.value = String(item.q / scale);
-      input.setAttribute('aria-label', ui("{0}: miktar ({1})", {0: product.name, 1: units[product.unit]}));
-      const error = el('p', '', 'field-error'); error.id = `quantity-error-${index}`; input.setAttribute('aria-describedby', error.id);
-      input.addEventListener('change', () => {
-        const q = quantity(input.value, product.unit);
-        if (!q || !controller.setQuantity(item.productId,q / scale)) {
-          error.textContent = ui("Pozitif, en fazla 1000 {0} girin{1}. Toplam miktar 10000'i aşamaz.", {0: units[product.unit], 1: discrete(product.unit) ? ui(" (tam sayı)") : ui(" (en fazla 4 ondalık)")});
-          input.setAttribute('aria-invalid', 'true'); $('submit-order').disabled = true; $('open-checkout').disabled = true;
-        }
-      });
-      const plus = button('+', () => changeQuantity(item, item.q + step)); plus.setAttribute('aria-label', ui("{0}: miktarı artır", {0: product.name}));
-      const remove = button(ui("Kaldır"), () => controller.remove(item.productId), 'quiet'); remove.setAttribute('aria-label', ui("{0}: satırı kaldır", {0: product.name}));
-      for (const control of [minus, input, plus, remove]) { control.disabled = !commerceState.canEdit; controls.append(control); }
-      row.append(controls, error); $('cart-lines').append(row);
-    });
-    $('subtotal').replaceChildren();
-    for (const {currency,amount} of commerceState.totals) $('subtotal').append(el('p', ui("Ara toplam: {0}", {0: money(amount,currency)})));
-    if (!cart.length && !pending) $('checkout').hidden = true;
-    updateControls();
-    if (focusedLabel) Array.from($('cart-lines').querySelectorAll('[aria-label]')).find((node) => node.getAttribute('aria-label') === focusedLabel)?.focus();
-  }
-  function renderDelivery() {
-    $('delivery-choice').hidden = deliveryMethods.length < 2 || Boolean(pending);
-    $('delivery-summary').textContent = deliveryLabels[deliveryMethod] || ui("Teslimat yöntemleri katalogla birlikte yüklenir.");
-    for (const option of $('delivery-method').options) option.hidden = !deliveryMethods.includes(option.value);
-    $('delivery-method').value = deliveryMethod;
-    $('shipping-fields').hidden = deliveryMethod !== 'shipping';
   }
   function consumeReorder() {
     const url = new URL(location.href); url.searchParams.delete('reorder');
@@ -373,9 +311,9 @@
   function resetPrivateView() {
     closeLightbox();
     favoritesOnly = false; pageNumber = 1; $('favorites-only').checked = false;
-    clearComparison(); $('checkout-form').reset(); $('checkout').hidden = true;
+    clearComparison();
     $('product-detail').replaceChildren(); $('product-detail').hidden = true;
-    $('success').hidden = true; $('reference').textContent = ''; $('store-layout').hidden = false;
+
   }
   controller.subscribe((next,reason) => {
     commerceState = next;
@@ -384,19 +322,15 @@
     if (reason === 'fence') resetPrivateView();
     // A refresh can revoke, replace or reprice product media. Don't retain stale lightbox content.
     if (reason === 'catalog' || catalogStatus !== 'ready') closeLightbox();
-    if (reason === 'owner' || reason === 'new-order') {
-      if (auth.account) { $('buyer-name').value = auth.account.fullName || ''; $('buyer-email').value = auth.account.email || ''; }
-      $('buyer-name').readOnly = Boolean(auth.account); $('buyer-email').readOnly = Boolean(auth.account);
-    }
     for (const id of [...selected]) if (!catalog.has(id)) selected.delete(id);
     $('favorites-only').disabled = catalogStatus !== 'ready' || auth.status === 'unavailable';
     $('catalog-account').hidden = !auth.account; $('catalog-account').textContent = auth.account?.fullName || '';
     $('catalog-state').hidden = !next.catalogMessage; $('catalog-state').textContent = next.catalogMessage;
-    $('cart-message').textContent = next.cartMessage; $('submission-message').textContent = next.submissionMessage;
+
     $('refresh').disabled = loading; $('product-grid').setAttribute('aria-busy',String(loading));
     if (reason === 'catalog' || reason === 'fence') renderFilters();
     if (catalogStatus !== 'ready') clearComparison();
-    renderProducts(); renderCart(); renderDetail();
+    renderProducts(); updateControls(); renderDetail();
     if(reason==='catalog' && catalogStatus==='ready' && !detailId && initialComparison.length && !comparisonHandled){
       comparisonHandled=true;
       for(const id of initialComparison)if(catalog.has(id))selected.add(id);
@@ -407,29 +341,9 @@
         $('comparison-panel').scrollIntoView({block:'start'});
       }
     }
-    if (pending) $('checkout').hidden = false;
-    if (reason === 'accepted') {
-      $('checkout-form').reset(); $('checkout').hidden = true;
-      $('reference').textContent = next.receipt.order_id; $('success').hidden = false; $('store-layout').hidden = true; $('success').focus();
-    }
-    if (reason === 'new-order') { $('success').hidden = true; $('store-layout').hidden = false; $('products').focus(); }
-    if (reason === 'reorder') $('cart').focus();
+    if (reason === 'reorder') $('products').focus();
     if (reason === 'catalog' && reorderId && !reorderHandled) { reorderHandled = true; consumeReorder(); void controller.reorder(reorderId); }
   });
-  async function submit(event) {
-    event.preventDefault();
-    if (root.querySelector('.quantity-controls [aria-invalid="true"]')) return;
-    const input = Object.fromEntries(['name','phone','email','note'].map(key => [key,$(key === 'note' ? 'order-note' : `buyer-${key}`).value]));
-    input.address = Object.fromEntries(['recipientName','addressLine1','addressLine2','district','city','postalCode','countryCode','note'].map(key => [key,$(`delivery-${key}`).value]));
-    const result = await controller.submit(input), errors = result?.errors || {};
-    let first;
-    for (const key of ['name','phone','email','note',...Object.keys(input.address).map(key => 'delivery-' + key)]) {
-      const field = $(key.startsWith('delivery-') ? key : key === 'note' ? 'order-note' : `buyer-${key}`);
-      $(`${key}-error`).textContent = errors[key] || ''; field.setAttribute('aria-invalid',String(Boolean(errors[key])));
-      if (!first && errors[key]) first = field;
-    }
-    first?.focus();
-  }
   $('catalog-filters').addEventListener('submit',event => event.preventDefault());
   for (const [id,key,event] of [['catalog-search','q','input'],['catalog-sku','sku','input'],['catalog-category','category','change'],['catalog-brand','brand','change']]) {
     $(id).addEventListener(event,() => { filters[key] = $(id).value; pageNumber = 1; syncFilterUrl(); if (key === 'category') renderCategoryOptions(); if (key === 'brand') renderBrandOptions([...new Set([...catalog.values()].map(row => row.brand).filter(Boolean))].sort((a,b) => a.localeCompare(b,locale))); renderProducts(); });
@@ -464,15 +378,9 @@
     $('filter-panel-toggle').setAttribute('aria-expanded',String(!collapsed));
     if (!collapsed) $('category-query').focus();
   });
-  $('cart-panel-toggle').addEventListener('click', () => $('cart').scrollIntoView({behavior:'smooth',block:'start'}));
   for (const [id,step] of [['catalog-prev',-1],['catalog-next',1]]) $(id).addEventListener('click',() => { pageNumber += step; renderProducts(); });
   $('compare-open').addEventListener('click',() => showComparison());
-  $('delivery-method').addEventListener('change', () => controller.setDelivery($('delivery-method').value));
   $('refresh').addEventListener('click', () => controller.refresh());
-  $('clear-cart').addEventListener('click', () => controller.clearCart());
-  $('open-checkout').addEventListener('click', () => { if ($('open-checkout').disabled) return; $('checkout').hidden = false; (auth.account ? $('buyer-phone') : $('buyer-name')).focus(); });
-  $('checkout-form').addEventListener('submit', submit);
-  $('new-order').addEventListener('click', () => controller.newOrder());
   // A bfcache/pagehide transition may fence private product imagery.
   window.addEventListener('pagehide',closeLightbox);
   controller.start();

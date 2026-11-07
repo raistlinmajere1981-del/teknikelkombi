@@ -200,7 +200,7 @@ try {
   });
   await scenario('all actions off hides launcher',async page=>{state.requests=false;await page.goto(base+'/');await expect(page.locator('[data-ya-open]')).toBeHidden();});
   await scenario('account remains available with orders off',async page=>{state.delivery=[];const response=await page.goto(base+'/?page=account');assert.equal(response.status(),200);await expect(page.locator('script[src*="portal.js"]')).toHaveCount(1);await expect(page.locator('script[src*="storefront.js"]')).toHaveCount(0);});
-  await scenario('catalog cart uses single canonical owner',async page=>{await page.goto(base+'/?page=catalog');await expect(page.locator('#product-grid article')).toHaveCount(2);await page.locator('#product-grid article').first().getByRole('button',{name:'Sepete ekle',exact:true}).click();await expect(page.locator('#cart-count')).toHaveText('1');await expect(page.locator('#cart-lines li')).toHaveCount(1);await expect(page.locator('script[src="/assets/site/catalog.js"]')).toHaveCount(1);await expect(page.locator('script[src="/assets/core/commerce.js"]')).toHaveCount(1);await expect(page.locator('script[src*="storefront.js"]')).toHaveCount(0);await expect(page.locator('#cart')).toHaveCount(1);});
+  await scenario('catalog cart uses single canonical owner',async page=>{await page.goto(base+'/?page=catalog');await expect(page.locator('#product-grid article')).toHaveCount(2);await page.locator('#product-grid article').first().getByRole('button',{name:'Sepete ekle',exact:true}).click();await expect(page.locator('#header-cart-count')).toHaveText('1');await expect(page.locator('#mini-cart [data-cart-lines] article')).toHaveCount(1);await expect(page.locator('script[src="/assets/site/catalog.js"]')).toHaveCount(1);await expect(page.locator('script[src="/assets/core/commerce.js"]')).toHaveCount(1);await expect(page.locator('script[src*="storefront.js"]')).toHaveCount(0);await expect(page.locator('#cart,#checkout-form')).toHaveCount(0);});
   for(const width of [390,1440])await scenario('one card renderer and persistent home cart across catalog '+width,async page=>{
     await page.setViewportSize({width,height:900});
     const response=await page.request.get(base+'/?page=home');
@@ -213,23 +213,23 @@ try {
     await expect(page.locator('#home-product-grid .product-card .compare-choice')).toHaveCount(2);
     await expect(page.locator('#home-product-grid .product-card button[data-favorite-toggle]')).toHaveCount(2);
     await expect(page.locator('#home-product-grid .product-card').first().getByRole('button',{name:'Sepete ekle'})).toBeEnabled();
-    await expect(page.locator('#home-cart-count')).toHaveText('0');
+    await expect(page.locator('#header-cart-count')).toHaveText('0');
     await page.locator('#home-product-grid .product-card').first().getByRole('button',{name:'Sepete ekle'}).click();
-    await expect(page.locator('#home-cart-count')).toHaveText('1');
-    await expect(page.locator('#home-cart-items li')).toHaveCount(1);
-    await expect(page.locator('#home-cart-items')).toContainText('TEST Bosch Pompa');
-    await expect(page.locator('#home-cart-totals')).toContainText('100,00');
+    await expect(page.locator('#header-cart-count')).toHaveText('1');
+    await expect(page.locator('#mini-cart [data-cart-lines] article')).toHaveCount(1);
+    await expect(page.locator('#mini-cart [data-cart-lines]')).toContainText('TEST Bosch Pompa');
+    await expect(page.locator('#mini-cart [data-cart-total]')).toContainText('100,00');
     await expect(page.locator('#header-cart-count')).toHaveText('1');
     await page.goto(base+'/?page=catalog');
     await expect(page.locator('#product-grid article')).toHaveCount(2);
-    await expect(page.locator('#cart-count')).toHaveText('1');
-    await expect(page.locator('#cart-lines')).toContainText('TEST Bosch Pompa');
+    await expect(page.locator('#header-cart-count')).toHaveText('1');
+    await expect(page.locator('#mini-cart [data-cart-lines]')).toContainText('TEST Bosch Pompa');
     await page.locator('#product-grid .product-card').nth(1).getByRole('button',{name:'Sepete ekle'}).click();
-    await expect(page.locator('#cart-count')).toHaveText('2');
+    await expect(page.locator('#header-cart-count')).toHaveText('2');
     await page.goto(base+'/?page=home');
-    await expect(page.locator('#home-cart-count')).toHaveText('2');
-    await expect(page.locator('#home-cart-items li')).toHaveCount(2);
-    await expect(page.locator('#home-cart-items')).toContainText('TEST Kontrol Kartı');
+    await expect(page.locator('#header-cart-count')).toHaveText('2');
+    await expect(page.locator('#mini-cart [data-cart-lines] article')).toHaveCount(2);
+    await expect(page.locator('#mini-cart [data-cart-lines]')).toContainText('TEST Kontrol Kartı');
     await expect(page.locator('#header-cart-count')).toHaveText('2');
     await page.locator('#home-product-grid button[data-favorite-toggle]').first().click();
     await expect(page.locator('#home-product-grid button[data-favorite-toggle]').first()).toHaveAttribute('aria-pressed','true');
@@ -258,9 +258,9 @@ try {
     await expect(page.locator('#product-grid .product-card')).toHaveCount(4);
     await page.locator('#product-grid').getByRole('button',{name:'Sepete ekle'}).first().click();
     await page.goto(base+'/?page=home');
-    await expect(page.locator('#home-cart-count')).toHaveText('1');
+    await expect(page.locator('#header-cart-count')).toHaveText('1');
     // A previously non-featured cart line must remain valid.
-    await expect(page.locator('#home-cart-items')).toContainText('TEST Bosch Pompa');
+    await expect(page.locator('#mini-cart [data-cart-lines]')).toContainText('TEST Bosch Pompa');
     await fits(page);
   });
   await scenario('invalid public featured flag cannot be used to alter storefront selection',async page=>{
@@ -354,7 +354,7 @@ try {
     await expect(page.locator('#catalog-count')).toHaveText('3 ürün');
     await fits(page);
   });
-  await scenario('sticky filter and cart stay below measured header while scrolling',async page=>{
+  await scenario('sticky filter stays below header and cart opens on demand while scrolling',async page=>{
     const template=state.products.map(row=>({...row}));
     state.products=Array.from({length:55},(_,i)=>({
       ...template[i%template.length],product_id:'test-scroll-'+i,name:'TEST Scroll Ürün '+i,
@@ -367,15 +367,15 @@ try {
     const positions=await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>{
       const b=selector=>document.querySelector(selector).getBoundingClientRect();
       resolve({header:b('.teknikel-header').bottom,filterTop:b('#catalog-filter-rail').top,
-        filterBottom:b('#catalog-filter-rail').bottom,cartTop:b('#cart').top,
-        cartBottom:b('#cart').bottom,scroll:scrollY,viewport:innerHeight,
+        filterBottom:b('#catalog-filter-rail').bottom,scroll:scrollY,viewport:innerHeight,
         clearance:getComputedStyle(document.documentElement).getPropertyValue('--teknikel-sticky-clearance')});
     }))));
     assert.ok(positions.scroll>450,'should reach a scrolled position '+JSON.stringify(positions));
     assert.ok(positions.filterTop>=positions.header+7,'filters must not sit under header '+JSON.stringify(positions));
-    assert.ok(positions.cartTop>=positions.header+7,'cart must not sit under header '+JSON.stringify(positions));
     assert.ok(positions.filterBottom<=positions.viewport-4,'filters must fit the visible viewport '+JSON.stringify(positions));
-    assert.ok(positions.cartBottom<=positions.viewport-4,'cart must fit the visible viewport '+JSON.stringify(positions));
+    await page.locator('.header-cart-link').click();
+    await expect(page.locator('#mini-cart')).toBeVisible();
+    await page.locator('[data-cart-close]').click();
     await page.locator('#catalog-page-size').selectOption('36');
     await expect(page.locator('#product-grid article')).toHaveCount(36);
     await expect(page.locator('#catalog-page-status')).toHaveText('Sayfa 1 / 2');
@@ -396,7 +396,7 @@ try {
     await expect(page.locator('.catalog-results-bar')).toBeHidden();
     await expect(page.locator('#product-grid article')).toHaveCount(0);
     await expect(page.locator('.store-header')).toBeHidden();
-    await expect(page.locator('#cart')).toBeVisible();
+    await expect(page.locator('.header-cart-link')).toBeVisible();
     await expect(page.locator('#product-detail-title')).toHaveText('TEST Bosch Pompa');
     await expect(page.locator('#product-detail')).toContainText('Yalnız test verisi: pompa açıklaması.');
     const thumbs=page.locator('.teknikel-detail-thumb');
@@ -418,10 +418,10 @@ try {
     await thumbs.nth(1).click();
     await expect(page.locator('dialog.ii-dialog')).toBeVisible();
     await expect(page.locator('.ii-counter')).toHaveText('2 / 3');
-    await page.locator('button[aria-label="Kapat"]').click();
+    await page.locator('dialog.ii-dialog button[aria-label="Kapat"]').click();
     await expect(page.locator('dialog.ii-dialog')).toHaveCount(0);
     await page.locator('#product-detail button.button').first().click();
-    await expect(page.locator('#cart-count')).toHaveText('1');
+    await expect(page.locator('#header-cart-count')).toHaveText('1');
     await expect(page.locator('#product-grid article')).toHaveCount(0);
     await expect(page.locator('#product-detail')).toBeVisible();
     await fits(page);
@@ -429,7 +429,7 @@ try {
     await page.locator('.teknikel-detail-back').click();
     await expect(page.locator('#catalog-filter-rail')).toBeVisible();
     await expect(page.locator('#product-grid article')).toHaveCount(2);
-    await expect(page.locator('#cart-count')).toHaveText('1');
+    await expect(page.locator('#header-cart-count')).toHaveText('1');
   });
   for (const width of [390,1440]) await scenario('modal square photo stays inside stage with navigable controls '+width,async page=>{
     state.products[0].image_url='https://images.example.com/TEST-square.webp';
@@ -457,7 +457,7 @@ try {
     await expect(page.locator('.ii-counter')).toHaveText('2 / 2');
     await page.getByRole('button',{name:'Önceki fotoğraf'}).click();
     await check();
-    await page.locator('button[aria-label="Kapat"]').click();
+    await page.locator('dialog.ii-dialog button[aria-label="Kapat"]').click();
     await expect(page.locator('dialog.ii-dialog')).toHaveCount(0);
   });
   await scenario('catalog has one card renderer from first paint through product detail',async page=>{
