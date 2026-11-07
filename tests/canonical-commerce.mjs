@@ -153,17 +153,18 @@ try{
   await scenario('ambiguous account outage fences detail and recovers verified guest without refetch',async page=>{
     await page.route('**/api/account/refresh.php',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({ok:false,code:'temporary_unavailable'})}));
     await page.goto(base+'/?page=catalog&id=p1');
-    await expect(page.locator('#product-grid article').first()).toBeVisible();
+    await expect(page.locator('#product-detail')).toBeVisible();
+    await expect(page.locator('#product-detail-title')).toHaveText('TEST Bosch Pompa');
     await expect.poll(()=>page.evaluate(()=>window.YaAccount?.state.status)).toBe('unavailable');
-    await expect(page.locator('#product-grid article')).toHaveCount(state.products.length);
+    await expect(page.locator('#product-grid article')).toHaveCount(0);
+    await expect(page.locator('#catalog-filter-rail')).toBeHidden();
     await expect(page.locator('#catalog-state')).toContainText('Hesap şu anda doğrulanamıyor');
-    await expect(page.locator('#product-grid article').first().getByRole('button',{name:'Sepete ekle'})).toBeDisabled();
     await expect(page.locator('#open-checkout')).toBeDisabled();
     await expect(page.locator('#product-detail button.button')).toBeDisabled();
     const before=state.requests.filter(call=>call.path==='catalog').length;
     await page.unroute('**/api/account/refresh.php');await page.evaluate(()=>window.YaAccount.refresh());
     await expect.poll(()=>page.evaluate(()=>window.YaAccount.state.status)).toBe('guest');
-    await expect(page.locator('#product-grid article').first().getByRole('button',{name:'Sepete ekle'})).toBeEnabled();
+    await expect(page.locator('#product-grid article')).toHaveCount(0);
     await expect(page.locator('#product-detail button.button')).toBeEnabled();
     await expect(page.locator('#catalog-state')).toBeHidden();
     assert.equal(state.requests.filter(call=>call.path==='catalog').length,before);

@@ -12,6 +12,9 @@
   let pageSize = 18, sortMode = 'published', viewMode = 'grid';
   const collator = new Intl.Collator(locale,{numeric:true,sensitivity:'base'});
   const parameters = new URLSearchParams(location.search), reorderId = parameters.get('reorder');
+  const detailId = parameters.get('id') || '';
+  const requestHook = $('detail-request-hook');
+  let detailImageIndex = 0, detailImageProduct = '', lightbox = null;
   let reorderHandled = false;
   for (const key of Object.keys(filters)) filters[key] = (parameters.get(key) || '').slice(0,180);
   const current = stamp => stamp === generation && auth.status !== 'unavailable';
@@ -131,20 +134,159 @@
     node.setAttribute('aria-pressed',String(saved));
     return node;
   }
+  function closeLightbox() {
+    if (!lightbox) return;
+    const active = lightbox; lightbox = null;
+    if (active.open) active.close();
+    active.remove();
+  }
+  function openLightbox(product, urls, startIndex, opener, onSelect) {
+    if (!urls.length) return;
+    closeLightbox();
+    const dialog = el('dialog',undefined,'teknikel-lightbox');
+    dialog.setAttribute('aria-label',ui('Ürün fotoğrafları') + ': ' + product.name);
+    const frame = el('div',undefined,'teknikel-lightbox-frame');
+    const toolbar = el('div',undefined,'teknikel-lightbox-header');
+    const title = el('strong',product.name);
+    const close = button('×',() => dialog.close(),'teknikel-lightbox-close');
+    close.setAttribute('aria-label',ui('Kapat'));
+    toolbar.append(title,close);
+    const stage = el('div',undefined,'teknikel-lightbox-stage');
+    const photo = el('img'); photo.alt = product.name; photo.referrerPolicy = 'no-referrer';
+    const fallback = el('span',ui('Fotoğraf yüklenemedi'),'teknikel-lightbox-fallback');
+    fallback.hidden = true;
+    photo.addEventListener('error',() => {photo.hidden = true;fallback.hidden = false;});
+    photo.addEventListener('load',() => {photo.hidden = false;fallback.hidden = true;});
+    stage.append(photo,fallback);
+    const footer = el('div',undefined,'teknikel-lightbox-footer');
+    const previous = button('‹',() => select(index-1),'teknikel-lightbox-arrow');
+    const next = button('›',() => select(index+1),'teknikel-lightbox-arrow');
+    previous.setAttribute('aria-label',ui('Önceki fotoğraf'));
+    next.setAttribute('aria-label',ui('Sonraki fotoğraf'));
+    const counter = el('span',undefined,'teknikel-lightbox-counter');
+    counter.setAttribute('aria-live','polite');
+    const thumbs = el('div',undefined,'teknikel-lightbox-thumbs');
+    thumbs.setAttribute('role','group');
+    thumbs.setAttribute('aria-label',ui('Ürün fotoğrafları'));
+    const choices = urls.map((url,i) => {
+      const choice = button('',() => select(i),'teknikel-lightbox-thumb');
+      choice.setAttribute('aria-label',ui('{0}. fotoğrafı göster',{0:i+1}));
+      const img=el('img'); img.src=url; img.alt=''; img.referrerPolicy='no-referrer';img.loading='lazy';
+      img.addEventListener('error',()=>choice.replaceChildren(String(i+1)));
+      choice.append(img);return choice;
+    });
+    let index = 0;
+    const select = nextIndex => {
+      index = (nextIndex + urls.length) % urls.length;
+      photo.hidden = false; fallback.hidden = true;
+      photo.src = urls[index];
+      photo.alt = ui('{0}, fotoğraf {1}',{0:product.name,1:index+1});
+      counter.textContent = (index+1)+' / '+urls.length;
+      choices.forEach((choice,i)=>choice.setAttribute('aria-pressed',String(i===index)));
+      onSelect?.(index);
+    };
+    footer.append(previous,counter,next);
+    thumbs.append(...choices);
+    frame.append(toolbar,stage,footer,thumbs);
+    dialog.append(frame); document.body.append(dialog);
+    dialog.addEventListener('close',() => {
+      if (lightbox === dialog) lightbox = null;
+      dialog.remove();
+      if (opener?.isConnected) opener.focus({preventScroll:true});
+    },{once:true});
+    dialog.addEventListener('click',event => {if(event.target===dialog)dialog.close();});
+    dialog.addEventListener('keydown',event => {
+      if(event.key === 'ArrowLeft'||event.key === 'ArrowRight') {
+        event.preventDefault(); select(index + (event.key === 'ArrowRight' ? 1 : -1));
+      }
+    });
+    lightbox=dialog;
+    select(startIndex);
+    dialog.showModal();
+    close.focus();
+  }
+  function detailGallery(product) {
+    const urls = [...new Set([product.image_url,...product.image_urls].map(safeImage).filter(Boolean))].slice(0,12);
+    const gallery = el('div',undefined,'teknikel-detail-gallery');
+    if (!urls.length) {
+      gallery.append(el('div',ui('Görsel yok'),'teknikel-detail-empty'));
+      return gallery;
+    }
+    if (detailImageProduct !== product.product_id) { detailImageProduct = product.product_id; detailImageIndex=0; }
+    detailImageIndex = Math.min(detailImageIndex,urls.length-1);
+    const stage = button('',()=>openLightbox(product,urls,detailImageIndex,stage,select),'teknikel-detail-main-photo');
+    stage.setAttribute('aria-label',ui('Fotoğrafı büyüt'));
+    stage.setAttribute('title',ui('Fotoğrafı büyüt'));
+    const image=el('img'); image.referrerPolicy='no-referrer';image.alt=product.name;
+    const fallback=el('span',ui('Fotoğraf yüklenemedi'),'teknikel-detail-fallback');
+    fallback.hidden=true;
+    image.addEventListener('error',() => {image.hidden=true;fallback.hidden=false;});
+    image.addEventListener('load',() => {image.hidden=false;fallback.hidden=true;});
+    const hint=el('span',ui('Fotoğrafı büyüt'),'teknikel-detail-zoom-hint');
+    stage.append(image,fallback,hint);
+    const strip=el('div',undefined,'teknikel-detail-strip');
+    strip.setAttribute('role','group');strip.setAttribute('aria-label',ui('Ürün fotoğrafları'));
+    const controls=urls.map((url,i) => {
+      const thumb=button('',()=>{ select(i);openLightbox(product,urls,i,thumb,select); },'teknikel-detail-thumb');
+      thumb.setAttribute('aria-label',ui('{0}. fotoğrafı göster',{0:i+1}));
+      const img=el('img');img.src=url;img.alt='';img.loading='lazy';img.referrerPolicy='no-referrer';
+      img.addEventListener('error',()=>thumb.replaceChildren(String(i+1)));
+      thumb.append(img);return thumb;
+    });
+    const select = i => {
+      detailImageIndex=i;
+      image.hidden=false;fallback.hidden=true;
+      image.src=urls[i];
+      image.alt=ui('{0}, fotoğraf {1}',{0:product.name,1:i+1});
+      controls.forEach((thumb,j)=>thumb.setAttribute('aria-pressed',String(j===i)));
+    };
+    strip.append(...controls);
+    const count=el('p',ui('Fotoğraflar ({0})',{0:urls.length}),'teknikel-detail-photo-count');
+    gallery.append(stage,strip,count);
+    select(detailImageIndex);
+    return gallery;
+  }
   function renderDetail() {
-    const detail = $('product-detail'), id = new URLSearchParams(location.search).get('id');
-    detail.replaceChildren(); detail.hidden = !id;
-    if (!id) return;
-    const back = el('a',ui('Tüm ürünlere dön')); back.href = productUrl(''); detail.append(back);
-    const product = catalog.get(id);
-    if (!product) { const title = el('h2',ui('Ürün bulunamadı.')); title.id = 'product-detail-title'; detail.append(title); return; }
-    const heading = el('h2',product.name); heading.id = 'product-detail-title'; detail.append(heading);
-    if (product.image_url) { const image = el('img'); image.src = product.image_url; image.alt = product.name; image.className = 'product-detail-image'; detail.append(image); }
-    if (product.image_urls.length > 1) detail.append(productGallery(product));
-    for (const value of [product.sku ? `${ui('Stok kodu')}: ${product.sku}` : '',product.brand,product.category_name,product.description]) if (value) detail.append(el('p',value));
-    detail.append(el('p',`${money(product.price,product.currency)} / ${units[product.unit]}`,'price'));
-    const add = button(ui('Sepete ekle'),() => addProduct(product),'button');
-    add.disabled = !commerceState.canEdit || !deliveryMethods.length; detail.append(favoriteButton(product),add);
+    const detail=$('product-detail');
+    detail.replaceChildren();detail.hidden = !detailId;
+    if(requestHook)requestHook.hidden=true;
+    if (!detailId) return;
+    const back=el('a',ui('Tüm ürünlere dön'),'teknikel-detail-back');
+    back.href=productUrl('');
+    detail.append(back);
+    const product=catalog.get(detailId);
+    if(!product) {
+      const heading=el('h2',catalogStatus === 'loading' ? ui('Ürün yükleniyor…') : ui('Ürün bulunamadı.'));
+      heading.id='product-detail-title';detail.append(heading);
+      return;
+    }
+    const layout=el('div',undefined,'teknikel-detail-layout');
+    const body=el('div',undefined,'teknikel-detail-info');
+    const group=[product.brand,product.category_name].filter(Boolean).join(' · ');
+    if(group)body.append(el('p',group,'teknikel-detail-kicker'));
+    const title=el('h2',product.name);title.id='product-detail-title';body.append(title);
+    const facts=el('dl',undefined,'teknikel-detail-facts');
+    if(product.sku)facts.append(el('dt',ui('Stok kodu')),el('dd',product.sku));
+    if(product.brand)facts.append(el('dt',ui('Marka')),el('dd',product.brand));
+    if(product.category_name)facts.append(el('dt',ui('Kategori')),el('dd',product.category_name));
+    if(facts.children.length)body.append(facts);
+    if(product.description) {
+      const description=el('section',undefined,'teknikel-detail-description');
+      description.append(el('h3',ui('Açıklama')),el('p',product.description));
+      body.append(description);
+    }
+    const commerce=el('div',undefined,'teknikel-detail-purchase');
+    commerce.append(el('p',money(product.price,product.currency)+' / '+units[product.unit],'teknikel-detail-price'));
+    const actions=el('div',undefined,'teknikel-detail-actions');
+    const add=button(ui('Sepete ekle'),() => addProduct(product),'button');
+    add.disabled = !commerceState.canEdit || !deliveryMethods.length;
+    actions.append(add,favoriteButton(product));
+    if(requestHook && requestHook.querySelector('button')) {
+      requestHook.hidden=false;
+      actions.append(requestHook);
+    }
+    commerce.append(actions);body.append(commerce);
+    layout.append(detailGallery(product),body);detail.append(layout);
   }
   function updateComparisonControls() {
     $('compare-open').disabled = selected.size === 0 || catalogStatus !== 'ready';
@@ -210,44 +352,11 @@
     });
     if (focus) panel.focus();
   }
-  function productGallery(product) {
-    const detail = el('details', undefined, 'product-photo-detail');
-    detail.append(el('summary', ui('Fotoğraflar ({0})', {0: product.image_urls.length})));
-    const media = el('div', undefined, 'product-photo-preview');
-    const image = el('img'); image.referrerPolicy = 'no-referrer'; image.loading = 'lazy';
-    const fallback = el('span', ui('Fotoğraf yüklenemedi')); fallback.hidden = true;
-    media.append(image, fallback);
-    image.addEventListener('error', () => { image.hidden = true; fallback.hidden = false; });
-    image.addEventListener('load', () => { image.hidden = false; fallback.hidden = true; });
-    const thumbnails = el('div', undefined, 'product-photo-thumbnails');
-    thumbnails.setAttribute('role', 'group'); thumbnails.setAttribute('aria-label', ui('Ürün fotoğrafları'));
-    const buttons = product.image_urls.map((url, index) => {
-      const thumbnail = button('', () => select(index), 'secondary');
-      thumbnail.setAttribute('aria-label', ui('{0}. fotoğrafı göster', {0: index + 1}));
-      const small = el('img'); small.src = url; small.alt = ''; small.loading = 'lazy'; small.referrerPolicy = 'no-referrer';
-      small.addEventListener('error', () => { thumbnail.replaceChildren(String(index + 1)); }, {once: true});
-      thumbnail.append(small);
-      thumbnail.addEventListener('keydown', event => {
-        const target = event.key === 'Home' ? 0 : event.key === 'End' ? product.image_urls.length - 1
-          : event.key === 'ArrowRight' ? (index + 1) % product.image_urls.length
-          : event.key === 'ArrowLeft' ? (index + product.image_urls.length - 1) % product.image_urls.length : null;
-        if (target === null) return;
-        event.preventDefault(); select(target); buttons[target].focus();
-      });
-      return thumbnail;
-    });
-    function select(index) {
-      image.hidden = false; fallback.hidden = true;
-      image.alt = ui('{0}, fotoğraf {1}', {0: product.name, 1: index + 1});
-      image.src = product.image_urls[index];
-      buttons.forEach((node, i) => node.setAttribute('aria-pressed', String(i === index)));
-    }
-    thumbnails.append(...buttons); select(0); detail.append(media, thumbnails); return detail;
-  }
   function renderProducts() {
     $('product-grid').replaceChildren();
     $('catalog-pagination').hidden = true;
-    if (catalogStatus !== 'ready') return;
+    // A detail route is a separate presentation, not a catalog with cards hidden over it.
+    if (detailId || catalogStatus !== 'ready') return;
     const fold = value => value.toLocaleLowerCase(locale).normalize('NFKD');
     const products = [...catalog.values()].filter(product => (!filters.q || fold([product.name,product.description,product.sku,product.brand,product.category_name].join(' ')).includes(fold(filters.q)))
       && (!filters.sku || fold(product.sku).includes(fold(filters.sku))) && (!filters.category || selectedCategoryIds().has(product.category_id))
@@ -394,6 +503,7 @@
     for (const input of document.querySelectorAll('.language-picker input[name="reorder"]')) input.remove();
   }
   function resetPrivateView() {
+    closeLightbox();
     favoritesOnly = false; pageNumber = 1; $('favorites-only').checked = false;
     clearComparison(); $('checkout-form').reset(); $('checkout').hidden = true;
     $('product-detail').replaceChildren(); $('product-detail').hidden = true;
@@ -404,6 +514,8 @@
     ({auth,generation,catalogStatus,loading,categories,cart,pending,busy,deliveryMethods,deliveryMethod,units,deliveryLabels,scale} = next);
     catalog = new Map(next.products.map(product => [product.product_id,product])); favorites = new Set(next.favorites);
     if (reason === 'fence') resetPrivateView();
+    // A refresh can revoke, replace or reprice product media. Don't retain stale lightbox content.
+    if (reason === 'catalog' || catalogStatus !== 'ready') closeLightbox();
     if (reason === 'owner' || reason === 'new-order') {
       if (auth.account) { $('buyer-name').value = auth.account.fullName || ''; $('buyer-email').value = auth.account.email || ''; }
       $('buyer-name').readOnly = Boolean(auth.account); $('buyer-email').readOnly = Boolean(auth.account);
@@ -483,5 +595,7 @@
   $('open-checkout').addEventListener('click', () => { if ($('open-checkout').disabled) return; $('checkout').hidden = false; (auth.account ? $('buyer-phone') : $('buyer-name')).focus(); });
   $('checkout-form').addEventListener('submit', submit);
   $('new-order').addEventListener('click', () => controller.newOrder());
+  // A bfcache/pagehide transition may fence private product imagery.
+  window.addEventListener('pagehide',closeLightbox);
   controller.start();
 })();

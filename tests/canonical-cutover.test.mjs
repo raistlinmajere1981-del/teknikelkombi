@@ -65,7 +65,8 @@ test('commerce is headless and Teknikel owns its complete catalog presentation',
   assert.match(controller,/dealer\/catalog\.php/);
   assert.match(controller,/fingerprint/);
   const page=read('site/views/pages/catalog.php'),renderer=read('public/assets/site/catalog.js');
-  assert.match(page,/class="ya-storefront teknikel-catalog"/);
+  assert.match(page,/class="ya-storefront teknikel-catalog<\?=/);
+  assert.match(page,/is-detail/);
   assert.match(page,/id="catalog-filter-rail"/);
   assert.doesNotMatch(page,/require.*core\/views\/pages\/catalog/);
   assert.match(renderer,/YaCommerce\.create/);

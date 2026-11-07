@@ -129,6 +129,86 @@ try {
     await expect(page.locator('#catalog-page-status')).toHaveText('Sayfa 1 / 2');
     await fits(page);
   });
+  for (const width of [390,1440]) await scenario('product detail is isolated with zoomable modal gallery '+width,async page=>{
+    state.products[0].image_urls=[
+      'https://images.example.com/TEST-site-logo.webp',
+      'https://images.example.com/TEST-detail-second.webp',
+      'https://images.example.com/TEST-detail-third.webp'
+    ];
+    await page.setViewportSize({width,height:900});
+    const first=await page.request.get(base+'/?page=catalog&id=p1');
+    assert.match(await first.text(),/class="ya-storefront teknikel-catalog is-detail"/);
+    await page.goto(base+'/?page=catalog&id=p1');
+    await expect(page.locator('#product-detail')).toBeVisible();
+    await expect(page.locator('#catalog-filter-rail')).toBeHidden();
+    await expect(page.locator('.catalog-results-bar')).toBeHidden();
+    await expect(page.locator('#product-grid article')).toHaveCount(0);
+    await expect(page.locator('.store-header')).toBeHidden();
+    await expect(page.locator('#cart')).toBeVisible();
+    await expect(page.locator('#product-detail-title')).toHaveText('TEST Bosch Pompa');
+    await expect(page.locator('#product-detail')).toContainText('Yalnız test verisi: pompa açıklaması.');
+    const thumbs=page.locator('.teknikel-detail-thumb');
+    await expect(thumbs).toHaveCount(3);
+    const primary=page.locator('.teknikel-detail-main-photo');
+    await primary.click();
+    const dialog=page.locator('dialog.teknikel-lightbox');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.locator('.teknikel-lightbox-counter')).toHaveText('1 / 3');
+    if(width===1440)await page.screenshot({path:`${artifacts}detail-lightbox-1440.png`,fullPage:false});
+    await dialog.getByRole('button',{name:'Sonraki fotoğraf'}).click();
+    await expect(dialog.locator('.teknikel-lightbox-counter')).toHaveText('2 / 3');
+    await dialog.press('ArrowRight');
+    await expect(dialog.locator('.teknikel-lightbox-counter')).toHaveText('3 / 3');
+    await page.keyboard.press('Escape');
+    await expect(dialog).toHaveCount(0);
+    await expect(primary).toBeFocused();
+    await expect(thumbs.nth(2)).toHaveAttribute('aria-pressed','true');
+    await thumbs.nth(1).click();
+    await expect(page.locator('dialog.teknikel-lightbox')).toBeVisible();
+    await expect(page.locator('.teknikel-lightbox-counter')).toHaveText('2 / 3');
+    await page.locator('.teknikel-lightbox-close').click();
+    await expect(page.locator('dialog.teknikel-lightbox')).toHaveCount(0);
+    await page.locator('#product-detail button.button').first().click();
+    await expect(page.locator('#cart-count')).toHaveText('1');
+    await expect(page.locator('#product-grid article')).toHaveCount(0);
+    await expect(page.locator('#product-detail')).toBeVisible();
+    await fits(page);
+    await page.screenshot({path:`${artifacts}detail-${width}.png`,fullPage:false});
+    await page.locator('.teknikel-detail-back').click();
+    await expect(page.locator('#catalog-filter-rail')).toBeVisible();
+    await expect(page.locator('#product-grid article')).toHaveCount(2);
+    await expect(page.locator('#cart-count')).toHaveText('1');
+  });
+  for (const width of [390,1440]) await scenario('modal square photo stays inside stage with navigable controls '+width,async page=>{
+    state.products[0].image_url='https://images.example.com/TEST-square.webp';
+    state.products[0].image_urls=['https://images.example.com/TEST-square.webp','https://images.example.com/TEST-other.webp'];
+    await page.route('**/TEST-square.webp',route=>route.fulfill({
+      contentType:'image/svg+xml',
+      body:'<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024"><rect width="1024" height="1024" fill="#d9e3e9"/></svg>'
+    }));
+    await page.setViewportSize({width,height:900});
+    await page.goto(base+'/?page=catalog&id=p1');
+    await expect(page.locator('#product-detail-title')).toHaveText('TEST Bosch Pompa');
+    await page.locator('.teknikel-detail-main-photo').click();
+    await expect.poll(()=>page.locator('.teknikel-lightbox-stage img').evaluate(img=>img.complete&&img.naturalWidth===1024)).toBe(true);
+    const check=async()=>{
+      const rects=await page.evaluate(()=>{
+        const rect=selector=>{const {top,bottom}=document.querySelector(selector).getBoundingClientRect();return {top,bottom}};
+        return {stage:rect('.teknikel-lightbox-stage'),image:rect('.teknikel-lightbox-stage img'),
+          footer:rect('.teknikel-lightbox-footer'),dialog:rect('dialog.teknikel-lightbox')};
+      });
+      assert.ok(rects.image.top>=rects.stage.top-1&&rects.image.bottom<=rects.stage.bottom+1,
+        'Square image cannot cover modal controls '+JSON.stringify(rects));
+      assert.ok(rects.footer.bottom<=rects.dialog.bottom+1,'footer inside modal '+JSON.stringify(rects));
+    };
+    await check();
+    await page.locator('.teknikel-lightbox-arrow').last().click();
+    await expect(page.locator('.teknikel-lightbox-counter')).toHaveText('2 / 2');
+    await page.locator('.teknikel-lightbox-arrow').first().click();
+    await check();
+    await page.locator('.teknikel-lightbox-close').click();
+    await expect(page.locator('dialog.teknikel-lightbox')).toHaveCount(0);
+  });
   await scenario('catalog has one card renderer from first paint through product detail',async page=>{
     const response=await page.request.get(base+'/?page=catalog');
     assert.equal(response.status(),200);

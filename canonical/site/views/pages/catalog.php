@@ -1,19 +1,9 @@
 <?php declare(strict_types=1); namespace YaSite;
 if (realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === __FILE__) { http_response_code(404); exit; }
-// Presentation hook only. Public IDs and request availability come from core.
+// Detail layout is selected before paint, not hidden after the catalog renders.
 $id = is_string($_GET['id'] ?? null) ? $_GET['id'] : '';
-if (!empty($view['publication']['features']['requests'])
-    && in_array('general_info', $view['publication']['info']['request_types'] ?? [], true)):
-    foreach ($view['publication']['products'] as $product):
-        if ($id === '' || $product['product_id'] !== $id) continue;
 ?>
-<p><button type="button" class="button secondary" data-ya-action="request.general"
-    data-ya-resource-type="product" data-ya-resource-id="<?= e($product['product_id']) ?>"
-    data-ya-resource-name="<?= e($product['name']) ?>" data-theme-widget-trigger hidden><?= e(t($site, 'theme.teknikel.product.request')) ?></button></p>
-<?php endforeach; endif;
-?>
-
-  <div class="ya-storefront teknikel-catalog">
+  <div class="ya-storefront teknikel-catalog<?= $id !== '' ? ' is-detail' : '' ?>">
     <a class="skip-link" href="#products"><?= e(t($site, 'nav.skip')) ?></a>
     <header class="store-header">
       <div>
@@ -97,6 +87,20 @@ if (!empty($view['publication']['features']['requests'])
         <div id="catalog-state" class="state" role="status" aria-live="polite"></div>
 
         <section id="product-detail" class="content-card" hidden tabindex="-1" aria-labelledby="product-detail-title"></section>
+        <div id="detail-request-hook" hidden>
+<?php if (!empty($view['publication']['features']['requests'])
+    && in_array('general_info', $view['publication']['info']['request_types'] ?? [], true)):
+    foreach ($view['publication']['products'] as $product):
+        if ($id === '' || $product['product_id'] !== $id) continue;
+?>
+<button type="button" class="button secondary" data-ya-action="request.general"
+    data-ya-resource-type="product" data-ya-resource-id="<?= e($product['product_id']) ?>"
+    data-ya-resource-name="<?= e($product['name']) ?>" data-theme-widget-trigger hidden><?= e(t($site, 'theme.teknikel.product.request')) ?></button>
+<?php endforeach; endif;
+?>
+
+        </div>
+
         <section id="comparison-panel" class="content-card" hidden tabindex="-1" aria-labelledby="comparison-title"></section>
         <!-- Product cards have one owner: Teknikel catalog.js. Avoid a transient
              server-rendered legacy card grid before the current catalog loads. -->

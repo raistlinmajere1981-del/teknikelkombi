@@ -663,3 +663,221 @@ body:has(.ya-storefront) .main-content.shell {width:min(1510px,calc(100% - 42px)
   .ya-storefront .product-grid.is-list .product-body h3 {font-size:11.5px;}
   .ya-storefront .product-grid.is-list .product-body > button:last-child {min-width:0;width:100%;}
 }
+
+/* Teknikel product detail is a distinct page presentation. Its source route
+   selects .is-detail before paint; JS never mounts the catalog card list here. */
+.ya-storefront.is-detail .store-header,
+.ya-storefront.is-detail #catalog-filter-rail,
+.ya-storefront.is-detail .catalog-results-bar,
+.ya-storefront.is-detail #product-grid,
+.ya-storefront.is-detail #catalog-pagination,
+.ya-storefront.is-detail #comparison-panel {display:none !important;}
+.ya-storefront.is-detail .store-layout,
+.ya-storefront.is-detail #store-layout {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(266px,288px);
+  gap:16px; align-items:start;
+}
+.ya-storefront.is-detail #products {min-width:0;}
+.ya-storefront.is-detail #product-detail {
+  display:block; border:1px solid #dbe5eb; border-radius:13px;
+  padding:clamp(15px,2vw,26px); background:#fff;
+  box-shadow:0 6px 24px rgba(16,40,62,.055);
+  scroll-margin-top:var(--teknikel-sticky-clearance);
+}
+.ya-storefront.is-detail #product-detail[hidden] {display:none !important;}
+.ya-storefront .teknikel-detail-back {
+  display:inline-flex; align-items:center; min-height:35px;
+  color:#c92134; font-size:12px; font-weight:800; margin-bottom:14px;
+}
+.ya-storefront .teknikel-detail-back::before {
+  content:'‹'; font-size:23px; line-height:1; margin-right:7px;
+}
+.ya-storefront .teknikel-detail-layout {
+  display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(18px,2.1vw,36px); align-items:start; min-width:0;
+}
+.ya-storefront .teknikel-detail-gallery {min-width:0;}
+.ya-storefront .teknikel-detail-main-photo {
+  display:flex; justify-content:center; align-items:center;
+  position:relative; width:100%; height:clamp(250px,31vw,430px);
+  min-height:0; padding:20px; overflow:hidden;
+  border:1px solid #e0e7ee; border-radius:11px;
+  background:linear-gradient(145deg,#fff 52%,#f7f9fb);
+  color:#597082; cursor:zoom-in;
+}
+.ya-storefront .teknikel-detail-main-photo img {
+  display:block; max-width:100%; max-height:100%;
+  width:100%; height:100%; object-fit:contain; padding:0;
+}
+.ya-storefront .teknikel-detail-zoom-hint {
+  position:absolute; bottom:10px; right:10px; padding:6px 10px;
+  border-radius:8px; border:1px solid #dce5ed;
+  background:rgba(255,255,255,.95);
+  font-size:11px; font-weight:700; color:#36546a;
+}
+.ya-storefront .teknikel-detail-main-photo:hover .teknikel-detail-zoom-hint {color:#bd2139;}
+.ya-storefront .teknikel-detail-strip {
+  display:flex; flex-wrap:wrap; align-items:center; gap:9px;
+  padding:11px 0 0;
+}
+.ya-storefront .teknikel-detail-thumb {
+  width:72px; height:68px; min-height:68px; min-width:72px;
+  display:grid; place-items:center; flex:none; padding:5px;
+  background:#fff; border:1px solid #dbe4ec; border-radius:9px;
+  cursor:zoom-in; color:#36546a;
+}
+.ya-storefront .teknikel-detail-thumb[aria-pressed=true] {
+  border-color:#c92134; box-shadow:0 0 0 1px #c92134;
+}
+.ya-storefront .teknikel-detail-thumb img {
+  display:block; width:100%; height:100%; object-fit:contain;
+}
+.ya-storefront .teknikel-detail-photo-count {
+  font-size:11px; color:#748a9a; margin:8px 0 0;
+}
+.ya-storefront .teknikel-detail-empty,
+.ya-storefront .teknikel-detail-fallback {
+  display:grid;place-items:center;color:#60768a;
+  background:#f7f9fb;border-radius:10px;min-height:210px;
+}
+.ya-storefront .teknikel-detail-kicker {
+  font-size:11px; font-weight:800; letter-spacing:.055em;
+  text-transform:uppercase; color:#718595; margin:0 0 9px;
+}
+.ya-storefront .teknikel-detail-info {min-width:0;}
+.ya-storefront .teknikel-detail-info h2 {
+  font-size:clamp(21px,2.2vw,30px);line-height:1.18;
+  letter-spacing:-.035em; margin:0 0 20px; overflow-wrap:anywhere;
+}
+.ya-storefront .teknikel-detail-facts {
+  display:grid;grid-template-columns:minmax(85px,115px) minmax(0,1fr);
+  gap:10px 12px; border-block:1px solid #e7edf1; padding:16px 0;
+  margin:0 0 16px; font-size:12px; line-height:1.4;
+}
+.ya-storefront .teknikel-detail-facts dt {font-weight:650;color:#6a7d8d;}
+.ya-storefront .teknikel-detail-facts dd {margin:0;font-weight:750;color:#233d51;overflow-wrap:anywhere;}
+.ya-storefront .teknikel-detail-description {
+  padding:0 0 17px; border-bottom:1px solid #e7edf1;
+}
+.ya-storefront .teknikel-detail-description h3 {
+  font-size:13px;letter-spacing:0;margin:0 0 8px;
+}
+.ya-storefront .teknikel-detail-description p {
+  margin:0; white-space:pre-line; font-size:13px;
+  line-height:1.68; color:#4e6476; overflow-wrap:anywhere;
+}
+.ya-storefront .teknikel-detail-purchase {margin-top:19px;}
+.ya-storefront .teknikel-detail-price {
+  font-size:clamp(21px,2.2vw,26px) !important;
+  font-weight:850;color:#172e45;margin:0 0 15px;
+  letter-spacing:-.03em;
+}
+.ya-storefront .teknikel-detail-actions {
+  display:flex; align-items:center; flex-wrap:wrap; gap:9px 15px;
+}
+.ya-storefront .teknikel-detail-actions > .button {min-height:44px;}
+.ya-storefront .teknikel-detail-actions > [data-favorite-toggle] {
+  color:#b91f36; font-size:12px; font-weight:650; text-decoration:none;
+}
+.ya-storefront .teknikel-detail-actions #detail-request-hook {width:100%;}
+.ya-storefront .teknikel-detail-actions #detail-request-hook .button {
+  padding:9px 13px;min-height:39px;font-size:12px;
+}
+@media(max-width:1100px) {
+  .ya-storefront.is-detail #store-layout {
+    grid-template-columns:minmax(0,1fr) minmax(232px,265px);gap:11px;
+  }
+  .ya-storefront .teknikel-detail-layout {
+    grid-template-columns:minmax(0,1fr);gap:20px;
+  }
+  .ya-storefront .teknikel-detail-main-photo {height:310px;}
+}
+@media(max-width:950px) {
+  .ya-storefront.is-detail #store-layout {grid-template-columns:minmax(0,1fr);}
+  .ya-storefront.is-detail #cart {position:static;max-height:none;}
+  .ya-storefront .teknikel-detail-layout {
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;
+  }
+  .ya-storefront .teknikel-detail-main-photo {height:300px;}
+}
+@media(max-width:650px) {
+  .ya-storefront .teknikel-detail-layout {grid-template-columns:minmax(0,1fr);}
+  .ya-storefront .teknikel-detail-main-photo {height:290px;padding:12px;}
+  .ya-storefront .teknikel-detail-thumb {
+    width:65px; height:63px;min-width:65px;min-height:63px;
+  }
+  .ya-storefront .teknikel-detail-info h2 {font-size:23px;}
+}
+
+/* Modal photo viewer remains on this same page, above the fixed header. */
+.teknikel-lightbox {
+  position:fixed; inset:0; margin:auto;
+  width:min(1120px,calc(100vw - 32px)); max-width:none;
+  max-height:calc(100dvh - 32px); padding:0;
+  border:1px solid #d7e1ea; border-radius:15px;
+  background:#fff; color:#172e45; box-shadow:0 25px 80px rgba(8,24,41,.3);
+  overflow:hidden;
+}
+.teknikel-lightbox::backdrop {background:rgba(10,25,40,.76);}
+.teknikel-lightbox-frame {
+  display:flex; flex-direction:column;
+  max-height:calc(100dvh - 32px); min-height:0;
+}
+.teknikel-lightbox-header {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:15px; padding:12px 17px; border-bottom:1px solid #e2e9ee;
+}
+.teknikel-lightbox-header strong {
+  font-size:14px; font-weight:800; min-width:0; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap;
+}
+.teknikel-lightbox-close {
+  width:39px; min-width:39px; height:39px; min-height:39px;
+  border:1px solid #dce4ec; border-radius:9px;
+  background:#f7f9fb; font-size:27px; color:#293f51; line-height:1;
+}
+.teknikel-lightbox-stage {
+  display:grid; place-items:center; position:relative; min-height:0;
+  height:min(66dvh,680px); padding:14px;
+  background:linear-gradient(160deg,#fff,#f4f7f9);
+}
+.teknikel-lightbox-stage img {
+  width:100%; height:100%; max-width:100%; max-height:100%;
+  display:block; object-fit:contain;
+}
+.teknikel-lightbox-fallback {color:#6d8090;font-size:14px;}
+.teknikel-lightbox-footer {
+  display:flex; justify-content:center; align-items:center;gap:18px;
+  padding:6px; border-top:1px solid #e3eaf0;
+}
+.teknikel-lightbox-arrow {
+  min-height:38px; width:49px; padding:0; border:1px solid #dce5ed;
+  border-radius:8px; background:#fff; color:#233f55; font-size:29px; line-height:1;
+}
+.teknikel-lightbox-arrow:hover {background:#f6e9ed;color:#c92134;}
+.teknikel-lightbox-counter {min-width:52px;text-align:center;font-size:13px;font-weight:750;}
+.teknikel-lightbox-thumbs {
+  display:flex; justify-content:center; flex-wrap:wrap;
+  gap:7px; padding:9px 13px 12px; max-height:116px;overflow-y:auto;
+}
+.teknikel-lightbox-thumb {
+  width:61px; height:59px; min-width:61px; min-height:59px;
+  display:grid;place-items:center; padding:5px;
+  border:1px solid #dbe5ed; border-radius:8px;background:#fff;
+}
+.teknikel-lightbox-thumb[aria-pressed=true] {border-color:#c92134;box-shadow:0 0 0 1px #c92134;}
+.teknikel-lightbox-thumb img {width:100%;height:100%;object-fit:contain;}
+@media(max-width:650px) {
+  .teknikel-lightbox {width:calc(100vw - 16px);max-height:calc(100dvh - 16px);}
+  .teknikel-lightbox-frame {max-height:calc(100dvh - 16px);}
+  .teknikel-lightbox-header {padding:7px 10px;}
+  .teknikel-lightbox-stage {height:55dvh;padding:8px;}
+  .teknikel-lightbox-thumbs {padding:7px;}
+}
+
+/* Prevent tall/square product photos from imposing their intrinsic grid track
+   height on the modal. The full image stays inside the viewer's bounded stage,
+   leaving both photo navigation and close controls clickable. */
+.teknikel-lightbox-stage {display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.teknikel-lightbox-stage img {min-width:0;min-height:0;flex:0 1 auto;}
