@@ -1,4 +1,4 @@
-# Teknikel — canonical 0.7.6 site presentation
+# Teknikel — canonical 0.7.7 site presentation
 
 Repository root `index.php` is the hosting adapter for `canonical/public/index.php`.
 Document root is the repository root. `canonical/` remains HTTP-private; PHP includes
@@ -56,3 +56,11 @@ There is no site-specific order transport or database/schema/publication change.
 
 See the root README and milestone handoff for exact local/host acceptance commands.
 Not live-ready: browser, real backend callback/session/receipt and HTTPS checks remain.
+
+## Ürün vitrini
+
+`home-catalog.js`, `YaCommerce`'un güvenilir katalog görünümünden `is_featured=true`
+olarak işaretlenmiş ürünleri `featured_order` ile sıralar (eşitlikte yayın sırası ve kimlik).
+Seçili ürün yoksa eski ilk dört ürüne geri döner. Vitrin sırası kategorileri, bayi
+fiyatlarını, sepeti ya da mağaza ürün kartı bileşenini değiştirmez. Vitrin bayrağı
+yalnız masaüstündeki online ürün yayınında yönetilir; bu site onu yalnız yorumlar.

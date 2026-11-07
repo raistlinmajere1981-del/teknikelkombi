@@ -76,6 +76,39 @@ try {
     await expect(page.locator('#product-grid button[data-favorite-toggle]').first()).toHaveAttribute('aria-pressed','true');
     await fits(page);
   });
+  await scenario('featured product selection respects site order and falls back only when empty',async page=>{
+    state.products.push({
+      ...state.products[0],product_id:'p3',name:'TEST Vitrin İlk',sku:'TEST-VITRIN-3',
+      is_featured:true,featured_order:1,sort_order:30
+    });
+    state.products.push({
+      ...state.products[0],product_id:'p4',name:'TEST Vitrin Son',sku:'TEST-VITRIN-4',
+      is_featured:false,featured_order:0,sort_order:40
+    });
+    state.products[0].is_featured=false;
+    state.products[1].is_featured=true;
+    state.products[1].featured_order=10;
+    await page.goto(base+'/?page=home');
+    await expect(page.locator('#home-product-grid .product-card')).toHaveCount(2);
+    await expect(page.locator('#home-product-grid h3').first()).toHaveText('TEST Vitrin İlk');
+    await expect(page.locator('#home-product-grid h3').last()).toHaveText('TEST Kontrol Kartı');
+    await expect(page.locator('#home-product-grid')).not.toContainText('TEST Vitrin Son');
+    await page.goto(base+'/?page=catalog');
+    await expect(page.locator('#product-grid .product-card')).toHaveCount(4);
+    await page.locator('#product-grid').getByRole('button',{name:'Sepete ekle'}).first().click();
+    await page.goto(base+'/?page=home');
+    await expect(page.locator('#home-cart-count')).toHaveText('1');
+    // A previously non-featured cart line must remain valid.
+    await expect(page.locator('#home-cart-items')).toContainText('TEST Bosch Pompa');
+    await fits(page);
+  });
+  await scenario('invalid public featured flag cannot be used to alter storefront selection',async page=>{
+    state.products[0].is_featured='yes';
+    await page.goto(base+'/?page=home');
+    await expect(page.locator('#home-product-grid .product-card')).toHaveCount(0);
+    await expect(page.locator('#home-product-grid')).toContainText(/yüklenemiyor|görüntülenemiyor/);
+    await fits(page);
+  });
   await scenario('home comparison hands off to catalog without duplicate engine',async page=>{
     await page.goto(base+'/?page=home');
     await expect(page.locator('#home-product-grid .product-card')).toHaveCount(2);

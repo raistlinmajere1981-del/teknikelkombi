@@ -87,7 +87,12 @@
     grid.setAttribute('aria-busy',String(next.loading));
     const actions=$('home-product-actions');actions.hidden=next.catalogStatus!=='ready'||!next.products.length;
     if(next.catalogStatus==='ready'){
-      for(const product of next.products.slice(0,4)){
+      // Site-owned selection policy; the publication only supplies placement data.
+      // No selected products yet means the existing first-four fallback stays visible.
+      const featured=next.products.filter(product=>product.is_featured === true);
+      featured.sort((a,b)=>(a.featured_order-b.featured_order)
+        || (a.sort_order-b.sort_order) || a.name.localeCompare(b.name,locale) || a.product_id.localeCompare(b.product_id));
+      for(const product of (featured.length ? featured : next.products).slice(0,4)){
         grid.append(window.TeknikelProductCard.create({
           product,ui,money,units:next.units,safeImage:controller.safeImage,productUrl:catalogUrl,
           addProduct:item=>controller.add(item.product_id),
