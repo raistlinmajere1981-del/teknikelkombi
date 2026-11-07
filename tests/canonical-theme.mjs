@@ -120,7 +120,9 @@ try {
     await expect(page.locator('#comparison-panel')).toBeVisible();
     await expect(page.locator('#comparison-panel')).toContainText('TEST Bosch Pompa');
     await expect(page.locator('#comparison-panel')).toContainText('TEST Kontrol Kartı');
-    await expect(page.locator('.comparison-slot')).toHaveCount(2);
+    // V2 renders the product fact panels inside the shared inspector dialog.
+    await expect(page.locator('dialog.ii-dialog')).toBeVisible();
+    await expect(page.locator('dialog.ii-dialog [data-compare-slot]')).toHaveCount(2);
     assert.ok(!(new URL(page.url())).hash,'compare handoff should be consumed');
     await expect(page.locator('script[src*="/assets/site/product-card.js"]')).toHaveCount(1);
     await expect(page.locator('script[src*="/assets/core/commerce.js"]')).toHaveCount(1);
@@ -181,6 +183,9 @@ try {
     await expect(page.locator('#compare-open')).toBeEnabled();
     await page.locator('#compare-open').click();
     await expect(page.locator('#comparison-panel')).toBeVisible();
+    await expect(page.locator('dialog.ii-dialog [data-compare-slot]')).toHaveCount(2);
+    await page.locator('dialog.ii-dialog .ii-close').click();
+    await expect(page.locator('dialog.ii-dialog')).toHaveCount(0);
     await page.locator('#catalog-page-size').selectOption('36');
     await page.locator('#catalog-view-grid').click();
     await expect(page.locator('#catalog-view-grid')).toHaveAttribute('aria-pressed','true');
