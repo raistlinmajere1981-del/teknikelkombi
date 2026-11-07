@@ -199,3 +199,7 @@ $id = is_string($_GET['id'] ?? null) ? $_GET['id'] : '';
     </div>
     <noscript><p class="state"><?= e(t($site, 'account.noscript')) ?></p></noscript>
   </div>
+
+
+<!-- Teknikel-owned renderer, loaded before the canonical catalog runtime. -->
+<script src="<?= e(asset($site, 'site/product-card.js')) ?>" defer></script>

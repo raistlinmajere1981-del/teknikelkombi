@@ -40,12 +40,19 @@ ported. Site-owned catalog detail, gallery and comparison use the authorized pro
 from the common headless controller.
 
 `site/views/pages/catalog.php` owns the complete catalog HTML. `public/assets/site/catalog.js`
-owns category/brand widgets, filtering, pagination, product cards, comparison, detail,
-cart thumbnails and form presentation; `catalog.css` owns their structure and responsive
-layout. The common layout selects these fixed site assets. `core/commerce.js` alone owns
-catalog/session/cart validation, current price snapshots, order payloads, uncertain
-retry/idempotency and receipt recovery. There is no site-specific order transport.
-`theme.css` retains the existing Teknikel visual additions and overrides `catalog.css`.
+owns category/brand widgets, filtering, pagination, comparison, detail, cart thumbnails
+and form presentation. `site/views/pages/home.php` owns only the homepage placement
+and compact cart summary; `public/assets/site/home-catalog.js` subscribes to the
+same headless commerce state for that page. `public/assets/site/product-card.js`
+is the sole product card builder for both pages (gallery, favorite, compare and add
+controls). The obsolete homepage PHP product-card component has been removed.
+`catalog.css` and `theme.css` own site-only structure and responsive layout.
+The common layout and canonical template are unchanged: site-owned page views load
+their scripts, and `core/commerce.js` alone owns catalog/session/cart validation,
+current price snapshots, order payloads, uncertain retry/idempotency and receipt
+recovery. Home comparison selection is transferred to the existing catalog comparison
+panel via an ephemeral URL fragment, never a second comparison implementation.
+There is no site-specific order transport or database/schema/publication change.
 
 See the root README and milestone handoff for exact local/host acceptance commands.
 Not live-ready: browser, real backend callback/session/receipt and HTTPS checks remain.

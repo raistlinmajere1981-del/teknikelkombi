@@ -51,7 +51,7 @@ test('public mirror hashes, root adapter and all wrappers use common owner',()=>
 });
 test('deploy package includes canonical and mirrored assets, excludes old runtime and API',()=>{
   const files=packageFiles(repo);
-  for(const path of ['canonical/core/bootstrap.php','canonical/site/config.php','canonical/site/views/pages/catalog.php','canonical/public/index.php','assets/core/widget.js','assets/core/commerce.js','canonical/public/assets/site/catalog.js','canonical/public/assets/site/catalog.css','assets/site/catalog.js','assets/site/catalog.css','assets/vendor/effect-engine/provenance.json','demo-icerik/index.php','assets/downloads/teknikel-demo-verileri.zip']) assert.ok(files.includes(path),path);
+  for(const path of ['canonical/core/bootstrap.php','canonical/site/config.php','canonical/site/views/pages/catalog.php','canonical/public/index.php','assets/core/widget.js','assets/core/commerce.js','canonical/public/assets/site/catalog.js','canonical/public/assets/site/catalog.css','canonical/public/assets/site/product-card.js','canonical/public/assets/site/home-catalog.js','assets/site/catalog.js','assets/site/catalog.css','assets/site/product-card.js','assets/site/home-catalog.js','assets/vendor/effect-engine/provenance.json','demo-icerik/index.php','assets/downloads/teknikel-demo-verileri.zip']) assert.ok(files.includes(path),path);
   for(const path of files) assert.ok(!/^(?:inc\/|yardimci-asistan\/|assets\/assistant\/|assets\/i18n\/)|^assets\/[^/]+\.js$/.test(path),path);
   const access=readFileSync(join(repo,'.htaccess'),'utf8');
   assert.match(access,/canonical\|inc/); assert.match(access,/assistant\|i18n/); assert.match(access,/!\^\/yardimci-asistan/);

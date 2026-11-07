@@ -40,6 +40,59 @@ try {
   await scenario('all actions off hides launcher',async page=>{state.requests=false;await page.goto(base+'/');await expect(page.locator('[data-ya-open]')).toBeHidden();});
   await scenario('account remains available with orders off',async page=>{state.delivery=[];const response=await page.goto(base+'/?page=account');assert.equal(response.status(),200);await expect(page.locator('script[src*="portal.js"]')).toHaveCount(1);await expect(page.locator('script[src*="storefront.js"]')).toHaveCount(0);});
   await scenario('catalog cart uses single canonical owner',async page=>{await page.goto(base+'/?page=catalog');await expect(page.locator('#product-grid article')).toHaveCount(2);await page.locator('#product-grid article').first().getByRole('button',{name:'Sepete ekle',exact:true}).click();await expect(page.locator('#cart-count')).toHaveText('1');await expect(page.locator('#cart-lines li')).toHaveCount(1);await expect(page.locator('script[src="/assets/site/catalog.js"]')).toHaveCount(1);await expect(page.locator('script[src="/assets/core/commerce.js"]')).toHaveCount(1);await expect(page.locator('script[src*="storefront.js"]')).toHaveCount(0);await expect(page.locator('#cart')).toHaveCount(1);});
+  for(const width of [390,1440])await scenario('one card renderer and persistent home cart across catalog '+width,async page=>{
+    await page.setViewportSize({width,height:900});
+    const response=await page.request.get(base+'/?page=home');
+    const html=await response.text();
+    assert.doesNotMatch(html,/class="content-card technical-product/);
+    assert.match(html,/id="home-product-grid"/);
+    assert.match(html, /id="home-product-grid"[^>]*><\/div>/);
+    await page.goto(base+'/');
+    await expect(page.locator('#home-product-grid .product-card')).toHaveCount(2);
+    await expect(page.locator('#home-product-grid .product-card .compare-choice')).toHaveCount(2);
+    await expect(page.locator('#home-product-grid .product-card button[data-favorite-toggle]')).toHaveCount(2);
+    await expect(page.locator('#home-product-grid .product-card').first().getByRole('button',{name:'Sepete ekle'})).toBeEnabled();
+    await expect(page.locator('#home-cart-count')).toHaveText('0');
+    await page.locator('#home-product-grid .product-card').first().getByRole('button',{name:'Sepete ekle'}).click();
+    await expect(page.locator('#home-cart-count')).toHaveText('1');
+    await expect(page.locator('#home-cart-items li')).toHaveCount(1);
+    await expect(page.locator('#home-cart-items')).toContainText('TEST Bosch Pompa');
+    await expect(page.locator('#home-cart-totals')).toContainText('100,00');
+    await expect(page.locator('#header-cart-count')).toHaveText('1');
+    await page.goto(base+'/?page=catalog');
+    await expect(page.locator('#product-grid article')).toHaveCount(2);
+    await expect(page.locator('#cart-count')).toHaveText('1');
+    await expect(page.locator('#cart-lines')).toContainText('TEST Bosch Pompa');
+    await page.locator('#product-grid .product-card').nth(1).getByRole('button',{name:'Sepete ekle'}).click();
+    await expect(page.locator('#cart-count')).toHaveText('2');
+    await page.goto(base+'/?page=home');
+    await expect(page.locator('#home-cart-count')).toHaveText('2');
+    await expect(page.locator('#home-cart-items li')).toHaveCount(2);
+    await expect(page.locator('#home-cart-items')).toContainText('TEST Kontrol Kartı');
+    await expect(page.locator('#header-cart-count')).toHaveText('2');
+    await page.locator('#home-product-grid button[data-favorite-toggle]').first().click();
+    await expect(page.locator('#home-product-grid button[data-favorite-toggle]').first()).toHaveAttribute('aria-pressed','true');
+    await page.goto(base+'/?page=catalog');
+    await expect(page.locator('#product-grid button[data-favorite-toggle]').first()).toHaveAttribute('aria-pressed','true');
+    await fits(page);
+  });
+  await scenario('home comparison hands off to catalog without duplicate engine',async page=>{
+    await page.goto(base+'/?page=home');
+    await expect(page.locator('#home-product-grid .product-card')).toHaveCount(2);
+    await page.locator('#home-product-grid .compare-select').first().check();
+    await page.locator('#home-product-grid .compare-select').last().check();
+    await expect(page.locator('#home-compare-open')).toBeEnabled();
+    await page.locator('#home-compare-open').click();
+    await expect(page).toHaveURL(/page=catalog/);
+    await expect(page.locator('#comparison-panel')).toBeVisible();
+    await expect(page.locator('#comparison-panel')).toContainText('TEST Bosch Pompa');
+    await expect(page.locator('#comparison-panel')).toContainText('TEST Kontrol Kartı');
+    await expect(page.locator('.comparison-slot')).toHaveCount(2);
+    assert.ok(!(new URL(page.url())).hash,'compare handoff should be consumed');
+    await expect(page.locator('script[src*="/assets/site/product-card.js"]')).toHaveCount(1);
+    await expect(page.locator('script[src*="/assets/core/commerce.js"]')).toHaveCount(1);
+    await fits(page);
+  });
   for(const width of [390,1440])await scenario('shared photo fit and inline gallery across home and catalog '+width,async page=>{
     await page.setViewportSize({width,height:900});
     state.products[0].image_urls=['https://images.example.com/TEST-site-logo.webp','https://images.example.com/TEST-media-2.webp','https://images.example.com/TEST-media-3.webp'];
@@ -48,7 +101,7 @@ try {
       const geometry=await card.evaluate(node=>{
         const media=node.querySelector('.teknikel-product-media').getBoundingClientRect();
         const image=node.querySelector('.teknikel-gallery-image-link img').getBoundingClientRect();
-        const body=node.querySelector('.technical-product-copy,.product-body').getBoundingClientRect();
+        const body=node.querySelector('.product-body').getBoundingClientRect();
         return {media:{top:media.top,bottom:media.bottom},image:{top:image.top,bottom:image.bottom},bodyTop:body.top,
           fit:getComputedStyle(node.querySelector('.teknikel-gallery-image-link img')).objectFit};
       });
@@ -66,7 +119,7 @@ try {
       await fits(page);
     };
     await page.goto(base+'/');
-    await measure('.technical-product.is-preview');
+    await measure('#home-product-grid .product-card');
     await page.goto(base+'/?page=catalog');
     await expect(page.locator('#product-grid article')).toHaveCount(2);
     await measure('#product-grid .product-card');
@@ -242,15 +295,15 @@ try {
     });
     assert.ok(positions.navTop>=positions.toolsBottom-1,'navigation must have its own row '+JSON.stringify(positions));
     assert.ok(positions.navTop>=positions.logoBottom-1,'logo must sit above navigation');
-    await expect(page.locator('.technical-product.is-preview')).toHaveCount(2);
-    await expect(page.locator('.technical-product.is-preview .price')).toHaveCount(2);
-    const copy=await page.locator('.technical-product.is-preview').allTextContents();
+    await expect(page.locator('#home-product-grid .product-card')).toHaveCount(2);
+    await expect(page.locator('#home-product-grid .product-card .price')).toHaveCount(2);
+    const copy=await page.locator('#home-product-grid .product-card').allTextContents();
     assert.ok(copy.every(text=>!text.includes('Yalnız test verisi:')),'long descriptions must stay out of homepage cards');
     await expect(page.locator('#yardimci-asistan-widget .ya-widget-launcher-avatar')).toHaveCSS('width','64px');
     await expect(page.locator('#yardimci-asistan-widget .ya-widget-launcher-copy strong')).toHaveCSS('font-size','16px');
     await fits(page);
   });
-  await scenario('no JavaScript preserves SSR and navigation',async page=>{await page.goto(base+'/');await expect(page.locator('.teknikel-hero')).toBeVisible();await expect(page.locator('#main-navigation')).toBeVisible();await expect(page.locator('#catalog-preview')).toContainText('TEST Bosch Pompa');await fits(page);},{javaScriptEnabled:false});
+  await scenario('no JavaScript preserves SSR and navigation',async page=>{await page.goto(base+'/');await expect(page.locator('.teknikel-hero')).toBeVisible();await expect(page.locator('#main-navigation')).toBeVisible();await expect(page.locator('#home-product-grid article')).toHaveCount(0);assert.match(await (await page.request.get(base+'/')).text(),/JavaScript/);await fits(page);},{javaScriptEnabled:false});
   await scenario('published RTL language and stale hash Turkish fallback',async page=>{
     const source=await (await fetch(base+'/?resource=translation-source')).json();
     const key=Object.keys(source.entries).find(key=>source.entries[key].text==='Parçayı bulun. Detayını inceleyin.');assert.ok(key);

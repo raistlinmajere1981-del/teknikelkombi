@@ -8,9 +8,25 @@ render_view('components/hero', $view, $site);
 <?php endif; ?>
 
 <?php if (isset($view['pages']['catalog'])): ?>
-<section class="home-section" id="catalog-preview" aria-labelledby="catalog-preview-title">
+<section class="home-section ya-storefront" id="catalog-preview" aria-labelledby="catalog-preview-title">
   <div class="section-heading"><div><p class="eyebrow"><?= e(t($site, 'page.catalog')) ?></p><h2 id="catalog-preview-title"><?= e(t($site, 'theme.teknikel.catalog.selection')) ?></h2></div><a class="text-link" href="<?= e(page_url($site, 'catalog')) ?>"><?= e(t($site, 'theme.teknikel.catalog.all')) ?> <span aria-hidden="true">→</span></a></div>
-  <div class="collection technical-products"><?php foreach (array_slice($publication['products'], 0, 4) as $record) render_view('components/product-card', ['record' => $record, 'preview' => true], $site); ?></div>
+  <div class="teknikel-home-commerce">
+    <div id="home-product-grid" class="product-grid teknikel-home-products" aria-busy="true" aria-live="polite"></div>
+    <div id="home-product-actions" class="teknikel-home-actions" hidden>
+      <span id="home-product-status" role="status" aria-live="polite"></span>
+      <button id="home-compare-open" type="button" class="button secondary" disabled><?= e(t($site, 'catalog.compare')) ?></button>
+    </div>
+    <aside id="home-cart" class="teknikel-home-cart" aria-labelledby="home-cart-title">
+      <div class="teknikel-home-cart-heading">
+        <h3 id="home-cart-title"><?= e(t($site, 'cart.title')) ?> <span id="home-cart-count">0</span></h3>
+        <a class="text-link" href="<?= e(page_url($site, 'catalog')) ?>#cart"><?= e(t($site, 'cart.title')) ?> →</a>
+      </div>
+      <p id="home-cart-message" role="status" aria-live="polite"></p>
+      <ul id="home-cart-items" class="teknikel-home-cart-items"></ul>
+      <div id="home-cart-totals" class="teknikel-home-cart-totals"></div>
+    </aside>
+  </div>
+  <noscript><p class="state"><?= e(t($site, 'account.noscript')) ?> <a href="<?= e(page_url($site, 'catalog')) ?>"><?= e(t($site, 'page.catalog')) ?></a></p></noscript>
 </section>
 <?php endif; ?>
 
@@ -38,4 +54,12 @@ render_view('components/hero', $view, $site);
 
 <?php if (isset($view['pages']['contact'])): $contact = $publication['contact']; ?>
 <section class="home-section contact-preview" aria-labelledby="contact-title"><h2 id="contact-title"><?= e(t($site, 'page.contact')) ?></h2><div><?php if ($contact['tel'] !== ''): ?><a href="<?= e($contact['tel']) ?>"><?= e($contact['phone']) ?></a><?php endif; ?><?php if ($contact['address'] !== ''): ?><p><?= nl2br(e($contact['address'])) ?></p><?php endif; ?><a class="text-link" href="<?= e(page_url($site, 'contact')) ?>"><?= e(t($site, 'theme.teknikel.contact.more')) ?> <span aria-hidden="true">→</span></a></div></section>
+<?php endif; ?>
+
+
+<?php if (isset($view['pages']['catalog'])): ?>
+<!-- Only the site view opts into the shared headless commerce controller. -->
+<script src="<?= e(asset($site, 'core/commerce.js')) ?>" defer></script>
+<script src="<?= e(asset($site, 'site/product-card.js')) ?>" defer></script>
+<script src="<?= e(asset($site, 'site/home-catalog.js')) ?>" data-api-base="<?= e($site['module_path']) ?>/api/" defer></script>
 <?php endif; ?>

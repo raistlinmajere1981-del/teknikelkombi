@@ -13,6 +13,9 @@
   const collator = new Intl.Collator(locale,{numeric:true,sensitivity:'base'});
   const parameters = new URLSearchParams(location.search), reorderId = parameters.get('reorder');
   const detailId = parameters.get('id') || '';
+  const initialComparison = (new URLSearchParams(location.hash.replace(/^#/, '')).get('compare') || '')
+    .split(',').filter(id=>id && id.length<=180).slice(0,2);
+  let comparisonHandled = false;
   const requestHook = $('detail-request-hook');
   let detailImageIndex = 0, detailImageProduct = '', lightbox = null;
   let reorderHandled = false;
@@ -380,54 +383,14 @@
     $('catalog-prev').disabled = pageNumber === 1; $('catalog-next').disabled = pageNumber === pages;
     $('catalog-page-status').textContent = ui('Sayfa {0} / {1}',{0:pageNumber,1:pages});
     for (const product of products.slice((pageNumber - 1) * pageSize,pageNumber * pageSize)) {
-      const card = el('article', undefined, 'product-card');
-      card.dataset.productId = product.product_id;
-      const urls = [...new Set([product.image_url,...product.image_urls].map(safeImage).filter(Boolean))].slice(0,12);
-      const media = el('div', undefined, 'product-media teknikel-product-media teknikel-gallery');
-      media.dataset.galleryImages = JSON.stringify(urls);
-      media.dataset.galleryName = product.name;
-      const imageLink = el('a', undefined, 'teknikel-gallery-image-link');
-      imageLink.href = productUrl(product.product_id); imageLink.setAttribute('aria-label',product.name);
-      const fallback = el('span', ui("Görsel yok"), 'teknikel-gallery-missing');
-      fallback.hidden = urls.length > 0; imageLink.append(fallback);
-      if (urls.length) {
-        const image = el('img'); image.alt = product.name; image.loading = 'lazy'; image.referrerPolicy = 'no-referrer';
-        image.addEventListener('error', () => { image.hidden = true; fallback.hidden = false; });
-        image.addEventListener('load', () => { image.hidden = false; fallback.hidden = true; });
-        image.src = urls[0]; imageLink.append(image);
-      }
-      media.append(imageLink);
-      if (urls.length > 1) {
-        const controls = el('div',undefined,'teknikel-gallery-controls');
-        controls.setAttribute('role','group'); controls.setAttribute('aria-label',ui('Ürün fotoğrafları'));
-        for (const [step,symbol,label] of [[-1,'‹',ui('Önceki fotoğraf')],[1,'›',ui('Sonraki fotoğraf')]]) {
-          const arrow = el('button',symbol); arrow.type = 'button'; arrow.dataset.galleryStep = String(step);
-          arrow.setAttribute('aria-label',label);
-          if (step === 1) controls.append(el('span', `1 / ${urls.length}`, 'teknikel-gallery-count'));
-          controls.append(arrow);
+      $('product-grid').append(window.TeknikelProductCard.create({
+        product,ui,money,units,safeImage,productUrl,addProduct,favoriteButton,
+        selected,canAdd:commerceState.canEdit && Boolean(deliveryMethods.length),
+        onCompare:(id,checked)=>{
+          if(checked)selected.add(id);else selected.delete(id);
+          updateComparisonControls();
         }
-        controls.querySelector('.teknikel-gallery-count').setAttribute('aria-live','polite');
-        media.append(controls);
-      }
-      const body = el('div', undefined, 'product-body');
-      const heading = el('h3'), link = el('a',product.name); link.href = productUrl(product.product_id); link.dataset.productLink = '';
-      heading.append(link); body.append(heading);
-      if (product.sku) body.append(el('p', `${ui('Stok kodu')}: ${product.sku}`, 'product-sku'));
-      if (product.brand) body.append(el('span',product.brand,'product-brand'));
-      if (urls.length > 1) {
-        const galleryLink = el('a',ui('Fotoğraflar ({0})',{0:urls.length}),'product-gallery-link');
-        galleryLink.href = productUrl(product.product_id);
-        galleryLink.setAttribute('aria-label',product.name);
-        body.append(galleryLink);
-      }
-      body.append(el('div', money(product.price, product.currency) + ' / ' + units[product.unit], 'price'));
-      const add = button(ui("Sepete ekle"), () => addProduct(product), ''); add.disabled = !commerceState.canEdit || !deliveryMethods.length;
-      const compareLabel = el('label',undefined,'compare-choice'), compare = el('input',undefined,'compare-select');
-      compare.type = 'checkbox'; compare.checked = selected.has(product.product_id); compare.dataset.productId = product.product_id;
-      compare.disabled = !selected.has(product.product_id) && selected.size >= 2;
-      compare.addEventListener('change',() => { if (compare.checked) selected.add(product.product_id); else selected.delete(product.product_id); updateComparisonControls(); });
-      compareLabel.append(compare,document.createTextNode(ui('Karşılaştır'))); body.append(compareLabel,favoriteButton(product),add);
-      card.append(media, body); $('product-grid').append(card);
+      }));
     }
     updateComparisonControls();
   }
@@ -529,6 +492,16 @@
     if (reason === 'catalog' || reason === 'fence') renderFilters();
     if (catalogStatus !== 'ready') clearComparison();
     renderProducts(); renderCart(); renderDetail();
+    if(reason==='catalog' && catalogStatus==='ready' && !detailId && initialComparison.length && !comparisonHandled){
+      comparisonHandled=true;
+      for(const id of initialComparison)if(catalog.has(id))selected.add(id);
+      const url=new URL(location.href);url.hash='';
+      history.replaceState(null,'',url.pathname+url.search);
+      if(selected.size){
+        renderProducts();showComparison();
+        $('comparison-panel').scrollIntoView({block:'start'});
+      }
+    }
     if (pending) $('checkout').hidden = false;
     if (reason === 'accepted') {
       $('checkout-form').reset(); $('checkout').hidden = true;

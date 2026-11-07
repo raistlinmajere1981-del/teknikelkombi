@@ -49,23 +49,8 @@ p { margin-block:0 16px; }
 .section-heading .eyebrow { margin-block-end:8px; }
 .text-link { display:inline-flex; align-items:center; gap:16px; min-height:44px; font-size:14px; font-weight:650; }
 .content-card { box-shadow:none; }
-.technical-products { grid-template-columns:repeat(4,minmax(0,1fr)); }
-.technical-product { padding:0; overflow:hidden; display:flex; flex-direction:column; }
-.technical-product-media { padding:24px; background:#fff; border-block-end:1px solid #edf1f4; }
-.technical-product img { width:100%; height:auto; aspect-ratio:4 / 3; object-fit:contain; }
-.technical-product-copy { padding:22px; }
 /* Home preview uses the catalog's compact visual vocabulary, not long descriptions. */
-.technical-product.is-preview { border-color:#d9e3ea; border-radius:11px; box-shadow:0 4px 14px rgba(20,43,61,.045); }
-.technical-product.is-preview .technical-product-copy { display:flex; flex:1; flex-direction:column; gap:8px; padding:13px 14px 14px; }
-.technical-product.is-preview h3 { margin:0; font-size:13px; line-height:1.38; min-height:2.76em; max-height:2.76em; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
-.technical-product.is-preview h3 a { color:#193347; text-decoration:none; }
-.technical-product.is-preview h3 a:hover { color:#c92134; }
-.technical-product.is-preview .product-sku { margin:0; font-size:11px; line-height:1.4; color:#798a99; }
-.technical-product.is-preview .price { margin-top:auto; padding-top:8px; font-size:17px; color:#172e45; }
-.technical-product h3 { font-size:18px; line-height:1.4; letter-spacing:-.02em; margin-block:0 12px; }
-.technical-product p { font-size:14px; color:var(--teknikel-muted); }
 .price,.product-sku { font-variant-numeric:tabular-nums; }
-.technical-product .price { font-size:18px; font-weight:750; color:var(--teknikel-navy); margin-block-end:0; }
 .product-sku { font-size:12px; }
 .product-sku span { margin-inline-end:6px; }
 .announcement-strip { padding:32px; display:flex; justify-content:space-between; align-items:center; gap:28px; border-inline-start:4px solid #c92134; background:#fff; }
@@ -103,7 +88,6 @@ p { margin-block:0 16px; }
 @media (max-width:1000px) and (min-width:761px) {
   .main-navigation { order:3; width:100%; }
   .language-picker { margin-inline-start:auto; }
-  .technical-products { grid-template-columns:repeat(3,minmax(0,1fr)); }
 }
 @media (max-width:760px) {
   :root { --site-section-space:40px; --site-gap:16px; }
@@ -125,11 +109,6 @@ p { margin-block:0 16px; }
   .hero-media:has(> :only-child) img { max-height:260px; }
   .hero-visual.is-product img { padding:12px; }
   .home-section { margin-block:40px; }
-  .technical-products { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .technical-product-copy { padding:16px; }
-  .technical-product-media { padding:12px; }
-  .technical-product h3 { font-size:16px; }
-  .technical-product.is-preview h3 { font-size:13px; }
   .announcement-strip,.dealer-callout { flex-direction:column; align-items:start; padding:24px; gap:16px; }
   .about-preview,.contact-preview { grid-template-columns:1fr; gap:12px; padding-block-start:28px; }
   .footer-grid { grid-template-columns:1fr; gap:24px; }
@@ -137,7 +116,6 @@ p { margin-block:0 16px; }
   .store-layout { grid-template-columns:1fr; }
 }
 @media (max-width:370px) {
-  .technical-products { grid-template-columns:1fr; }
   .hero-actions .button { width:100%; }
 }
 
@@ -475,9 +453,8 @@ body:has(.ya-storefront) .main-content.shell {width:min(1510px,calc(100% - 42px)
   .ya-storefront .catalog-filter-rail .category-choice,.ya-storefront .catalog-filter-rail .brand-choice {transition:none}
 }
 
-/* One Teknikel product-media geometry for both SSR home cards and the JS catalog.
-   The image is contained within an explicit link box, never allowed to grow the media track. */
-.technical-product.is-preview .teknikel-product-media,
+/* Shared Teknikel gallery geometry for homepage and catalog JS cards.
+   Images stay contained inside the media track. */
 .ya-storefront .teknikel-product-media {
   position:relative; display:block; height:186px; min-height:0; min-width:0;
   flex:0 0 186px; padding:0; overflow:hidden;
@@ -493,7 +470,6 @@ body:has(.ya-storefront) .main-content.shell {width:min(1510px,calc(100% - 42px)
 .teknikel-product-media:not(:has(.teknikel-gallery-controls)) .teknikel-gallery-image-link {
   padding-bottom:15px;
 }
-.technical-product.is-preview .teknikel-product-media .teknikel-gallery-image-link img,
 .ya-storefront .teknikel-product-media .teknikel-gallery-image-link img {
   display:block; width:100%; height:100%; min-width:0; min-height:0;
   max-width:100%; max-height:100%;
@@ -518,37 +494,24 @@ body:has(.ya-storefront) .main-content.shell {width:min(1510px,calc(100% - 42px)
   min-width:35px; text-align:center; font-size:11px; line-height:1;
   color:#52687a; font-weight:750; white-space:nowrap;
 }
-.technical-product.is-preview .technical-product-copy,
 .ya-storefront .product-body {gap:7px; padding:13px 14px 14px;}
-.technical-product.is-preview h3,
 .ya-storefront .product-body h3 {font-size:13px; line-height:1.38; min-height:2.76em; max-height:2.76em;}
-.technical-product.is-preview .product-sku,
 .ya-storefront .product-body .product-sku {
   font-size:10px; color:#798a99; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
-.technical-product.is-preview .product-brand {font-size:10px;letter-spacing:.055em;text-transform:uppercase;color:#697c8b;}
-.technical-product.is-preview .product-gallery-link {
-  font-size:11px;color:#496c86;text-decoration:none;align-self:flex-start;
-}
-.technical-product.is-preview .price,
 .ya-storefront .product-body .price {
   font-size:17px; font-weight:850; color:#172e45;
   letter-spacing:-.02em; margin-block:0; margin-top:auto; padding-top:9px;
 }
 @media(max-width:760px) {
-  .technical-product.is-preview .teknikel-product-media,
   .ya-storefront .teknikel-product-media {height:160px;flex-basis:160px;}
 }
 @media(max-width:540px) {
-  .technical-product.is-preview .teknikel-product-media,
   .ya-storefront .teknikel-product-media {height:138px;flex-basis:138px;}
   .teknikel-product-media .teknikel-gallery-image-link {padding:8px 8px 30px;}
   .teknikel-product-media:not(:has(.teknikel-gallery-controls)) .teknikel-gallery-image-link {padding-bottom:8px;}
-  .technical-product.is-preview .technical-product-copy,
   .ya-storefront .product-body {gap:6px;padding:10px;}
-  .technical-product.is-preview h3,
   .ya-storefront .product-body h3 {font-size:11.5px;}
-  .technical-product.is-preview .price,
   .ya-storefront .product-body .price {font-size:13px;}
 }
 
@@ -881,3 +844,101 @@ body:has(.ya-storefront) .main-content.shell {width:min(1510px,calc(100% - 42px)
    leaving both photo navigation and close controls clickable. */
 .teknikel-lightbox-stage {display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .teknikel-lightbox-stage img {min-width:0;min-height:0;flex:0 1 auto;}
+
+/* Homepage and catalog share the exact same .product-card JS renderer.
+   Only homepage placement and its compact cart summary differ. */
+.ya-storefront .teknikel-home-products {
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;align-items:stretch;min-width:0;
+}
+.ya-storefront .teknikel-home-products .product-card {min-width:0;height:100%;}
+.ya-storefront .teknikel-home-actions {
+  display:flex;justify-content:flex-end;align-items:center;gap:12px;
+  flex-wrap:wrap;margin-top:13px;
+}
+.ya-storefront .teknikel-home-actions[hidden] {display:none;}
+.ya-storefront #home-product-status {font-size:12px;color:#61768a;}
+.ya-storefront #home-compare-open {min-height:38px;padding:8px 14px;border-radius:8px;font-size:12px;}
+.ya-storefront .teknikel-home-product-state {
+  grid-column:1/-1;min-height:92px;display:grid;place-items:center;
+  margin:0;border:1px dashed #d5e1ea;border-radius:10px;
+  color:#6a7d8b;font-size:13px;background:#fff;
+}
+.ya-storefront .teknikel-home-cart {
+  margin-top:22px;padding:17px 19px;border:1px solid #dbe5ed;
+  border-radius:11px;background:#fff;box-shadow:0 3px 14px rgba(20,43,61,.035);
+  min-width:0;
+}
+.ya-storefront .teknikel-home-cart-heading {
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;flex-wrap:wrap;border-bottom:1px solid #e8edf2;padding-bottom:10px;
+}
+.ya-storefront .teknikel-home-cart-heading h3 {
+  margin:0;font-size:17px;line-height:1.3;color:#1e364a;
+}
+.ya-storefront #home-cart-count {
+  display:inline-grid;place-items:center;padding:2px 7px;min-width:25px;
+  border-radius:8px;background:#fae9ec;color:#bb2638;
+  font-size:12px;font-variant-numeric:tabular-nums;
+}
+.ya-storefront .teknikel-home-cart-heading .text-link {min-height:34px;font-size:12px;gap:4px;}
+.ya-storefront #home-cart-message {margin:9px 0 0;font-size:12px;color:#718499;}
+.ya-storefront #home-cart-message:empty {display:none;}
+.ya-storefront .teknikel-home-cart-items {
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px 18px;max-height:245px;overflow-y:auto;list-style:none;
+  margin:12px 0 0;padding:0;
+}
+.ya-storefront .teknikel-home-cart-items:empty {display:none;}
+.ya-storefront .teknikel-home-cart-line {
+  display:grid;grid-template-columns:56px minmax(0,1fr);
+  align-items:center;gap:10px;padding:7px;border:1px solid #edf1f4;
+  border-radius:8px;min-width:0;
+}
+.ya-storefront .teknikel-home-cart-thumb {
+  width:56px;height:54px;display:grid;place-items:center;
+  border:1px solid #e5ebef;border-radius:6px;background:#fff;overflow:hidden;
+}
+.ya-storefront .teknikel-home-cart-thumb img {
+  width:100%;height:100%;object-fit:contain;padding:4px;
+}
+.ya-storefront .teknikel-home-cart-copy {
+  display:flex;flex-direction:column;gap:4px;min-width:0;
+}
+.ya-storefront .teknikel-home-cart-copy a {
+  color:#1b3448;font-size:12px;font-weight:750;
+  line-height:1.35;overflow-wrap:anywhere;
+}
+.ya-storefront .teknikel-home-cart-copy span {font-size:11px;color:#536b7d;}
+.ya-storefront .teknikel-home-cart-copy small {font-size:10px;color:#ad3544;}
+.ya-storefront .teknikel-home-cart-totals {
+  display:flex;flex-wrap:wrap;justify-content:flex-end;
+  gap:9px 16px;padding-top:12px;margin-top:11px;border-top:1px solid #e8edf2;
+  font-size:13px;color:#203c52;
+}
+.ya-storefront .teknikel-home-cart-totals:empty {display:none;}
+@media(max-width:1000px) {
+  .ya-storefront .teknikel-home-products {grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media(max-width:540px) {
+  .ya-storefront .teknikel-home-products {gap:9px;}
+  .ya-storefront .teknikel-home-cart {padding:12px;}
+  .ya-storefront .teknikel-home-cart-items {grid-template-columns:minmax(0,1fr);max-height:220px;}
+}
+@media(max-width:350px) {
+  .ya-storefront .teknikel-home-products {grid-template-columns:minmax(0,1fr);}
+}
+
+/* Site-wide structural rules for the single card renderer; no PHP-specific clone. */
+.ya-storefront .product-card {display:flex;flex-direction:column;min-width:0;}
+.ya-storefront .product-body {display:flex;flex-direction:column;flex:1;}
+.ya-storefront .product-body h3 {
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;
+  -webkit-box-orient:vertical;margin:0;
+}
+.ya-storefront .product-body .compare-choice {
+  display:flex;align-items:center;gap:6px;min-height:27px;
+}
+.ya-storefront .product-body .compare-choice input {
+  accent-color:var(--site-link);
+}
