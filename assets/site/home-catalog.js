@@ -78,6 +78,7 @@
     for(const total of next.totals)totals.append(el('strong',ui('Ara toplam: {0}',{0:money(total.amount,total.currency)})));
   };
   const render=next=>{
+    window.TeknikelProductCard.closeInspector();
     state=next;
     for(const id of [...selected])if(!next.products.some(product=>product.product_id===id))selected.delete(id);
     if(next.catalogStatus!=='ready')selected.clear();

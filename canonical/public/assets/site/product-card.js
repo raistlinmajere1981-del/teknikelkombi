@@ -3,6 +3,14 @@
  */
 (() => {
   'use strict';
+  let inspector=null;
+  const closeInspector=()=>{inspector?.close();inspector=null;};
+  const openInspector=options=>{
+    closeInspector();
+    inspector=window.ImageInspector.open({translate:window.DemoLanguage.ui,...options,onClose:()=>{inspector=null;options.onClose?.();}});
+    return inspector;
+  };
+  const inspect=({product,urls,index=0,opener,onSelect})=>openInspector({title:product.name,items:[{name:product.name,urls}],index,opener,onSelect});
   const el = (tag,text,className) => {
     const node = document.createElement(tag);
     if (text !== undefined) node.textContent = text;
@@ -34,6 +42,10 @@
       image.addEventListener('load',()=>{image.hidden=false;fallback.hidden=true;});
       image.src=urls[0];imageLink.append(image);
     }
+    imageLink.addEventListener('click',event=>{
+      if(!urls.length||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
+      event.preventDefault();inspect({product,urls,index:Number(media.dataset.galleryIndex)||0,opener:imageLink});
+    });
     media.append(imageLink);
     if(urls.length>1){
       const controls=el('div',undefined,'teknikel-gallery-controls');
@@ -70,5 +82,5 @@
     card.append(media,body);
     return card;
   }
-  window.TeknikelProductCard=Object.freeze({create});
+  window.TeknikelProductCard=Object.freeze({create,inspect,openInspector,closeInspector});
 })();

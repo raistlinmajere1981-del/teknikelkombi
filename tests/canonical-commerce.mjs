@@ -22,7 +22,7 @@ try{
     if(process.env.TEST_FILTER&&!name.includes(process.env.TEST_FILTER))return;
     Object.assign(state,commerceState());const context=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce'});
     if(identity)await context.addCookies([{name:'TEST_identity',value:identity,url:origin,httpOnly:true}]);
-    await context.route('**/*',route=>new URL(route.request().url()).origin===origin?route.continue():new URL(route.request().url()).hostname==='images.example.com'?route.fulfill({contentType:'image/webp',body:logo}):route.abort());
+    await context.route('**/*',route=>new URL(route.request().url()).origin===origin?route.continue():new URL(route.request().url()).hostname==='images.example.com'?route.fulfill({contentType:'image/webp',body:logo,headers:{'access-control-allow-origin':'*'}}):route.abort());
     const page=await context.newPage(),runtimeErrors=[];page.on('pageerror',error=>runtimeErrors.push(error.message));
     try{await run(page,context);assert.deepEqual(runtimeErrors,[],'uncaught browser errors');assert.equal(state.fixtureError,undefined,state.fixtureError?.stack);results.push(name);console.log('PASS',name);}catch(error){if(runtimeErrors.length)console.error('Browser errors',name,runtimeErrors);throw error;}finally{await context.close();}
   };
@@ -213,6 +213,32 @@ try{
     await catalog(page);await add(page);await page.locator('.compare-select').nth(0).check();await page.locator('.compare-select').nth(1).check();await page.locator('#compare-open').click();await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true})));await expect(page.locator('#product-grid article')).toHaveCount(0);await expect(page.locator('#cart-lines')).not.toContainText('TEST Bosch Pompa');await expect(page.locator('#comparison-panel')).not.toContainText('TEST Bosch Pompa');
     const stored=await page.evaluate(()=>Object.entries(localStorage).filter(([key])=>key.includes(':cart:v2')).map(([,value])=>JSON.parse(value)));assert.equal(stored.length,1);assert.deepEqual(stored[0],{version:2,items:[{productId:'p1',quantity:1}]});await page.reload();await expect(page.locator('#cart-count')).toHaveText('1');
   },{identity:'a'});
+  for(const width of [390,1440])await scenario('shared image inspector personal comparison and commerce '+width,async page=>{
+    await catalog(page);
+    const opener=page.locator('#product-grid .teknikel-gallery-image-link').first();
+    await opener.click();
+    const dialog=page.locator('dialog.ii-dialog');await expect(dialog).toBeVisible();
+    await expect.poll(()=>dialog.locator('canvas').first().evaluate(c=>c.width>1&&!c.hidden)).toBe(true);
+    const photoCalls=[];page.on('request',request=>{if(request.method()!=='GET')photoCalls.push(request.postData()||'');});
+    await dialog.locator('input[type=file]').first().setInputFiles({name:'PRIVATE-PART.webp',mimeType:'image/webp',buffer:logo});
+    await expect.poll(()=>dialog.locator('canvas').nth(1).evaluate(c=>c.width>1&&!c.hidden)).toBe(true);
+    await dialog.getByRole('button',{name:'Üst üste',exact:true}).click();
+    await dialog.getByRole('slider',{name:'Saydamlık'}).fill('35');
+    await dialog.getByRole('button',{name:'Kod',exact:true}).click();
+    await expect.poll(()=>dialog.locator('.ii-pane').nth(1).getAttribute('aria-busy')).toBe(null);
+    await dialog.getByRole('button',{name:'Yakınlaştır',exact:true}).click();
+    await page.screenshot({path:`${artifacts}image-inspector-personal-${width}.png`});
+    await page.keyboard.press('Escape');await expect(dialog).toHaveCount(0);await expect(opener).toBeFocused();
+    assert.equal(photoCalls.length,0,'personal selection/filtering must not submit anything');
+    await page.locator('.compare-select').nth(0).check();await page.locator('.compare-select').nth(1).check();await page.locator('#compare-open').click();
+    await expect(dialog.locator('[data-compare-slot]')).toHaveCount(2);
+    await dialog.locator('[data-compare-slot]').nth(0).getByRole('button',{name:'Sepete ekle'}).click();
+    await dialog.locator('[data-compare-slot]').nth(1).getByRole('button',{name:'Sepete ekle'}).click();
+    await expect(page.locator('#cart-count')).toHaveText('2');
+    await page.screenshot({path:`${artifacts}image-inspector-products-${width}.png`});
+    await page.evaluate(()=>window.YaAccount.logout());await expect(dialog).toHaveCount(0);
+    await expect(page.locator('#cart-count')).toHaveText('0');
+  },{identity:'a',width});
   await scenario('real metadata filters, detail and comparison',async page=>{
     await catalog(page);
     const search=page.locator('#catalog-search');await search.fill('TEST-POM-101');await expect(page.locator('#product-grid article')).toHaveCount(1);await expect(page.locator('#product-grid')).toContainText('TEST Bosch Pompa');

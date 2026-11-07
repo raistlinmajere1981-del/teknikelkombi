@@ -8,7 +8,7 @@
   const controller = window.YaCommerce.create({apiBase:document.currentScript.dataset.apiBase});
   let commerceState, auth, generation, catalog, catalogStatus, loading, categories, favorites, cart, pending, busy, deliveryMethods, deliveryMethod, units, deliveryLabels, scale;
   const selected = new Set(), filters = {q:'',category:'',brand:'',sku:''};
-  let localPhoto = '', compareGeneration = 0, favoritesOnly = false, pageNumber = 1;
+  let favoritesOnly = false, pageNumber = 1;
   let pageSize = 18, sortMode = 'published', viewMode = 'grid';
   const collator = new Intl.Collator(locale,{numeric:true,sensitivity:'base'});
   const parameters = new URLSearchParams(location.search), reorderId = parameters.get('reorder');
@@ -17,7 +17,7 @@
     .split(',').filter(id=>id && id.length<=180).slice(0,2);
   let comparisonHandled = false;
   const requestHook = $('detail-request-hook');
-  let detailImageIndex = 0, detailImageProduct = '', lightbox = null;
+  let detailImageIndex = 0, detailImageProduct = '';
   let reorderHandled = false;
   for (const key of Object.keys(filters)) filters[key] = (parameters.get(key) || '').slice(0,180);
   const current = stamp => stamp === generation && auth.status !== 'unavailable';
@@ -25,9 +25,8 @@
   const addProduct = product => controller.add(product.product_id);
   const changeQuantity = (item,q) => controller.setQuantity(item.productId,q / scale);
   function clearComparison() {
-    selected.clear(); compareGeneration++;
-    if (localPhoto) URL.revokeObjectURL(localPhoto);
-    localPhoto = '';
+    selected.clear();
+    closeLightbox();
     $('comparison-panel')?.replaceChildren(); if ($('comparison-panel')) $('comparison-panel').hidden = true;
   }
   function el(tag, text, className) {
@@ -137,76 +136,9 @@
     node.setAttribute('aria-pressed',String(saved));
     return node;
   }
-  function closeLightbox() {
-    if (!lightbox) return;
-    const active = lightbox; lightbox = null;
-    if (active.open) active.close();
-    active.remove();
-  }
+  function closeLightbox() { window.TeknikelProductCard.closeInspector(); }
   function openLightbox(product, urls, startIndex, opener, onSelect) {
-    if (!urls.length) return;
-    closeLightbox();
-    const dialog = el('dialog',undefined,'teknikel-lightbox');
-    dialog.setAttribute('aria-label',ui('Ürün fotoğrafları') + ': ' + product.name);
-    const frame = el('div',undefined,'teknikel-lightbox-frame');
-    const toolbar = el('div',undefined,'teknikel-lightbox-header');
-    const title = el('strong',product.name);
-    const close = button('×',() => dialog.close(),'teknikel-lightbox-close');
-    close.setAttribute('aria-label',ui('Kapat'));
-    toolbar.append(title,close);
-    const stage = el('div',undefined,'teknikel-lightbox-stage');
-    const photo = el('img'); photo.alt = product.name; photo.referrerPolicy = 'no-referrer';
-    const fallback = el('span',ui('Fotoğraf yüklenemedi'),'teknikel-lightbox-fallback');
-    fallback.hidden = true;
-    photo.addEventListener('error',() => {photo.hidden = true;fallback.hidden = false;});
-    photo.addEventListener('load',() => {photo.hidden = false;fallback.hidden = true;});
-    stage.append(photo,fallback);
-    const footer = el('div',undefined,'teknikel-lightbox-footer');
-    const previous = button('‹',() => select(index-1),'teknikel-lightbox-arrow');
-    const next = button('›',() => select(index+1),'teknikel-lightbox-arrow');
-    previous.setAttribute('aria-label',ui('Önceki fotoğraf'));
-    next.setAttribute('aria-label',ui('Sonraki fotoğraf'));
-    const counter = el('span',undefined,'teknikel-lightbox-counter');
-    counter.setAttribute('aria-live','polite');
-    const thumbs = el('div',undefined,'teknikel-lightbox-thumbs');
-    thumbs.setAttribute('role','group');
-    thumbs.setAttribute('aria-label',ui('Ürün fotoğrafları'));
-    const choices = urls.map((url,i) => {
-      const choice = button('',() => select(i),'teknikel-lightbox-thumb');
-      choice.setAttribute('aria-label',ui('{0}. fotoğrafı göster',{0:i+1}));
-      const img=el('img'); img.src=url; img.alt=''; img.referrerPolicy='no-referrer';img.loading='lazy';
-      img.addEventListener('error',()=>choice.replaceChildren(String(i+1)));
-      choice.append(img);return choice;
-    });
-    let index = 0;
-    const select = nextIndex => {
-      index = (nextIndex + urls.length) % urls.length;
-      photo.hidden = false; fallback.hidden = true;
-      photo.src = urls[index];
-      photo.alt = ui('{0}, fotoğraf {1}',{0:product.name,1:index+1});
-      counter.textContent = (index+1)+' / '+urls.length;
-      choices.forEach((choice,i)=>choice.setAttribute('aria-pressed',String(i===index)));
-      onSelect?.(index);
-    };
-    footer.append(previous,counter,next);
-    thumbs.append(...choices);
-    frame.append(toolbar,stage,footer,thumbs);
-    dialog.append(frame); document.body.append(dialog);
-    dialog.addEventListener('close',() => {
-      if (lightbox === dialog) lightbox = null;
-      dialog.remove();
-      if (opener?.isConnected) opener.focus({preventScroll:true});
-    },{once:true});
-    dialog.addEventListener('click',event => {if(event.target===dialog)dialog.close();});
-    dialog.addEventListener('keydown',event => {
-      if(event.key === 'ArrowLeft'||event.key === 'ArrowRight') {
-        event.preventDefault(); select(index + (event.key === 'ArrowRight' ? 1 : -1));
-      }
-    });
-    lightbox=dialog;
-    select(startIndex);
-    dialog.showModal();
-    close.focus();
+    window.TeknikelProductCard.inspect({product,urls,index:startIndex,opener,onSelect});
   }
   function detailGallery(product) {
     const urls = [...new Set([product.image_url,...product.image_urls].map(safeImage).filter(Boolean))].slice(0,12);
@@ -303,57 +235,30 @@
   function showComparison(focus = true) {
     const panel = $('comparison-panel'); panel.replaceChildren(); panel.hidden = selected.size === 0;
     if (!selected.size) return;
-    const heading = el('h2',ui('Ürün karşılaştırma')); heading.id = 'comparison-title'; panel.append(heading);
-    panel.append(el('p',ui('Görsel benzerlik teknik uyumluluk onayı değildir.')));
-    const close = button(ui('Karşılaştırmayı kapat'),() => { panel.hidden = true; if (localPhoto) URL.revokeObjectURL(localPhoto); localPhoto = ''; },'quiet'); panel.append(close);
-    const grid = el('div',undefined,'comparison-grid'); panel.append(grid);
-    for (const id of selected) {
-      const product = catalog.get(id); if (!product) continue;
-      const slot = el('article',undefined,'comparison-slot'); slot.dataset.compareSlot = id;
-      slot.append(el('h3',product.name));
-      if (product.image_url) {
-        const viewport = el('div',undefined,'comparison-viewport'), image = el('img');
-        image.src = product.image_url; image.alt = product.name; image.draggable = false;
-        viewport.append(image); slot.append(viewport);
-        let zoom = 1, x = 0, y = 0, rotation = 0, dragging = null;
-        const paint = () => { image.style.transform = `translate(${x}px,${y}px) scale(${zoom}) rotate(${rotation}deg)`; };
-        const tools = el('div',undefined,'comparison-tools');
-        tools.append(button(ui('Yakınlaştır'),() => { zoom = Math.min(5,zoom + .25); paint(); }),
-          button(ui('Uzaklaştır'),() => { zoom = Math.max(1,zoom - .25); paint(); }),
-          button(ui('Döndür'),() => { rotation = (rotation + 90) % 360; paint(); }),
-          button(ui('Sıfırla'),() => { zoom = 1; x = 0; y = 0; rotation = 0; paint(); }));
-        viewport.addEventListener('pointerdown',event => { dragging = {x:event.clientX - x,y:event.clientY - y}; viewport.setPointerCapture(event.pointerId); });
-        viewport.addEventListener('pointermove',event => { if (dragging) { x = event.clientX - dragging.x; y = event.clientY - dragging.y; paint(); } });
-        for (const event of ['pointerup','pointercancel']) viewport.addEventListener(event,() => { dragging = null; });
-        slot.append(tools);
-        if (product.image_urls.length > 1) {
-          const label = el('label',ui('Fotoğraf')), picker = el('select'); picker.setAttribute('aria-label',ui('Fotoğraf'));
-          product.image_urls.forEach((url,index) => { const option = el('option',String(index + 1)); option.value = url; picker.append(option); });
-          picker.addEventListener('change',() => { image.src = picker.value; x = 0; y = 0; zoom = 1; paint(); }); label.append(picker); slot.append(label);
+    const products = [...selected].map(id=>catalog.get(id)).filter(Boolean);
+    if (!products.length) return;
+    panel.append(el('h2',ui('Ürün karşılaştırma')),el('p',products.map(p=>p.name).join(' · ')));
+    const open = () => window.TeknikelProductCard.openInspector({
+      title:ui('Ürün karşılaştırma'), mode:products.length===2?'compare':'inspect',
+      items:products.map(product=>({name:product.name,urls:[...new Set([product.image_url,...product.image_urls].map(safeImage).filter(Boolean))]})),
+      details:host=>{
+        const grid=el('div'); host.append(grid);
+        for(const product of products){
+          const slot=el('article');slot.dataset.compareSlot=product.product_id;
+          slot.append(el('h3',product.name));
+          const fields=el('dl');
+          for(const [label,value] of [[ui('Stok kodu'),product.sku],[ui('Marka'),product.brand],[ui('Kategori'),product.category_name],[ui('Açıklama'),product.description],[ui('Fiyat'),money(product.price,product.currency)+' / '+units[product.unit]]]){
+            if(value)fields.append(el('dt',label),el('dd',value));
+          }
+          slot.append(fields);
+          const add=button(ui('Sepete ekle'),()=>addProduct(product));add.disabled=!commerceState.canEdit;
+          const detail=el('a',ui('Ürün detayı'));detail.href=productUrl(product.product_id);
+          slot.append(add,detail);grid.append(slot);
         }
       }
-      const fields = el('dl');
-      for (const [label,value] of [[ui('Stok kodu'),product.sku],[ui('Marka'),product.brand],[ui('Kategori'),product.category_name],[ui('Açıklama'),product.description]]) {
-        if (value) fields.append(el('dt',label),el('dd',value));
-      }
-      fields.append(el('dt',ui('Fiyat')),el('dd',money(product.price,product.currency))); slot.append(fields); grid.append(slot);
-    }
-    const photoLabel = el('label',ui('Cihaz fotoğrafı seç')), photo = el('input'); photo.type = 'file'; photo.accept = 'image/jpeg,image/png,image/webp';
-    photoLabel.append(photo); panel.append(photoLabel,el('p',ui('Fotoğraf yalnız bu tarayıcıda kalır; otomatik yüklenmez.')));
-    const local = el('div',undefined,'comparison-local'); panel.append(local);
-    const addPhoto = () => { local.replaceChildren(); if (localPhoto) { const image = el('img'); image.src = localPhoto; image.alt = ui('Cihaz fotoğrafı'); local.append(image); } };
-    addPhoto();
-    photo.addEventListener('change',async () => {
-      const file = photo.files?.[0], stamp = generation, revision = ++compareGeneration;
-      if (!file || !['image/jpeg','image/png','image/webp'].includes(file.type) || file.size > 15 * 1024 * 1024) return;
-      const url = URL.createObjectURL(file);
-      try {
-        const image = new Image(); image.src = url; await image.decode();
-        if (!current(stamp) || revision !== compareGeneration || panel.hidden || !panel.isConnected) { URL.revokeObjectURL(url); return; }
-        if (localPhoto) URL.revokeObjectURL(localPhoto); localPhoto = url; addPhoto();
-      } catch { URL.revokeObjectURL(url); }
     });
-    if (focus) panel.focus();
+    panel.append(button(ui('Karşılaştır'),open),button(ui('Karşılaştırmayı kapat'),()=>{closeLightbox();panel.hidden=true;},'quiet'));
+    if(focus)open();
   }
   function renderProducts() {
     $('product-grid').replaceChildren();

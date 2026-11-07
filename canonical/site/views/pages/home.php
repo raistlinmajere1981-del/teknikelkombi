@@ -60,6 +60,9 @@ render_view('components/hero', $view, $site);
 <?php if (isset($view['pages']['catalog'])): ?>
 <!-- Only the site view opts into the shared headless commerce controller. -->
 <script src="<?= e(asset($site, 'core/commerce.js')) ?>" defer></script>
+<link rel="stylesheet" href="<?= e(asset($site, 'site/image-inspector/inspector.css')) ?>">
+<script src="<?= e(asset($site, 'site/image-inspector/core.js')) ?>" defer></script>
+<script src="<?= e(asset($site, 'site/image-inspector/inspector.js')) ?>" defer></script>
 <script src="<?= e(asset($site, 'site/product-card.js')) ?>" defer></script>
 <script src="<?= e(asset($site, 'site/home-catalog.js')) ?>" data-api-base="<?= e($site['module_path']) ?>/api/" defer></script>
 <?php endif; ?>

@@ -78,19 +78,26 @@ Teknikel sunumu `assets/publication.css` içindedir. Ana sayfa hero'su yayınlan
 
 Widget'ın orijinal avatarı, AI/talep/özel belge upload ve idempotency sahipleri korunur. `assets/assistant/presentation.js` aynı projection ile kart/sekme/form sunumunu düzenler; `presentation.css` yalnız görünümü değiştirir. `widget.js` içindeki küçük `setPublication` / `openRequest` köprüsü ve `data-publication-managed` seçeneği public verinin ikinci kez okunmasını ve eski profil varsayımlarını önler. Canonical widget yeniden kopyalanırsa bu köprü korunmalı ve widget deneyim testleri çalıştırılmalıdır.
 
-## Web ürün ve görsel karşılaştırma
+## Web ürün ve görsel karşılaştırma — ortak motor V2 (2026-11-07)
 
-Ürün kartı ve detayındaki Karşılaştır işlemi aynı sayfada native dialog açar. Ürün listesinin arama, kategori, marka, sayfa ve scroll durumu korunur. İlk seçim kapatıldığında geçici bir seçim çubuğu kalır; başka karttan veya modal içindeki katalog aramasından ikinci ürün seçilebilir. Ayrı veritabanı/ürün listesi/medya servisi yoktur.
+Etkin canonical ürün kartı, detay görseli/küçük fotoğraflar ve iki ürün karşılaştırması
+`YardimciAsistan/packages/image-inspector` kaynağını kullanır. Aynı JS/Worker/CSS dosyaları
+Android Bayi APK'sına doğrudan alınır; site kopyaları kaynak ve APK ile byte düzeyinde
+denetlenir. Normal/Detay/Kod/Negatif/Kenar, 1–8×, döndürme, bağımsız/birlikte katmanlar,
+yan yana/üst üste, saydamlık, yerel dosya ve kamera girişleri aynı motordadır. Fiyat,
+sepet/sipariş ve hesap yetkisi YaCommerce sahibinde kalır. Kişisel fotoğraf yüklenmez.
 
-- Ürün ↔ ürün veya ürün ↔ cihaz fotoğrafı; iki katalog ürününün tüm yayınlanmış görselleri (en fazla 12) arasından seçim.
-- Yan yana/bindirme, bağımsız pan/zoom, bağlı zoom seçeneği, hizalama çizgileri, katman/şeffaflık, döndürme/çevirme, negatif/gri/kontrast ve tek adımda sıfırlama.
-- Mouse, klavye, tek parmak pan ve iki parmak pinch. Mobilde yan yana modu dikey düzenlenir; bindirme ortak çalışma alanını korur.
-- Yayınlanmış ad/marka/SKU/üretici parça kodu/model/kategori/birim/fiyat/teknik açıklama satırları; farklar metin etiketiyle de belirtilir. Eksik bilgi türetilmez. Görsel benzerlik otomatik uyumluluk onayı vermez.
-- Public sayfalarda public fiyat, bayi çalışma alanında yetkili endpoint'in bayi fiyatı kullanılır. Fiyat hesaplanmaz veya depolanmaz.
-- Açılışta, Yenile'de, sekmeye dönüşte ve görünür açık modalde 30 saniyede bir yayın/oturum tekrar doğrulanır. Ürün geri çekilirse seçim/arama/görsel/fiyat temizlenir. Oturum kapanması, başka sekmeden çıkış ve pagehide özel DOM'u temizler. Offline/başarısız doğrulamada eski özel fiyat korunmaz.
-- JPEG/PNG/WebP/AVIF cihaz fotoğrafı en fazla 20 MB kabul edilir. Görüntüleme kopyası bellekte en fazla 2048 px kenara küçültülür; asıl dosyaya dokunulmaz. Fotoğraf otomatik upload edilmez; Object URL kapanınca veya değiştirilince iptal edilir. SVG/desteklenmeyen/bozuk/aşırı büyük dosya ve eksik katalog görseli için açık durum mesajı vardır.
+Hazırlama: `node ../YardimciAsistan/packages/image-inspector/sync-web.mjs --apply canonical/public/assets/site`,
+sonra `node scripts/sync-public-assets.mjs --apply`. `--check` seçenekleri değişiklik yapmaz.
+`node --test tests/image-inspector.test.mjs` kaynak eşitliğini ve paket bağımlılıklarını;
+`TEST_FILTER='shared image inspector' node tests/canonical-commerce.mjs` gerçek canonical
+kart → kişisel karşılaştırma → iki ürün/sepet → oturum kapanışı davranışını sınar.
 
-`assets/comparison-model.js` kimlik seçimi, bilgi satırları ve görsel dönüşümlerini DOM'dan ayırır; `assets/compare.js` web etkileşimlerini yönetir. Android yeniden yazılmadı. İncelenen `DealerPhotoViewer` katalog ürünü ↔ kişisel fotoğraf karşılaştırıyor; iki farklı katalog ürününü doğrudan seçme sonraki Android turu için açık iş olarak kalır.
+[Motor sözleşmesi](../YardimciAsistan/packages/image-inspector/README.md) ve
+[yerel kabul/cihaz kanıtı](../YardimciAsistan/docs/dev/IMAGE_INSPECTOR_V2_ACCEPTANCE.md).
+Yerel paket hazırlandı; canlıya yayınlanmadı. Eski canonical ışık kutusu/karşılaştırma
+algoritmaları kaldırıldı. Apache tarafından engellenmiş kök legacy kaynakları halen
+hash kontrollü retirement preflight kanıtıdır; etkin runtime'a/pakete girmez.
 
 ## Katalog hazırlık kararı
 

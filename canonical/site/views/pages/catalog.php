@@ -202,4 +202,7 @@ $id = is_string($_GET['id'] ?? null) ? $_GET['id'] : '';
 
 
 <!-- Teknikel-owned renderer, loaded before the canonical catalog runtime. -->
+<link rel="stylesheet" href="<?= e(asset($site, 'site/image-inspector/inspector.css')) ?>">
+<script src="<?= e(asset($site, 'site/image-inspector/core.js')) ?>" defer></script>
+<script src="<?= e(asset($site, 'site/image-inspector/inspector.js')) ?>" defer></script>
 <script src="<?= e(asset($site, 'site/product-card.js')) ?>" defer></script>

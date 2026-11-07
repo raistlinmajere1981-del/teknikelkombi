@@ -18,7 +18,7 @@ try {
   proxy=await proxyServer(`http://127.0.0.1:${port}`,api.origin);const base=proxy.origin;
   browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || '/usr/bin/brave',args:['--no-sandbox','--disable-gpu']});
   const scenario=async(name,run,options={})=>{if(process.env.TEST_FILTER&&!name.includes(process.env.TEST_FILTER))return;reset();const context=await browser.newContext({viewport:{width:390,height:900},reducedMotion:'reduce',...options});
-    await context.route('**/*',route=>/^https:\/\/images\.example\.com\/TEST-.*\.webp$/.test(route.request().url())?route.fulfill({contentType:'image/webp',body:logo}):new URL(route.request().url()).origin===base?route.continue():route.abort());
+    await context.route('**/*',route=>/^https:\/\/images\.example\.com\/TEST-.*\.webp$/.test(route.request().url())?route.fulfill({contentType:'image/webp',body:logo,headers:{'access-control-allow-origin':'*'}}):new URL(route.request().url()).origin===base?route.continue():route.abort());
     const page=await context.newPage();try{await run(page);results.push(name);console.log('PASS',name);}finally{await context.close();}};
   await scenario('SSR publication gates',async page=>{
     for(const mode of ['surface-off','enabled-off','zero','catalog-error','business-error']){
@@ -237,23 +237,23 @@ try {
     await expect(thumbs).toHaveCount(3);
     const primary=page.locator('.teknikel-detail-main-photo');
     await primary.click();
-    const dialog=page.locator('dialog.teknikel-lightbox');
+    const dialog=page.locator('dialog.ii-dialog');
     await expect(dialog).toBeVisible();
-    await expect(dialog.locator('.teknikel-lightbox-counter')).toHaveText('1 / 3');
+    await expect(dialog.locator('.ii-counter')).toHaveText('1 / 3');
     if(width===1440)await page.screenshot({path:`${artifacts}detail-lightbox-1440.png`,fullPage:false});
     await dialog.getByRole('button',{name:'Sonraki fotoğraf'}).click();
-    await expect(dialog.locator('.teknikel-lightbox-counter')).toHaveText('2 / 3');
+    await expect(dialog.locator('.ii-counter')).toHaveText('2 / 3');
     await dialog.press('ArrowRight');
-    await expect(dialog.locator('.teknikel-lightbox-counter')).toHaveText('3 / 3');
+    await expect(dialog.locator('.ii-counter')).toHaveText('3 / 3');
     await page.keyboard.press('Escape');
     await expect(dialog).toHaveCount(0);
     await expect(primary).toBeFocused();
     await expect(thumbs.nth(2)).toHaveAttribute('aria-pressed','true');
     await thumbs.nth(1).click();
-    await expect(page.locator('dialog.teknikel-lightbox')).toBeVisible();
-    await expect(page.locator('.teknikel-lightbox-counter')).toHaveText('2 / 3');
-    await page.locator('.teknikel-lightbox-close').click();
-    await expect(page.locator('dialog.teknikel-lightbox')).toHaveCount(0);
+    await expect(page.locator('dialog.ii-dialog')).toBeVisible();
+    await expect(page.locator('.ii-counter')).toHaveText('2 / 3');
+    await page.locator('button[aria-label="Kapat"]').click();
+    await expect(page.locator('dialog.ii-dialog')).toHaveCount(0);
     await page.locator('#product-detail button.button').first().click();
     await expect(page.locator('#cart-count')).toHaveText('1');
     await expect(page.locator('#product-grid article')).toHaveCount(0);
@@ -268,32 +268,31 @@ try {
   for (const width of [390,1440]) await scenario('modal square photo stays inside stage with navigable controls '+width,async page=>{
     state.products[0].image_url='https://images.example.com/TEST-square.webp';
     state.products[0].image_urls=['https://images.example.com/TEST-square.webp','https://images.example.com/TEST-other.webp'];
-    await page.route('**/TEST-square.webp',route=>route.fulfill({
-      contentType:'image/svg+xml',
-      body:'<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024"><rect width="1024" height="1024" fill="#d9e3e9"/></svg>'
-    }));
+    const square=await page.evaluate(()=>{const c=document.createElement('canvas');c.width=c.height=1024;c.getContext('2d').fillRect(0,0,1024,1024);return c.toDataURL('image/png').split(',')[1];});
+    await page.route('**/TEST-square.webp',route=>route.fulfill({contentType:'image/png',body:Buffer.from(square,'base64'),headers:{'access-control-allow-origin':'*'}}));
     await page.setViewportSize({width,height:900});
     await page.goto(base+'/?page=catalog&id=p1');
     await expect(page.locator('#product-detail-title')).toHaveText('TEST Bosch Pompa');
     await page.locator('.teknikel-detail-main-photo').click();
-    await expect.poll(()=>page.locator('.teknikel-lightbox-stage img').evaluate(img=>img.complete&&img.naturalWidth===1024)).toBe(true);
+    await expect.poll(()=>page.locator('.ii-stage canvas').first().evaluate(canvas=>canvas.width===1024&&!canvas.hidden)).toBe(true);
     const check=async()=>{
+      await expect.poll(()=>page.locator('.ii-stage canvas').first().evaluate(c=>c.width===1024&&!c.hidden)).toBe(true);
       const rects=await page.evaluate(()=>{
         const rect=selector=>{const {top,bottom}=document.querySelector(selector).getBoundingClientRect();return {top,bottom}};
-        return {stage:rect('.teknikel-lightbox-stage'),image:rect('.teknikel-lightbox-stage img'),
-          footer:rect('.teknikel-lightbox-footer'),dialog:rect('dialog.teknikel-lightbox')};
+        return {stage:rect('.ii-stage'),image:rect('.ii-stage canvas'),
+          footer:rect('.ii-tools'),dialog:rect('dialog.ii-dialog')};
       });
       assert.ok(rects.image.top>=rects.stage.top-1&&rects.image.bottom<=rects.stage.bottom+1,
         'Square image cannot cover modal controls '+JSON.stringify(rects));
       assert.ok(rects.footer.bottom<=rects.dialog.bottom+1,'footer inside modal '+JSON.stringify(rects));
     };
     await check();
-    await page.locator('.teknikel-lightbox-arrow').last().click();
-    await expect(page.locator('.teknikel-lightbox-counter')).toHaveText('2 / 2');
-    await page.locator('.teknikel-lightbox-arrow').first().click();
+    await page.getByRole('button',{name:'Sonraki fotoğraf'}).click();
+    await expect(page.locator('.ii-counter')).toHaveText('2 / 2');
+    await page.getByRole('button',{name:'Önceki fotoğraf'}).click();
     await check();
-    await page.locator('.teknikel-lightbox-close').click();
-    await expect(page.locator('dialog.teknikel-lightbox')).toHaveCount(0);
+    await page.locator('button[aria-label="Kapat"]').click();
+    await expect(page.locator('dialog.ii-dialog')).toHaveCount(0);
   });
   await scenario('catalog has one card renderer from first paint through product detail',async page=>{
     const response=await page.request.get(base+'/?page=catalog');
