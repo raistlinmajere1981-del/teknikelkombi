@@ -13,7 +13,7 @@ import {syncAssets} from '../scripts/sync-public-assets.mjs';
 import {packageFiles, routes} from '../scripts/package-site.mjs';
 const repo=new URL('../',import.meta.url).pathname;
 const upstream=process.env.YA_TEMPLATE_SOURCE || join(repo,'../YardimciAsistan/web-site-template');
-const engineRoot=join(repo,'../../ChannelFoundry/packages/effect-engine');
+const engineRoot=join(repo,'../YardimciAsistan/packages/effect-engine');
 const json=path=>JSON.parse(readFileSync(path,'utf8'));
 const manifest=json(join(repo,'canonical/template-manifest.json'));
 test('installed common hashes equal current incoming release and baseline',()=>{
@@ -33,10 +33,8 @@ test('24 engine modules match provenance, upstream engine and Admin fingerprint'
     assert.equal(hash(join(vendor,path)),sha,path);
     assert.equal(hash(join(upstream,'public/assets/vendor/effect-engine',path)),sha,path);
     assert.equal(hash(join(engineRoot,path)),sha,'engine source '+path);
-    assert.equal(hash(join(repo,'../YardimciAsistan/apps/admin-control-center/public/effect-studio',path)),sha,'Admin actual module '+path);
+    // Admin resolves the same canonical package; it no longer publishes a second copy.
   }
-  const admin=json(join(repo,'../YardimciAsistan/apps/admin-control-center/effect-engine-provenance.json'));
-  assert.deepEqual(admin,provenance);
 });
 test('public mirror hashes, root adapter and all wrappers use common owner',()=>{
   syncAssets(repo);
